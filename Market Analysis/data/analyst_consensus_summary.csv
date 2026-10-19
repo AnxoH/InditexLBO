@@ -1,0 +1,5 @@
+period,period_label,revenue_avg_eur_b,revenue_low_eur_b,revenue_high_eur_b,revenue_growth_yoy_pct,revenue_analyst_count,eps_avg_eur,eps_low_eur,eps_high_eur,eps_growth_yoy_pct,eps_analyst_count,eps_trend_current,eps_trend_7d_ago,eps_trend_30d_ago,eps_trend_90d_ago,eps_up_revisions_30d,eps_down_revisions_30d,price_target_current_eur,price_target_mean_eur,price_target_median_eur,price_target_low_eur,price_target_high_eur
+0q,Current Quarter (Q3 FY25),10.61,10.54,10.68,8.21,7,0.645,0.64,0.65,9.85,5,0.645,0.637,0.637,0.64,3,0,55.42,60.39,61.0,41.5,67.0
++1q,Next Quarter (Q4 FY25),12.58,12.48,12.67,7.58,7,0.566,0.55,0.58,10.33,5,0.566,0.562,0.559,0.56,3,0,55.42,60.39,61.0,41.5,67.0
+0y,Current Fiscal Year (FY25),42.94,42.26,43.53,7.7,22,2.164,2.12,2.23,8.21,23,2.164,2.166,2.171,2.183,1,9,55.42,60.39,61.0,41.5,67.0
++1y,Next Fiscal Year (FY26),46.17,44.79,47.14,7.53,22,2.364,2.22,2.44,9.23,23,2.364,2.366,2.373,2.384,2,10,55.42,60.39,61.0,41.5,67.0

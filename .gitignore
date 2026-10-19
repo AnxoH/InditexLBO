@@ -1,0 +1,28 @@
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local agent artifacts & workspace teamwork logs
+.agents/
+
+# Raw oversized source reports (>100MB rejected by GitHub)
+# (Audited converted data available in Annual Reports/Transformed/ in Markdown format)
+Annual Reports/Originals/
+*.XHTM
+*.xhtml
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
