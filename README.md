@@ -89,3 +89,4 @@ The test suite validates:
 ## ⚖️ License & Disclaimer
 
 Academic project prepared for Corporate Finance / MEFI. All corporate brand names and trademarks belong to their respective owners. Audited financial data sourced from Inditex S.A. published annual reports (FY2022–FY2025).
+

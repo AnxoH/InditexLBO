@@ -1,10 +1,10 @@
-ticker,company_name,tier,currency_local,share_price_local,share_price_eur,market_cap_eur_b,enterprise_value_eur_b,net_debt_eur_b,beta_5y,52w_low_local,52w_high_local,ltm_revenue_eur_b,gross_margin_pct,ebitda_margin_pct,operating_margin_pct,trailing_pe,forward_pe,ev_ebitda,ev_revenue,dividend_yield_pct,free_float_pct
-ITX.MC,Inditex,Target,EUR,55.42,55.42,172.63,169.8,-4.2,0.96,46.07,59.42,41.26,56.54,23.68,18.92,26.9,23.45,17.38,4.12,1.16,35.6
-HM-B.ST,H&M Hennes & Mauritz,Tier 1 - Core,SEK,172.45,15.51,24.75,29.51,4.75,1.05,156.35,194.3,19.86,54.41,11.31,10.74,20.9,19.49,13.14,1.49,4.12,32.9
-9983.T,Fast Retailing (Uniqlo),Tier 1 - Core,JPY,73850.0,415.63,127.54,119.5,-8.42,0.5,52180.0,88690.0,22.31,55.22,24.38,14.31,41.82,53.95,21.97,5.36,1.19,72.9
-NXT.L,Next plc,Tier 1 - Core,GBp,15280.0,181.34,20.7,23.42,2.25,1.07,11695.0,16175.0,8.55,44.13,20.59,17.7,19.44,17.34,13.31,2.74,1.74,94.4
-GAP,The Gap Inc.,Tier 1 - Core,USD,23.32,20.8,7.31,10.13,2.89,2.03,18.11,29.36,13.67,40.54,9.58,6.71,7.02,8.87,7.74,0.74,3.03,57.3
-ABF.L,Associated British Foods (Primark),Tier 1 - Core,GBp,1923.5,22.83,15.94,20.15,3.59,0.81,1729.45,2359.0,23.05,7.43,11.35,6.64,14.46,13.05,7.7,0.87,3.24,36.7
-LULU,Lululemon Athletica,Tier 3 - Lifestyle/Athletic,USD,96.73,86.28,9.99,10.26,0.67,0.92,90.38,225.98,9.9,54.9,21.49,13.21,7.96,11.19,4.83,1.04,0.0,96.3
-ADS.DE,Adidas AG,Tier 3 - Lifestyle/Athletic,EUR,157.9,157.9,27.64,32.56,4.42,1.17,129.95,196.4,26.04,51.58,10.23,8.51,20.24,13.6,12.22,1.25,1.77,96.5
-NKE,Nike Inc.,Tier 3 - Lifestyle/Athletic,USD,37.01,33.01,49.03,51.65,2.46,1.1,31.97,70.44,40.93,43.41,10.66,7.92,17.79,23.18,11.84,1.26,4.42,97.9
+ticker,company_name,tier,peer_tier,headquarters,currency_local,reporting_currency,share_price_local,share_price_eur,market_cap_eur_b,enterprise_value_eur_b,net_debt_eur_b,beta_5y,52w_low_local,52w_high_local,ltm_revenue_eur_b,gross_margin_pct,ebitda_margin_pct,operating_margin_pct,trailing_pe,forward_pe,ev_ebitda,ev_to_ebitda_ltm,ev_revenue,ev_to_sales_ltm,price_to_book,free_cash_flow_yield_pct,dividend_yield_pct,free_float_pct
+ITX.MC,Inditex,Target,Target,Spain,EUR,EUR,55.42,55.42,172.63,169.8,-4.2,0.96,46.07,59.42,41.26,56.54,23.68,18.92,26.9,23.45,17.38,17.38,4.12,4.12,9.67,3.76,1.16,35.6
+HM-B.ST,H&M Hennes & Mauritz,Tier 1 - Core,Tier 1 - Core,Sweden,SEK,SEK,172.45,15.51,24.76,29.52,4.76,1.05,156.35,194.3,19.86,54.41,11.31,10.74,20.9,19.49,13.14,13.14,1.49,1.49,6.97,7.24,4.12,32.9
+9983.T,Fast Retailing (Uniqlo),Tier 1 - Core,Tier 1 - Core,Japan,JPY,JPY,73850.0,415.55,127.52,119.47,-8.42,0.5,52180.0,88690.0,22.3,55.22,24.38,14.31,41.82,53.95,21.97,21.97,5.36,5.36,7.96,2.06,1.19,72.9
+NXT.L,Next plc,Tier 1 - Core,Tier 1 - Core,United Kingdom,GBp,GBp,15280.0,181.32,20.7,23.42,2.25,1.07,11695.0,16175.0,8.55,44.13,20.59,17.7,19.44,17.34,13.31,13.31,2.74,2.74,11.7,4.21,1.74,94.4
+GAP,The Gap Inc.,Tier 1 - Core,Tier 1 - Core,United States,USD,USD,23.33,20.79,7.3,10.12,2.88,2.03,18.11,29.36,13.66,40.54,9.58,6.71,7.03,8.87,7.74,7.74,0.74,0.74,2.07,3.01,3.03,57.3
+ABF.L,Associated British Foods (Primark),Tier 1 - Core,Tier 1 - Core,United Kingdom,GBp,GBp,1923.5,22.83,15.94,20.15,3.59,0.81,1729.45,2359.0,23.04,7.43,11.35,6.64,14.46,13.05,7.7,7.7,0.87,0.87,1.19,5.49,3.24,36.7
+LULU,Lululemon Athletica,Tier 3 - Lifestyle/Athletic,Tier 3 - Lifestyle/Athletic,Canada / USA,USD,USD,96.5,86.01,9.96,10.25,0.67,0.92,90.38,225.98,9.89,54.9,21.49,13.21,7.94,11.18,4.83,4.83,1.04,1.04,2.25,10.28,0.0,96.3
+ADS.DE,Adidas AG,Tier 3 - Lifestyle/Athletic,Tier 3 - Lifestyle/Athletic,Germany,EUR,EUR,157.9,157.9,27.64,32.56,4.42,1.17,129.95,196.4,26.04,51.58,10.23,8.51,20.24,13.6,12.22,12.22,1.25,1.25,4.64,3.45,1.77,96.5
+NKE,Nike Inc.,Tier 3 - Lifestyle/Athletic,Tier 3 - Lifestyle/Athletic,United States,USD,USD,37.11,33.08,49.13,51.61,2.46,1.1,31.97,70.44,40.9,43.41,10.66,7.92,17.84,23.25,11.84,11.84,1.26,1.26,3.62,3.21,4.42,97.9

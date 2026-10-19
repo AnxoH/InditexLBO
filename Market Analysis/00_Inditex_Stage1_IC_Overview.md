@@ -433,16 +433,16 @@ Driver_Category,Operational_Driver,Historical_FY25,Bear_Case_Range,Base_Case_Ran
 Top-Line Growth,Net Sales Growth Reported (%),3.2%,1.5% - 3.0%,5.0% - 6.0%,7.5% - 8.5%,Base narrows FX drag to -50 bps; Bull assumes tailwinds
 Top-Line Growth,Net Sales Growth Constant FX (%),7.0%,2.5% - 3.5%,6.0% - 6.5%,8.0% - 9.0%,Underlying retail sales volume and price/mix momentum
 Gross Profitability,Gross Profit Margin (%),58.3%,56.8% - 57.3%,58.0% - 58.4%,58.8% - 59.2%,Base holds peak efficiency; Bear tests markdown pressure
-Operating Costs,OpEx YoY Growth (%),2.8%,3.0% - 3.5%,4.0% - 4.5%,3.5% - 4.0%,In Base/Bull, OpEx grows below sales (positive jaws)
+Operating Costs,OpEx YoY Growth (%),2.8%,3.0% - 3.5%,4.0% - 4.5%,3.5% - 4.0%,"In Base/Bull, OpEx grows below sales (positive jaws)"
 Cash Profitability,EBITDA Margin (%),28.3%,26.0% - 26.8%,28.2% - 28.8%,29.5% - 30.2%,Post-IFRS 16 basis (excluding fixed store lease rent)
 Operating Profit,EBIT Margin (%),20.1%,17.8% - 18.5%,20.2% - 20.8%,21.5% - 22.2%,Base sustains ~20.5% plateau; Bull tests operating leverage
 Depreciation,D&A as % of Net Sales (%),8.2%,8.2% - 8.5%,7.8% - 8.0%,7.6% - 7.8%,Includes ~€1.6B ROU lease amort + ~€1.6B PPE depr
 Taxation,Effective Corporate Tax Rate (%),22.4%,23.5% - 24.0%,22.5% - 23.0%,22.0% - 22.5%,Blended statutory rates across European jurisdictions
-Reinvestment,Ordinary Capex (EUR M),€1,812M,€2,000M - €2,150M,€2,300M - €2,450M,€2,400M - €2,700M,Management guidance of ~€2,300M for FY2026
-Logistics Expansion,Extraordinary Capex (EUR M),€900M,€0.0M,€0.0M,€0.0M,Two-year €1,800M program concluded at year-end FY25
+Reinvestment,Ordinary Capex (EUR M),"€1,812M","€2,000M - €2,150M","€2,300M - €2,450M","€2,400M - €2,700M","Management guidance of ~€2,300M for FY2026"
+Logistics Expansion,Extraordinary Capex (EUR M),€900M,€0.0M,€0.0M,€0.0M,"Two-year €1,800M program concluded at year-end FY25"
 Total Capex,Total Capex as % of Sales (%),6.8%,4.8% - 5.0%,5.0% - 5.4%,5.2% - 5.5%,Normalized capex ratio following logistics peak
 Working Capital,Operating Working Capital % Sales (%),-10.5%,-9.5% - -10.0%,-10.0% - -10.5%,-10.5% - -11.0%,Models negative float cash release on incremental sales
-Lease Cash Flow,Fixed Cash Lease Outflow (EUR M),€1,834M,€1,800M - €1,850M,€1,850M - €1,950M,€1,950M - €2,100M,Financing cash flow principal/interest lease payments
+Lease Cash Flow,Fixed Cash Lease Outflow (EUR M),"€1,834M","€1,800M - €1,850M","€1,850M - €1,950M","€1,950M - €2,100M",Financing cash flow principal/interest lease payments
 Lease OpEx,Variable Store Lease Outflow (%),1.7%,1.6% of Sales,1.7% of Sales,1.7% of Sales,Turnover-linked store rent included inside OpEx
 Capital Return,Dividend Payout Ratio (% Net Income),87.7%,60.0% (Ordinary only),75.0% - 80.0%,85.0% - 90.0%,Base models 60% ordinary + regular bonus dividend
 ```
@@ -479,8 +479,8 @@ PE Valuation,PE Levered WACC,6.50%,7.20%,7.95%,Recommended LBO hurdle rate: 7.2%
 Valuation_Metric,Conservative_Bear,Baseline_Current,Optimistic_Bull,Strategic_Modeling_Guidance
 Current EV / EBITDA Multiple,13.5x,17.38x,18.5x,European peer median (13.1x) vs market quote vs peak quality
 Current Forward P/E Multiple,17.5x,23.45x,25.0x,Based on consensus FY26 EPS of €2.364
-Current EV / EBIT Multiple,16.5x,21.23x,23.0x,Based on audited FY25 EBIT of €7,997M
-Current Free Cash Flow Yield,3.5%,2.71%,2.2%,Based on audited FY25 FCF of €4,686M
+Current EV / EBIT Multiple,16.5x,21.23x,23.0x,"Based on audited FY25 EBIT of €7,997M"
+Current Free Cash Flow Yield,3.5%,2.71%,2.2%,"Based on audited FY25 FCF of €4,686M"
 Exit EV / EBITDA Multiple (5-Yr),14.0x,16.0x,18.0x,Recommended LBO exit multiple sensitivity grid
 Exit P/E Multiple (5-Yr),18.0x,21.0x,24.0x,Recommended LBO exit earnings sensitivity grid
 Exit EV / EBIT Multiple (5-Yr),16.5x,19.5x,22.5x,Operating income exit multiple band
@@ -494,27 +494,28 @@ Terminal Growth Rate (g),2.00%,2.25%,2.50%,Capped at long-term European/global G
 
 ```csv
 Lease_Schedule_Item,FY2024_Actual,FY2025_Actual,Analytical_Definition_and_Modeling_Rules
-Right-of-Use (ROU) Assets Net Book Value,€5,269M,€5,542M,Balance Sheet Non-Current Assets (Gross cost €13,786M, Depr €8,223M)
-Annual ROU Asset Additions & Modifications,€1,833M,€2,151M,€473M new store leases + €1,678M renewals and extensions
-Total Balance Sheet Lease Liabilities,€5,722M,€5,933M,Present value of discounted future operating lease obligations
-Non-Current Lease Liabilities (> 1 year),€4,242M,€4,394M,74.1% of total lease liability; non-current debt-equivalent
-Current Lease Liabilities (< 1 year),€1,480M,€1,539M,25.9% of total lease liability; current debt-equivalent
-Undiscounted Lease Commitments (< 1 year),€1,741M,€1,717M,Contractual undiscounted cash obligations due within 12 months
-Undiscounted Lease Commitments (1 to 5 years),€4,015M,€3,853M,Contractual undiscounted cash obligations due within 2 to 5 years
+Right-of-Use (ROU) Assets Net Book Value,"€5,269M","€5,542M","Balance Sheet Non-Current Assets (Gross cost €13,786M, Depr €8,223M)"
+Annual ROU Asset Additions & Modifications,"€1,833M","€2,151M","€473M new store leases + €1,678M renewals and extensions"
+Total Balance Sheet Lease Liabilities,"€5,722M","€5,933M",Present value of discounted future operating lease obligations
+Non-Current Lease Liabilities (> 1 year),"€4,180M","€4,394M",73.0% of total lease liability; non-current debt-equivalent
+Current Lease Liabilities (< 1 year),"€1,542M","€1,539M",27.0% of total lease liability; current debt-equivalent
+Undiscounted Lease Commitments (< 1 year),"€1,741M","€1,717M",Contractual undiscounted cash obligations due within 12 months
+Undiscounted Lease Commitments (1 to 5 years),"€4,015M","€3,853M",Contractual undiscounted cash obligations due within 2 to 5 years
 Undiscounted Lease Commitments (> 5 years),€526M,€906M,Contractual undiscounted cash obligations due beyond 5 years
-Total Undiscounted Lease Commitments,€6,282M,€6,476M,Total undiscounted lease commitments (implied discount rate ~3.2%-3.8%)
-P&L Charge: ROU Asset Depreciation,€1,536M,€1,596M,Included in Consolidated D&A (Note 8)
+Total Undiscounted Lease Commitments,"€6,282M","€6,476M",Total undiscounted lease commitments (implied discount rate ~3.2%-3.8%)
+P&L Charge: ROU Asset Depreciation,"€1,536M","€1,596M",Included in Consolidated D&A (Note 8)
 P&L Charge: Lease Liability Finance Expense,€223M,€215M,Included in Consolidated Financial Result / Interest (Note 9)
-P&L Charge: Variable Store Turnover Rent,€678M,€690M,Included in OpEx / Otros gastos (Note 6; €670M store turnover rent)
-P&L Charge: Operating Lease Common Services,€394M,€395M,Included in OpEx / Otros gastos (Note 6; building maintenance/services)
-Total P&L Accounting Impact of Leases,€2,831M,€2,896M,Sum of Depr + Interest + Variable + Operating Services
-Cash Outflow: Fixed Lease Principal & Interest,€1,802M,€1,834M,Financing Cash Flow (Pagos por arrendamiento - renta fija)
+P&L Charge: Variable Store Turnover Rent,€678M,€690M,"Included in OpEx / Otros gastos (Note 6; €670M store turnover rent)"
+P&L Charge: Operating Lease Common Services,€394M,€395M,"Included in OpEx / Otros gastos (Note 6; building maintenance/services)"
+Total P&L Accounting Impact of Leases,"€2,831M","€2,896M",Sum of Depr + Interest + Variable + Operating Services
+Cash Outflow: Fixed Lease Principal & Interest,"€1,802M","€1,834M",Financing Cash Flow (Pagos por arrendamiento - renta fija)
 Cash Outflow: Variable Lease & Common Charges,€678M,€670M,Operating Cash Flow (Variable store rent paid to landlords)
-Total Annual Cash Outflow for Leases,€2,480M,€2,504M,Total cash drained by store lease portfolio annually
+Total Annual Cash Outflow for Leases,"€2,480M","€2,504M",Total cash drained by store lease portfolio annually
 Enterprise Value Pre-Lease (Financial Net Cash),€161.67B,€161.67B,Market Cap (€172.63B) minus Statutory Net Cash (€10.96B)
 Enterprise Value Post-Lease (Comprehensive EV),€167.60B,€167.60B,Market Cap (€172.63B) - Net Cash (€10.96B) + Leases (€5.93B)
-EBITDA Pre-IFRS 16 (EBITDAR less Fixed Rent),€8,926M,€9,433M,Normalized cash flow before interest (€11,267M minus €1,834M rent)
+EBITDA Pre-IFRS 16 (EBITDAR less Fixed Rent),"€8,926M","€9,433M","Normalized cash flow before interest (€11,267M minus €1,834M rent)"
 ```
+
 
 ---
 
