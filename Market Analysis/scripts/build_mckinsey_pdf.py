@@ -113,7 +113,6 @@ def process_markdown_content(md_text):
             if m:
                 key = m.group(1).strip()
                 val = m.group(2).strip()
-                # Clean simple markdown
                 val_html = val.replace('**', '')
                 meta_items.append((key, val_html))
         
@@ -456,14 +455,18 @@ def process_markdown_content(md_text):
     return full_html
 
 def generate_pdf():
-    input_path = r"d:\Escritorio\MEFI\Asignaturas\Módulo 1\Corporate Finance\Inditex LBO\Market Analysis\00_Inditex_Stage1_IC_Overview.md"
-    output_html_path = r"d:\Escritorio\MEFI\Asignaturas\Módulo 1\Corporate Finance\Inditex LBO\Market Analysis\00_Inditex_Stage1_IC_Overview_McKinsey.html"
-    output_pdf_path = r"d:\Escritorio\MEFI\Asignaturas\Módulo 1\Corporate Finance\Inditex LBO\Market Analysis\00_Inditex_Stage1_IC_Overview_McKinsey.pdf"
+    # Resolve paths relative to script location: Market Analysis/scripts/ -> Market Analysis/
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    market_analysis_dir = os.path.abspath(os.path.join(script_dir, ".."))
+    
+    input_path = os.path.join(market_analysis_dir, "00_Inditex_Stage1_IC_Overview.md")
+    output_html_path = os.path.join(market_analysis_dir, "00_Inditex_Stage1_IC_Overview_McKinsey.html")
+    output_pdf_path = os.path.join(market_analysis_dir, "00_Inditex_Stage1_IC_Overview_McKinsey.pdf")
     
     with open(input_path, 'r', encoding='utf-8') as f:
         md_text = f.read()
         
-    print(f"Read input markdown: {len(md_text)} characters")
+    print(f"Read input markdown: {len(md_text)} characters from {input_path}")
     
     full_html = process_markdown_content(md_text)
     
@@ -471,7 +474,13 @@ def generate_pdf():
         f.write(full_html)
     print(f"Wrote styled HTML: {output_html_path}")
     
-    chrome_exe = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+    chrome_candidates = [
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\Application\chrome.exe"),
+    ]
+    chrome_exe = next((p for p in chrome_candidates if os.path.exists(p)), None)
+    
     header_html = '''
     <div style="font-family: Arial, Helvetica, sans-serif; font-size: 7.5pt; color: #718096; width: 100%; display: flex; justify-content: space-between; padding: 0 16mm; border-bottom: 0.5px solid #e2e8f0; padding-bottom: 4px;">
         <span style="font-weight: 700; color: #002b49; letter-spacing: 0.5px;">PROJECT GALICIA: INDITEX, S.A. (BME: ITX.MC)</span>
@@ -485,9 +494,12 @@ def generate_pdf():
     </div>
     '''
     
-    print("Launching Chrome via Playwright...")
+    print("Launching browser via Playwright...")
     with sync_playwright() as p:
-        browser = p.chromium.launch(executable_path=chrome_exe, headless=True)
+        launch_kwargs = {"headless": True}
+        if chrome_exe:
+            launch_kwargs["executable_path"] = chrome_exe
+        browser = p.chromium.launch(**launch_kwargs)
         page = browser.new_page()
         page.goto(f"file:///{output_html_path.replace(os.sep, '/')}")
         page.wait_for_load_state("networkidle")
