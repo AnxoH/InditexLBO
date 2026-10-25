@@ -27,3 +27,8 @@ Annual Reports/Originals/
 env/
 venv/
 
+# Personal notes & Excel temporary lock files
+notes_and_ideas.txt
+~$*.xlsx
+
+
