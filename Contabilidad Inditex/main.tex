@@ -1,0 +1,415 @@
+% ============================================================
+%  Inditex: liquidez, endeudamiento y flujo de caja (2022-2026)
+%  Compilar con XeLaTeX (Overleaf: Menu > Compiler > XeLaTeX)
+% ============================================================
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Idioma y tipografía ----------
+\usepackage{fontspec}            % Latin Modern por defecto
+% \setmainfont{TeX Gyre Pagella} % alternativa: descomentar para Palatino
+\usepackage{polyglossia}
+\setdefaultlanguage{spanish}
+\usepackage{etoolbox}
+\gappto\captionsspanish{\renewcommand{\tablename}{Tabla}\renewcommand{\listtablename}{Índice de tablas}}
+
+% ---------- Paquetes ----------
+\usepackage[a4paper,top=2.8cm,bottom=2.6cm,left=2.7cm,right=2.7cm,headheight=14pt]{geometry}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{colortbl}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+% ---------- Formato de títulos ----------
+% ---------- Colores ----------
+\definecolor{navy}{HTML}{14284B}
+\definecolor{accent}{HTML}{1F5FBF}
+\definecolor{softgrey}{HTML}{F2F3F5}
+\definecolor{rulegrey}{HTML}{C9CCD2}
+
+\titleformat{\section}{\normalfont\Large\bfseries\color{navy}}{\thesection.}{0.7em}{}[\vspace{-0.35em}{\color{rulegrey}\titlerule[0.6pt]}]
+\titleformat{\subsection}{\normalfont\large\bfseries\color{accent}}{\thesubsection.}{0.6em}{}
+\titlespacing*{\section}{0pt}{2.0em}{0.9em}
+\titlespacing*{\subsection}{0pt}{1.4em}{0.5em}
+
+% ---------- Cabecera y pie ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{navy}\textsc{Inditex · Análisis económico-financiero}}
+\fancyhead[R]{\small\color{navy}\textsc{MEFI 2026--27}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{{\color{rulegrey}\hrule height\headrulewidth width\headwidth}}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+% ---------- Párrafos, listas y leyendas ----------
+\setlength{\parskip}{0.55em}
+\setlength{\parindent}{0pt}
+\setlength{\emergencystretch}{2.5em}
+\linespread{1.08}
+\setlist{itemsep=0.3em,topsep=0.4em,leftmargin=1.5em}
+\captionsetup{font=small,labelfont={bf,color=navy},labelsep=period,margin=0.5cm}
+\captionsetup[table]{position=top,skip=6pt}
+\captionsetup[figure]{skip=6pt}
+
+% ---------- Utilidades ----------
+\newcommand{\mn}{\ensuremath{-}}                 % signo menos tipográfico
+% Recuadro con la frase-resumen de cada apartado
+\newtcolorbox{ideabox}{enhanced,colback=softgrey,colframe=softgrey,borderline west={3pt}{0pt}{accent},
+  sharp corners,boxrule=0pt,left=10pt,right=10pt,top=7pt,bottom=7pt,fontupper=\itshape,before skip=0.6em,after skip=0.9em}
+\newcommand{\idea}[1]{\begin{ideabox}#1\end{ideabox}}
+\newcommand{\fuente}[1]{\par\vspace{2pt}{\footnotesize\textit{Fuente:} #1\par}}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+% ============================================================
+\begin{document}
+
+% ---------- Portada ----------
+\begin{titlepage}
+  \centering
+  \vspace*{1.2cm}
+  {\large\color{navy}\textsc{Universidad Politécnica de Madrid}\par}
+  \vspace{0.15cm}
+  {\large\color{navy}\textsc{Instituto BME}\par}
+  \vspace{0.6cm}
+  {\normalsize Master in Financial Engineering and Innovation (MEFI)\par}
+  {\normalsize Análisis de la Situación Económico-Financiera\par}
+
+  \vspace{3.2cm}
+  {\color{navy}\rule{\textwidth}{1.2pt}}\par
+  \vspace{0.5cm}
+  {\LARGE\bfseries\color{navy} Análisis financiero de Inditex\par}
+  \vspace{0.35cm}
+  {\Large\color{accent} Liquidez, endeudamiento y flujo de caja (2022--2026)\par}
+  \vspace{0.5cm}
+  {\color{navy}\rule{\textwidth}{0.4pt}}\par
+
+  \vspace{3.2cm}
+  {\large\color{accent}\textit{Autores}\par}
+  \vspace{0.3cm}
+  {\large Álvaro Pérez Ramos\par}
+  \vspace{0.1cm}
+  {\large Anxo Brandán Herrera Castro\par}
+  \vspace{0.1cm}
+  {\large Javier Lázaro Rodríguez\par}
+
+  \vspace{1.4cm}
+  {\normalsize\textit{Profesor:} Eduardo García-Mauriño\par}
+
+  \vfill
+  {\normalsize Madrid, octubre de 2026\par}
+\end{titlepage}
+
+% ---------- Índice ----------
+\tableofcontents
+\vspace{1.5em}
+\listoffigures
+\listoftables
+\clearpage
+
+% ============================================================
+\section*{Resumen ejecutivo}
+\addcontentsline{toc}{section}{Resumen ejecutivo}
+
+\idea{Inditex se financia con su propio negocio: cobra antes de pagar, tiene más caja que deuda y
+genera caja suficiente para invertir y pagar dividendos crecientes.}
+
+Entre 2022 y 2026 las ventas crecen un 44\,\% (de 27.716 a 39.864 M€) y el EBITDA un 57\,\%
+(de 7.183 a 11.267 M€) sin tensionar su posición financiera. La Tabla~\ref{tab:kpi} resume los
+cuatro indicadores que mejor describen esa situación.
+
+\begin{table}[H]
+  \centering
+  \caption{Indicadores clave del ejercicio 2026}
+  \label{tab:kpi}
+  \begin{tabular}{@{}l r l@{}}
+    \toprule
+    \color{navy}\textbf{Indicador} & \color{navy}\textbf{Valor} & \color{navy}\textbf{Lectura} \\
+    \midrule
+    Superávit de financiación (FM \mn{} NOF) & \textbf{\color{accent}9.376 M€} & Liquidez muy holgada \\
+    Ciclo de caja (PMA + PMC \mn{} PMP)      & \textbf{\color{accent}\mn18,5 días} & Los proveedores financian el circulante \\
+    Deuda neta                               & \textbf{\color{accent}\mn4.406 M€} & Caja neta, sin deuda bancaria \\
+    Dividendos / cash-flow libre (2022--26)  & \textbf{\color{accent}74\,\%} & El dividendo absorbe casi todo el flujo libre \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{enumerate}
+  \item \textbf{Liquidez muy holgada.} Las NOF son negativas (\mn3.857 M€) y el Fondo de Maniobra positivo
+        (5.519 M€): la empresa tiene un superávit de financiación a corto plazo de 9.376 M€.
+  \item \textbf{Los proveedores financian el circulante.} Inditex cobra en unos 6 días, vende su stock en
+        unos 71 y paga a unos 96: su ciclo de caja es de \mn18,5 días.
+  \item \textbf{No tiene deuda neta, sino caja neta} (4.406 M€, 0,39 años de EBITDA). El EBITDA cubre
+        30 veces los gastos financieros.
+  \item \textbf{Genera mucha caja, pero el dividendo ya absorbe casi todo el flujo libre.} De 2022 a 2026
+        el cash-flow libre acumulado es 25.646 M€ y los dividendos 18.882 M€. El dividendo se ha
+        multiplicado por 2,4, más rápido que el beneficio, y en 2026 la caja neta baja 720 M€.
+\end{enumerate}
+
+{\small\textit{Nota:} los años corresponden a la fecha de cierre del ejercicio (31 de enero); «2026» es el
+ejercicio fiscal de febrero de 2025 a enero de 2026. Todas las cifras se expresan en millones de euros (M€).}
+
+% ============================================================
+\section{Liquidez: ¿puede pagar sus obligaciones a corto plazo?}
+
+\idea{Sí, y con mucho margen: el negocio de Inditex no necesita financiación para su circulante, sino que la genera.}
+
+\subsection{Fondo de Maniobra frente a NOF}
+
+En clase vimos dos ideas complementarias:
+\begin{itemize}
+  \item \textbf{Fondo de Maniobra (FM)} = capitales permanentes \mn{} activo no corriente. Es la
+        financiación a largo plazo que \emph{sobra} después de pagar el inmovilizado y queda disponible
+        para el circulante.
+  \item \textbf{Necesidades Operativas de Fondos (NOF)} = existencias + clientes \mn{} proveedores (activo
+        menos pasivo corriente operativo). Es lo que la operativa diaria \emph{necesita} que se financie.
+\end{itemize}
+
+Si FM > NOF hay \textbf{superávit} y el exceso se acumula como tesorería. Si FM < NOF hay
+\textbf{déficit} y hay que pedir crédito a corto plazo.
+
+En Inditex las NOF son \textbf{negativas todos los años} (\mn3.857 M€ en 2026, unos 35 días de ventas).
+Su operativa no consume fondos, los aporta: cuando vende una prenda, todavía no ha pagado al proveedor
+que la fabricó. Como además el FM es positivo, el superávit (FM \mn{} NOF) ronda los 9.400 M€.
+Coincide exactamente con su tesorería neta (caja + inversiones financieras a corto \mn{} deuda a corto),
+que es la comprobación de la ecuación del equilibrio financiero (Figura~\ref{fig:fm}).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/fig1_fm_nof.pdf}
+  \caption[Fondo de Maniobra, NOF y superávit de financiación (2022--2026)]{Fondo de Maniobra, NOF y superávit de financiación (M€, a 31 de enero). Aunque el FM cae desde 2024, el superávit se mantiene por encima de 9.300 M€.}
+  \label{fig:fm}
+\end{figure}
+
+Desde 2024 el FM cae de 7.079 a 5.519 M€. La razón es que Inditex invierte más en activo fijo
+(el capex pasa de 1.126 a 2.712 M€, sobre todo logística y tiendas) y reparte más dividendos.
+Aun así, el superávit apenas se mueve, porque al mismo tiempo las NOF se hacen más negativas:
+lo que pierde por el FM lo recupera con la financiación de proveedores.
+
+\subsection{El ciclo de caja: cobra antes de pagar}
+
+Los periodos medios explican por qué las NOF son negativas. En 2026, Inditex tarda unos
+\textbf{71 días} en vender su stock (PMA) y unos \textbf{6 días} en cobrar (PMC); casi todas sus ventas se
+cobran al contado en tienda u online, y el saldo de clientes corresponde sobre todo a franquicias.
+En cambio, paga a sus proveedores a unos \textbf{96 días} (PMP).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/fig2_ciclo_caja.pdf}
+  \caption[Ciclo de caja del ejercicio 2026]{Ciclo de caja del ejercicio 2026, en días. Inditex cobra la venta unas dos semanas y media antes de pagar al proveedor.}
+  \label{fig:ciclo}
+\end{figure}
+
+El ciclo de caja (PMA + PMC \mn{} PMP) es de \textbf{\mn18,5 días}: el dinero de la venta entra unas
+dos semanas y media antes de tener que pagar la mercancía (Figura~\ref{fig:ciclo}). El PMA mejora de 93 a
+71 días, lo que indica una mejor rotación del inventario. El PMP baja de 111 a 96 días: los proveedores
+financian algo menos, y es un punto a vigilar.
+
+\subsection{Ratios de liquidez}
+
+La liquidez general (AC/PC) es \textbf{1,54}, por debajo de la «regla del 2», pero en este caso no es
+una señal de alarma. Como vimos en clase, el ratio depende del modelo de negocio: el pasivo corriente
+de Inditex es sobre todo deuda con proveedores, que no tiene coste y se renueva sola. Lo relevante es
+que el test ácido (1,22) y las disponibilidades líquidas (1,08) están por encima de 1. Solo con su caja
+e inversiones financieras a corto, Inditex podría pagar todo su pasivo corriente.
+
+% ============================================================
+\section{Endeudamiento: ¿está Inditex endeudada?}
+
+\idea{No. Inditex tiene 4.406 M€ más en activos líquidos que en deuda financiera, es decir, caja neta.}
+
+La deuda neta es la deuda financiera bruta menos los activos tesoreros (caja e inversiones
+financieras a corto). En 2026 la deuda bruta es de 6.554 M€ y los activos tesoreros suman
+10.960 M€, por lo que la deuda neta sale \textbf{negativa}: \mn4.406 M€. Además, cerca del 90\,\% de esa
+deuda bruta son arrendamientos de tiendas registrados como deuda por la NIIF 16; la deuda con bancos es
+de apenas 2 M€.
+
+Los ratios que vimos en clase lo confirman:
+\begin{itemize}
+  \item \textbf{Deuda neta / EBITDA = \mn0,39.} Los bancos empiezan a preocuparse por encima de 3 veces.
+        En Inditex el ratio es negativo: con la caja actual podría devolver toda su deuda y aún le sobraría
+        el equivalente a unos 5 meses de EBITDA.
+  \item \textbf{EBITDA / gastos financieros = 30 veces.} Baja desde 64 en 2022 porque suben los intereses de
+        los arrendamientos y los tipos, pero sigue siendo una cobertura enorme.
+  \item \textbf{Solvencia (activo / pasivo) = 2,34} y \textbf{pasivo / patrimonio neto = 0,75.} Los bienes de la
+        empresa cubren más de dos veces sus deudas, y los fondos propios superan al pasivo total.
+\end{itemize}
+
+La caja neta alcanza su máximo en 2024 (5.220 M€) y desde entonces baja unos 800 M€. No es por pedir
+prestado, sino porque los dividendos y el capex crecen más rápido que la caja generada, como se ve
+en el apartado siguiente.
+
+% ============================================================
+\section{Flujo de caja: ¿de dónde sale el dinero y a dónde va?}
+
+\idea{Entre 2022 y 2026, Inditex generó 40.614 M€ de caja con su operativa. Después de invertir le
+quedaron 25.646 M€ de flujo libre, que destinó sobre todo a dividendos (18.882 M€).}
+
+El Estado de Flujos de Efectivo ordena los movimientos en una cascada, como vimos en el tema 4:
+recursos generados por las operaciones, variación de las NOF, cash-flow operativo, inversiones,
+cash-flow libre, pagos al accionista, variación de la deuda y, por último, variación de caja.
+La Figura~\ref{fig:cascada} muestra esa cascada con los cinco años acumulados.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/fig3_cascada.pdf}
+  \caption[Cascada del flujo de caja, acumulado 2022--2026]{Del recurso generado a la variación de caja, acumulado 2022--2026 (M€). El dividendo se lleva tres de cada cuatro euros de cash-flow libre.}
+  \label{fig:cascada}
+\end{figure}
+
+Tres lecturas clave:
+\begin{itemize}
+  \item \textbf{Beneficio de calidad.} El cash-flow operativo de 2026 (9.232 M€) supera al beneficio neto
+        (6.220 M€): el beneficio se convierte en caja. La diferencia se debe sobre todo a las amortizaciones,
+        que son gasto pero no salida de dinero.
+  \item \textbf{No todo el flujo de inversión es inversión productiva.} El capex real (tiendas, logística,
+        tecnología) se duplica, de 1.126 a 2.712 M€. Pero de los 14.968 M€ de inversión acumulada, 5.489 M€
+        son excedentes colocados en inversiones financieras temporales, que no es inversión sino gestión de
+        tesorería: el dinero sigue siendo de Inditex.
+  \item \textbf{La «variación de deuda» son, en realidad, alquileres.} Los \mn8.664 M€ que el EFE clasifica
+        como devolución de deuda son los pagos por arrendamientos de tiendas (NIIF 16), un coste recurrente
+        del negocio.
+\end{itemize}
+
+Si se suma todo, el colchón se estrecha. Al flujo libre (sin las colocaciones de tesorería) se le restan
+los alquileres y los dividendos. El resultado pasa de +1.840 M€ en 2022 a \mn508 M€ en 2026: hoy el
+dividendo consume todo lo que queda después de invertir y pagar los alquileres. Por eso la caja
+neta baja 720 M€ en 2026.
+
+% ============================================================
+\section{Conclusiones}
+
+\idea{Inditex es un ejemplo de manual de empresa que crece sin necesitar financiación externa: su modelo de
+negocio genera la liquidez que consume.}
+
+\begin{itemize}
+  \item \textbf{Fortaleza estructural.} Tiene NOF negativas, un ciclo de caja negativo y caja neta. Cuanto más
+        vende, más financiación gratuita obtiene de sus proveedores. Es el caso contrario al de una empresa
+        industrial típica, que necesita crédito para financiar su circulante.
+  \item \textbf{Riesgo financiero mínimo.} No tiene deuda bancaria y sus coberturas son muy holgadas. Los ratios
+        «malos» en apariencia, como una liquidez inferior a 2 o un pasivo que crece, se explican por la
+        financiación de proveedores y los alquileres, no por deuda con coste.
+  \item \textbf{Punto de atención: el destino de la caja.} El capex y, sobre todo, el dividendo crecen más rápido
+        que la caja generada. Por eso el FM y la caja neta bajan desde 2024. Hoy no es un problema, porque
+        sigue habiendo 4.406 M€ de caja neta. Pero si esa política se mantiene, Inditex iría consumiendo su
+        colchón de liquidez.
+\end{itemize}
+
+En definitiva, Inditex presenta una \textbf{liquidez y una solvencia excelentes}, con una política de
+retribución al accionista que ya reparte prácticamente todo lo que el negocio genera.
+
+% ============================================================
+\clearpage
+\appendix
+\renewcommand{\thesection}{\Alph{section}}
+\section{Anexo: ratios calculados}
+
+Se recogen a continuación todos los ratios calculados en el libro de trabajo, se comenten o no en el
+cuerpo del informe. Cifras en M€ salvo indicación; los años corresponden a la fecha de cierre del
+ejercicio (31 de enero).
+
+\begin{table}[H]
+\centering
+\caption{Ratios de liquidez}
+\label{tab:liq}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{6.3cm}RRRRR@{}}
+\toprule
+\color{navy}\textbf{Concepto} & \color{navy}\textbf{2022} & \color{navy}\textbf{2023} & \color{navy}\textbf{2024} & \color{navy}\textbf{2025} & \color{navy}\textbf{2026} \\
+\midrule
+Fondo de Maniobra & 5.573 & 6.502 & 7.079 & 6.169 & 5.519 \\
+NOF & \mn2.203 & \mn2.005 & \mn2.873 & \mn3.736 & \mn3.857 \\
+Superávit (+) / déficit (\mn) = FM \mn{} NOF & 7.776 & 8.507 & 9.952 & 9.905 & 9.376 \\
+Tesorería neta & 7.776 & 8.507 & 9.952 & 9.905 & 9.376 \\
+Variación del FM & -- & 929 & 577 & \mn910 & \mn650 \\
+Variación de las NOF & -- & 198 & \mn868 & \mn863 & \mn121 \\
+Variación de la liquidez & -- & 731 & 1.445 & \mn47 & \mn529 \\
+\midrule
+Liquidez general (AC/PC) & 1,69 & 1,80 & 1,79 & 1,61 & 1,54 \\
+Test ácido ((AC \mn{} existencias)/PC) & 1,32 & 1,41 & 1,46 & 1,28 & 1,22 \\
+Disponibilidades líquidas ((caja + IF c/p)/PC) & 1,17 & 1,24 & 1,28 & 1,13 & 1,08 \\
+\midrule
+PMC (días) & 5,5 & 5,5 & 5,2 & 5,8 & 6,0 \\
+PMA (días) & 93,3 & 83,1 & 71,3 & 74,4 & 71,3 \\
+PMP (días) & 110,8 & 96,8 & 102,6 & 99,9 & 95,7 \\
+Ciclo de caja PMA + PMC \mn{} PMP (días) & \mn12,0 & \mn8,2 & \mn26,1 & \mn19,7 & \mn18,5 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Ratios de endeudamiento}
+\label{tab:end}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{6.3cm}RRRRR@{}}
+\toprule
+\color{navy}\textbf{Concepto} & \color{navy}\textbf{2022} & \color{navy}\textbf{2023} & \color{navy}\textbf{2024} & \color{navy}\textbf{2025} & \color{navy}\textbf{2026} \\
+\midrule
+Deuda financiera bruta & 6.417 & 6.004 & 6.202 & 6.376 & 6.554 \\
+Activos tesoreros & 9.395 & 10.083 & 11.422 & 11.502 & 10.960 \\
+Deuda neta (negativo = caja neta) & \mn2.978 & \mn4.079 & \mn5.220 & \mn5.126 & \mn4.406 \\
+Variación de la deuda neta & -- & \mn1.101 & \mn1.141 & 94 & 720 \\
+\midrule
+EBITDA / gastos financieros (x) & 63,6 & 60,1 & 36,3 & 30,4 & 30,5 \\
+Deuda neta / EBITDA (x) & \mn0,41 & \mn0,47 & \mn0,53 & \mn0,48 & \mn0,39 \\
+Deuda neta / flujo de caja orgánico (x) & \mn0,52 & \mn0,77 & \mn0,76 & \mn0,76 & \mn0,67 \\
+Apalancamiento neto DN/(DN + PN) & \mn0,23 & \mn0,31 & \mn0,39 & \mn0,35 & \mn0,28 \\
+Solvencia (activo / pasivo) & 2,20 & 2,32 & 2,33 & 2,31 & 2,34 \\
+Endeudamiento bruto (pasivo / PN) & 0,84 & 0,76 & 0,75 & 0,76 & 0,75 \\
+Endeudamiento neto (DN / PN) & \mn0,19 & \mn0,24 & \mn0,28 & \mn0,26 & \mn0,22 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Análisis del flujo de caja (M€)}
+\label{tab:fc}
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{4.7cm}RRRRRR@{}}
+\toprule
+\color{navy}\textbf{Concepto} & \color{navy}\textbf{2022} & \color{navy}\textbf{2023} & \color{navy}\textbf{2024} & \color{navy}\textbf{2025} & \color{navy}\textbf{2026} & \color{navy}\textbf{2022--26}\hspace{-2pt} \\
+\midrule
+a) Recursos generados por las operaciones & 6.532 & 7.342 & 8.724 & 9.486 & 10.034 & 42.119 \\
+(3) Variación NOF & 223 & \mn669 & \mn57 & \mn199 & \mn803 & \mn1.505 \\
+\textbf{I) Cash-flow operativo} & \textbf{6.755} & \textbf{6.673} & \textbf{8.667} & \textbf{9.288} & \textbf{9.232} & \textbf{40.614} \\
+II) Cash-flow de inversiones & \mn3.253 & \mn3.503 & \mn1.709 & \mn3.288 & \mn3.215 & \mn14.968 \\
+\textbf{III) Cash-flow libre} & \textbf{3.502} & \textbf{3.170} & \textbf{6.958} & \textbf{6.000} & \textbf{6.016} & \textbf{25.646} \\
+(9) Variación de patrimonio & \mn71 & \mn61 & 0 & 0 & 0 & \mn132 \\
+(11) Dividendos & \mn2.192 & \mn2.914 & \mn3.744 & \mn4.797 & \mn5.235 & \mn18.882 \\
+\textbf{IV) Cash-flow generado internamente} & \textbf{1.239} & \textbf{195} & \textbf{3.214} & \textbf{1.203} & \textbf{782} & \textbf{6.632} \\
+(10) Variación de deuda (arrendamientos) & \mn1.646 & \mn1.638 & \mn1.730 & \mn1.810 & \mn1.839 & \mn8.664 \\
+(D) Efecto tipo de cambio & 31 & \mn17 & \mn38 & \mn18 & \mn48 & \mn90 \\
+\textbf{V) Variación de caja} & \textbf{\mn377} & \textbf{\mn1.460} & \textbf{1.446} & \textbf{\mn625} & \textbf{\mn1.106} & \textbf{\mn2.122} \\
+\midrule
+Tesorería final & 7.021 & 5.561 & 7.007 & 6.382 & 5.276 & -- \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection*{Notas metodológicas}
+\begin{itemize}
+  \item \textbf{NOF} = existencias + deudores comerciales + activos por impuesto corriente + otros activos
+        corrientes + otros activos financieros + activos mantenidos para la venta \mn{} acreedores comerciales.
+  \item \textbf{Periodos medios:} PMC = (deudores comerciales + franquicias) / (ventas × 1,21 / 365);
+        PMP = proveedores / (compras × 1,21 / 365); PMA = existencias / (coste de ventas / 365).
+        Se usan saldos de cierre y un IVA del 21\,\% como simplificación.
+  \item \textbf{Deuda neta} = deuda financiera bruta (entidades de crédito, arrendamientos, provisiones y otros
+        pasivos) \mn{} (efectivo + inversiones financieras a corto). Un valor negativo indica caja neta.
+  \item \textbf{Flujo de caja orgánico} = cash-flow libre sin las colocaciones en inversiones financieras temporales.
+  \item \textbf{Fuente:} cuentas anuales consolidadas de Inditex (NIIF-UE), con los datos del libro de trabajo
+        facilitado en la asignatura.
+\end{itemize}
+
+\end{document}
