@@ -1,45 +1,27 @@
-# Project: Inditex Institutional LBO Evaluation & IC Recommendation Memo
+# Project Context: Inditex LBO (`Project Galicia`)
 
-## Architecture
-- **Target Company**: Industria de Diseño Textil, S.A. (Inditex, ITX.MC).
-- **Transaction**: Public-to-Private (PtoP) Leveraged Buyout with Delisting / Squeeze-out.
-- **Sponsor Consortium**: Lead Private Equity GP (15% sponsor commitment) + Sovereign/Pension LPs (85% syndicate).
-- **Key Rollover**: Amancio Ortega (Pontegadea) 25.0% equity rollover into TopCo; Sandra Ortega 5.0% buyout funded via subordinated Vendor Loan Note.
-- **Corporate Entity Structure**: TopCo (Equity issuer) -> BidCo/NewCo (Borrower of Senior & Junior Debt) -> Inditex S.A. (100% operating subsidiary post-squeeze-out, consolidated fiscal group under Art. 58 LIS).
-- **Authoritative Model**: `Excels/Inditex_LBO_Institutional_v4.xlsx`.
+## 1. Project Overview & Completed Milestones
 
-## Feature Inventory
-| # | Feature / Analysis Area | Description | Milestone | Source |
-|---|-------------------------|-------------|-----------|--------|
-| 1 | Baseline & Architecture Survey | Full cell-by-cell extraction of sheets, parameters, and 11 automated checks | M0 | Survey (Done) |
-| 2 | Credit, Pricing & Debt Sizing Audit | Sizing 8.13x EBITDA, deleveraging to 2.90x, WALL 6.63y, SFA covenants (-0.65x/y), pricing spreads vs European mega-LBOs | M1 | R1 |
-| 3 | Liquidity, Cash Flow & Stress-Testing | CFADS generation, DSCR (1.44x min vs 1.25x), ICR (3.15x to 15.04x), NOF (+€1,899M), 85% Cash Sweep (€25,282M), €1,000M cash floor, rate/sales/margin stress matrices | M2 | R2 |
-| 4 | Tax Shield & Legal Structuring Audit | Art. 16.5 LIS (39.63% vs 70% cap), Art. 58 LIS (100% fiscal consolidation), Art. 87 LIS (FEAC tax neutrality), Art. 16.1 LIS (30% cap, €8,855M DTA reserve) | M3 | R3 |
-| 5 | M&A Valuation & GP/LP Waterfall Audit | 19.35x Cash EBITDA, +12% premium, Gross IRR 12.88% / 2.33x MOIC, LPs 10.94% Net IRR vs 8% hurdle, Lead GP 21.23% Net IRR / 3.85x MOIC / €13.85B carry | M4 | R4 |
-| 6 | Integrated Executive IC Memo | 7-section institutional markdown report with definitive IC recommendation, risk matrices, and confirmation items | M5 | R5 |
-| 7 | Multi-Agent Review, Verification & Forensic Audit | Reviewers, Challengers, and Forensic Auditor verification suite | M6 | Acceptance Criteria |
+This repository hosts the institutional-grade Leveraged Buyout (LBO) feasibility analysis, stochastic operating calibration, and financial model for **Industria de Diseño Textil, S.A. (Inditex / `BME: ITX`)**:
 
-## Milestones
-| # | Name | Scope | Dependencies | Status |
-|---|------|-------|-------------|--------|
-| M0 | Survey & Model Extraction | Full workbook inspection, cell extraction, check formulas | none | DONE |
-| M1 | Credit, Pricing & Debt Sizing Audit (R1) | Capital structure, tranches, WALL, covenant step-downs, market pricing contrast | M0 | DONE |
-| M2 | Liquidity, Cash Flow & Stress-Testing (R2) | CFADS, DSCR, ICR, NOF dynamics, 85% cash sweep, multi-variable stress engine | M0 | DONE |
-| M3 | Tax Shield & Legal Structuring Audit (R3) | Arts. 16.5, 58, 87, 16.1 LIS, fiscal group modeling, tax shields | M0 | DONE |
-| M4 | M&A Valuation & GP/LP Waterfall Audit (R4) | Valuation multiples, Sources/Uses, Gross returns, 4-tier waterfall, institutional benchmarking | M0 | DONE |
-| M5 | Integrated Executive Synthesis & IC Memo (R5) | Full 7-section IC Memorandum deliverable in Markdown | M1, M2, M3, M4 | DONE |
-| M6 | Independent Verification & Forensic Audit | Reviewers (2), Challengers (2), Forensic Auditor (1) gate checks | M5 | DONE |
+- **Definitive Financial Model ([`Excels/Inditex_LBO_Version_Definitiva.xlsx`](Excels/Inditex_LBO_Version_Definitiva.xlsx)) — COMPLETED**:
+  - 6-tab dynamic Excel workbook (`LBO Summary`, `Active Case`, `Debt & Covenants`, `Tax & WACC`, `Checks`, `Data`).
+  - Integrates the 4 operating scenarios (`1 = Base P50`, `2 = Bull P80`, `3 = Bear P20`, `4 = Bank P10`) derived from the ex-COVID Monte Carlo calibration and operational value-creation levers (`+160 bps` S&M efficiency, `+30 bps` Gross Margin).
+  - Implements institutional credit and legal structuring: Pre-IFRS 16 Cash EBITDA separation, dynamic `MAX(1800, 4.5% Rev)` CapEx floor in Base/Bull, `25.0%` Amancio Ortega rollover under Art. 87 LIS tax neutrality, `80% / 20%` LP/GP co-investment waterfall (`10.0%` hurdle, `20.0%` carry), and Spanish Art. 16 LIS (`30%` Operating Profit) interest deductibility cap.
+- **Workstream 1: Commercial & Strategic Due Diligence ([`Market Analysis/`](Market%20Analysis)) — COMPLETED**:
+  - Full Stage 1 IC Memorandum ([`00_Inditex_Stage1_IC_Overview_McKinsey.pdf`](Market%20Analysis/00_Inditex_Stage1_IC_Overview_McKinsey.pdf)), 5 analytical modules, reconciled CSV datasets (`FY2022–FY2025`), and 36 automated verification tests.
+- **Workstream 2: Historical Accounting & Working Capital Analysis ([`Contabilidad Inditex/`](Contabilidad%20Inditex)) — COMPLETED**:
+  - 2013–2025 working capital (`FM` vs. negative `NOF`), `-51.02` day Cash Conversion Cycle, and IFRS 16 lease accounting analysis ([`Contabilidad Inditex/Informe_Inditex.pdf`](Contabilidad%20Inditex/Informe_Inditex.pdf)).
+- **Workstream 3: Econometric Calibration, Monte Carlo & Value Creation Levers ([`Business Plan/`](Business%20Plan)) — COMPLETED (Standalone Calibration)**:
+  - 2005–2025 econometric estimation, 20,000-path Monte Carlo simulation, 8 operational levers with Shapley value attribution, and interactive HTML/JS dashboard ([`Business Plan/output/Dashboard_palancas.html`](Business%20Plan/output/Dashboard_palancas.html)).
 
-## Interface Contracts & Deliverables
-- `LBO_Evaluation/01_Credit_and_Debt_Sizing_Audit.md`: Specialist module R1.
-- `LBO_Evaluation/02_Liquidity_and_Stress_Testing_Audit.md`: Specialist module R2.
-- `LBO_Evaluation/03_Tax_and_Legal_Structuring_Audit.md`: Specialist module R3.
-- `LBO_Evaluation/04_Returns_and_Waterfall_Audit.md`: Specialist module R4.
-- `Inditex_LBO_Institutional_IC_Evaluation.md`: Final integrated master deliverable (R5).
+---
 
-## Code Layout
-- `Excels/Inditex_LBO_Institutional_v4.xlsx` (Read-only authoritative source)
-- `LBO_Evaluation/` (Specialist analytical audit modules and technical scripts)
-- `Inditex_LBO_Institutional_IC_Evaluation.md` (Master deliverable)
-- `.agents/teamwork/orchestrator_1/` (Orchestrator state, progress, and briefing)
+## 2. Future Work & Next Iteration Roadmap (`To-Do`)
 
+The following items are scheduled for the next phase of repository refinement:
+
+1. **`Business Plan/` Alignment & De-Noising**:
+   - Refactor the standalone Python LBO vector engine (`Business Plan/bp/lbo.py`) and interactive HTML dashboard (`Business Plan/output/Dashboard_palancas.html`) so that their internal capital structure parameters match [`Excels/Inditex_LBO_Version_Definitiva.xlsx`](Excels/Inditex_LBO_Version_Definitiva.xlsx) (`25.0%` Ortega rollover, `80%/20%` LP/GP waterfall, `0%` cash / `5%` PIK Vendor Loan, dynamic `MAX(1800, 4.5% Rev)` CapEx floor, and ex-COVID baseline toggle), removing legacy references to the preliminary `Rollover50` template.
+2. **Definitive Institutional Audit & Stress-Testing Report**:
+   - Generate a new, comprehensive Multi-Agent IC Evaluation & Stress-Testing Memorandum audited directly against [`Excels/Inditex_LBO_Version_Definitiva.xlsx`](Excels/Inditex_LBO_Version_Definitiva.xlsx) across all 4 operating cases (`Base P50`, `Bull P80`, `Bear P20`, `Bank P10`), including updated 2D sensitivity grids, covenant headroom stress tests, and credit rating transition matrices.
