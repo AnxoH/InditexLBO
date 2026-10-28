@@ -1,0 +1,22 @@
+fiscal_year,net_sales_eur_m,growth_reported_pct,growth_constant_fx_pct,gross_margin_pct,ebitda_pre_ifrs16_eur_m,ebitda_reported_eur_m,fixed_lease_payments_eur_m,source,status
+2005,6741,,,56.2,,,,"LSA-Conso (ventas 2006 +21,6%); margen bruto 2005 en prensa",prensa
+2006,8196,21.6,,,,,,"LSA-Conso: un milliard de bénéfice net pour Inditex",prensa
+2007,9435,15.1,,,,,,"Derivado de ventas 2008 (+10,3%, Reuters)",derivado
+2008,10407,10.3,,,2187,,,"Reuters vía FashionUnited / CNBC",prensa
+2009,11084,6.5,9.0,57.1,2374,,,"Libertad Digital: Inditex gana un 5% más en 2009 (margen bruto 6.328)",prensa
+2010,12527,13.0,,59.3,2966,,,"Retail Insight Network (ventas 12.520 y EBITDA 2.960); margen derivado de 2011",derivado
+2011,13793,10.1,11.0,59.3,3258,,,"Reuters vía LegalToday; Libertad Digital; margen bruto 8.180",prensa
+2012,15946,15.6,14.0,59.8,3913,,,"Inditex Annual Report 2012; presentación FY2012 (CNMV)",oficial
+2013,16724,4.9,8.0,59.3,3926,,,"Público / FashionUnited / Expansión MX",prensa
+2014,18117,8.3,11.0,58.3,4103,,,"Modaes / Estrategias de Inversión / FashionUnited",prensa
+2015,20900,15.4,,57.8,4699,,,"Modaes / Fibre2Fashion (FY2016 vs FY2015)",prensa
+2016,23311,11.5,,57.0,5083,,,"Modaes / Estrategias de Inversión",prensa
+2017,25336,8.7,10.0,56.3,5277,,,"Estrategias de Inversión / Modaes",prensa
+2018,26145,3.2,7.0,56.7,5457,,,"Fashion Retail Blog (ventas y margen); EBITDA IAS 17 de memoria, sin verificar",parcial
+2019,28286,8.2,,55.9,,7598,,"Modaes: Inditex grows by 8% in 2019 (EBITDA ya con IFRS 16)",prensa
+2020,20402,-27.9,,55.8,,4627,,"Inditex FY2020 results",oficial
+2021,27716,35.8,,57.1,5515,7183,1668,"Inditex FY2021 results; arrendamientos: Cuentas anuales 2022 (comparativo)",oficial
+2022,32569,17.5,18.0,57.0,7028,8649,1621,"Cuentas anuales consolidadas 2022",oficial
+2023,35947,10.4,14.1,57.8,8117,9850,1733,"Cuentas anuales consolidadas 2023",oficial
+2024,38632,7.5,10.5,57.8,8926,10728,1802,"Cuentas anuales consolidadas 2024",oficial
+2025,39864,3.2,7.0,58.3,9433,11267,1834,"Cuentas anuales consolidadas 2025",oficial

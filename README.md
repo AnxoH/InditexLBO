@@ -35,6 +35,16 @@ This repository contains the institutional Private Equity Stage 1 screening anal
 │       ├── ConsolidatedReport_2024.md
 │       └── ConsolidatedReport_2025.md
 │
+├── Business Plan/                         # Stochastic business plan, LBO engine & value-creation plan (Spanish; see its README)
+│   ├── Guia_Business_Plan_desde_cero.pdf  # Start here: everything explained from scratch
+│   ├── output/Dashboard_palancas.html     # Lever dashboard (open by double-clicking)
+│   ├── Business_Plan_Inditex.ipynb        # Calibration, Monte Carlo and the four Excel cases
+│   ├── Plan_de_creacion_de_valor.ipynb    # Value-creation plan read from the Excel's Palancas sheet
+│   └── bp/, dashboard/, tests/            # Python model, JS engine, parity tests
+│
+├── Excels/
+│   └── Inditex_LBO_Rollover50_BusinessPlan.xlsx  # Group LBO (50 % rollover) wired to the business plan
+│
 ├── Market Analysis/
 │   ├── 00_Inditex_Stage1_IC_Overview.md   # Master IC Stage 1 Screening Memo & Excel Kit
 │   ├── STAGE_1_EXECUTION_PLAN.md          # Multi-agent architectural roadmap & QA protocol

@@ -1,0 +1,1295 @@
+<title>Palancas del LBO de Inditex</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500&display=swap">
+<style>
+/* Layout: cabecera con la operación y el caso; debajo, palancas a la izquierda y resultados fijos a la derecha. */
+:root {
+  --bg: #f1f2f4;
+  --surface: #ffffff;
+  --surface-2: #f6f7f9;
+  --ink: #14171c;
+  --ink-2: #434a55;
+  --muted: #6c7480;
+  --line: #dcdfe5;
+  --accent: #1f56c7;
+  --accent-ink: #ffffff;
+  --series-plan: #14171c;
+  --series-base: #9aa1ab;
+  --neg: #c0501f;
+  --good: #11704f;
+  --warn: #9a5a00;
+  --band-conservador: #2a78d6;
+  --band-normal: #1baf7a;
+  --band-optimista: #eda100;
+  --band-agresivo: #d03b3b;
+  --debt-tla: #104281;
+  --debt-tlb: #256abf;
+  --debt-pik: #5598e7;
+  --debt-vl: #86b6ef;
+  --debt-rcf: #eb6834;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1014; --surface: #161a20; --surface-2: #1c2027; --ink: #e8ebf0; --ink-2: #b5bcc6; --muted: #8a929e;
+    --line: #2b3139; --accent: #7aa5ff; --accent-ink: #0e1014; --series-plan: #e8ebf0; --series-base: #6a727e;
+    --neg: #f08a5d; --good: #4cc79a; --warn: #f0b44c; --band-conservador: #5b9bf0; --band-normal: #2fc98f;
+    --band-optimista: #f2b730; --band-agresivo: #ef5f5f; --debt-tla: #b7d3f6; --debt-tlb: #6da7ec; --debt-pik: #2a78d6;
+    --debt-vl: #1c5cab; --debt-rcf: #d95926; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1014; --surface: #161a20; --surface-2: #1c2027; --ink: #e8ebf0; --ink-2: #b5bcc6; --muted: #8a929e;
+  --line: #2b3139; --accent: #7aa5ff; --accent-ink: #0e1014; --series-plan: #e8ebf0; --series-base: #6a727e;
+  --neg: #f08a5d; --good: #4cc79a; --warn: #f0b44c; --band-conservador: #5b9bf0; --band-normal: #2fc98f;
+  --band-optimista: #f2b730; --band-agresivo: #ef5f5f; --debt-tla: #b7d3f6; --debt-tlb: #6da7ec; --debt-pik: #2a78d6;
+  --debt-vl: #1c5cab; --debt-rcf: #d95926; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-sans); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num, .mono, td.v, .cell { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+.wrap { max-width: 1340px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Cabecera */
+.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+.top .wrap { padding-block: 22px 18px; display: grid; gap: 14px; }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(26px, 3.2vw, 34px); line-height: 1.15; letter-spacing: -.01em; }
+.deal { color: var(--ink-2); font-size: 14px; max-width: 95ch; }
+.deal b { font-weight: 600; color: var(--ink); }
+.case-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.case-row .lbl { font-size: 13px; color: var(--muted); }
+.segmented { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface-2); }
+.segmented button { border: 0; background: transparent; padding: 7px 14px; cursor: pointer; font-size: 14px; color: var(--ink-2); display: grid; line-height: 1.2; text-align: left; }
+.segmented button + button { border-left: 1px solid var(--line); }
+.segmented button small { font-size: 11px; color: var(--muted); font-family: var(--font-mono); white-space: nowrap; }
+.segmented button[aria-checked="true"] { background: var(--ink); color: var(--surface); }
+.segmented button[aria-checked="true"] small { color: inherit; opacity: .75; }
+
+/* Barra resumen en móvil */
+.mini { display: none; }
+
+/* Rejilla principal */
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 480px); gap: 24px; padding-block: 22px 40px; align-items: start; }
+.results { position: sticky; top: max(12px, env(safe-area-inset-top, 0px)); max-height: calc(100vh - 24px); overflow-y: auto; display: grid; gap: 14px; padding-bottom: 4px; scrollbar-width: thin; }
+.levers { display: grid; gap: 14px; min-width: 0; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; min-width: 0; }
+.panel h2 { font-size: 15px; font-weight: 600; }
+.panel .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+/* Escenarios de partida */
+.presets { display: grid; gap: 10px; }
+.preset-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 7px 12px; cursor: pointer; font-size: 14px; color: var(--ink); display: inline-flex; align-items: center; gap: 7px; }
+.btn:hover { border-color: var(--ink-2); }
+.btn .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.btn.primary:hover { filter: brightness(1.08); }
+.band-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-2); }
+.band-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.band-legend i { width: 18px; height: 6px; border-radius: 2px; background: var(--c); display: inline-block; }
+
+/* Tarjeta de palanca */
+.lever { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px 14px; display: grid; gap: 14px; }
+.lever-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.lever-title { display: grid; gap: 3px; min-width: 0; }
+.lever-title h3 { font-size: 16px; font-weight: 600; line-height: 1.3; }
+.lever-title .what { font-size: 13.5px; color: var(--ink-2); max-width: 70ch; }
+.kind { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.switch-wrap { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; flex: none; font-size: 13px; color: var(--ink-2); user-select: none; }
+.switch-wrap input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.switch-ui { width: 38px; height: 22px; border-radius: 11px; background: var(--line); position: relative; transition: background .15s; }
+.switch-ui::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .15s; }
+.switch-wrap input:checked + .switch-ui { background: var(--ink); }
+.switch-wrap input:checked + .switch-ui::after { transform: translateX(16px); }
+.switch-wrap input:focus-visible + .switch-ui { outline: 2px solid var(--accent); outline-offset: 2px; }
+.lever.off .params { opacity: .45; }
+.params { display: grid; gap: 16px; }
+
+.param { display: grid; gap: 6px; }
+.param-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
+.param-label { font-size: 14px; font-weight: 500; min-width: 0; flex: 1 1 220px; }
+.param-ctl { display: inline-flex; align-items: center; gap: 8px; }
+.num-wrap { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-2); padding-right: 8px; }
+.num-wrap input { width: 84px; border: 0; background: transparent; padding: 5px 4px 5px 8px; text-align: right; font-family: var(--font-mono); font-size: 14px; }
+.num-wrap input::-webkit-inner-spin-button { opacity: .4; }
+.num-wrap .unit { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.chip { font-size: 12px; font-weight: 600; padding: 3px 9px 3px 8px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; min-width: 104px; border: 1px solid color-mix(in srgb, var(--c) 55%, transparent); background: color-mix(in srgb, var(--c) 14%, transparent); }
+.chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+
+/* Barómetro: cuatro bandas con el valor encima */
+.baro { position: relative; height: 26px; }
+.baro .track { position: absolute; left: 9px; right: 9px; top: 9px; height: 8px; }
+.baro .seg { position: absolute; top: 0; height: 8px; background: color-mix(in srgb, var(--c) 26%, transparent); border-left: 2px solid var(--surface); }
+.baro .seg:first-child { border-left: 0; border-radius: 4px 0 0 4px; }
+.baro .seg:last-child { border-radius: 0 4px 4px 0; }
+.baro .seg.on { background: var(--c); }
+.baro input[type=range] { position: absolute; inset: 0; width: 100%; height: 26px; margin: 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.baro input[type=range]::-webkit-slider-runnable-track { height: 26px; background: transparent; border: 0; }
+.baro input[type=range]::-moz-range-track { height: 26px; background: transparent; border: 0; }
+.baro input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; box-sizing: border-box; width: 18px; height: 18px; margin-top: 4px; border-radius: 50%; background: var(--surface); border: 3px solid var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.baro input[type=range]::-moz-range-thumb { box-sizing: border-box; width: 18px; height: 18px; border-radius: 50%; background: var(--surface); border: 3px solid var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.baro input[type=range]:focus-visible { outline: none; }
+.baro input[type=range]:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ticks { position: relative; height: 16px; margin: -4px 9px 0; font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
+.ticks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.ticks span:first-child { transform: none; }
+.ticks span:last-child { transform: translateX(-100%); }
+.anchor { font-size: 12.5px; color: var(--muted); }
+.years { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.years button { border: 0; background: var(--surface-2); padding: 5px 12px; cursor: pointer; font-family: var(--font-mono); font-size: 14px; color: var(--ink-2); }
+.years button + button { border-left: 1px solid var(--line); }
+.years button[aria-checked="true"] { background: var(--ink); color: var(--surface); }
+
+.lever-foot { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; color: var(--ink-2); }
+.lever-foot b { font-family: var(--font-mono); font-weight: 500; color: var(--ink); }
+.lever-foot .excel-ref { margin-left: auto; color: var(--muted); }
+
+/* Resultados */
+.hero-label { font-size: 13px; color: var(--muted); }
+.hero-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 2px; }
+.hero-num { font-family: var(--font-mono); font-size: 40px; font-weight: 500; letter-spacing: -.02em; line-height: 1.1; }
+.delta { font-family: var(--font-mono); font-size: 14px; font-weight: 500; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); }
+.delta.up { color: var(--good); }
+.delta.down { color: var(--neg); }
+.hero-sub { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+.bullet { width: 100%; height: auto; display: block; margin-top: 8px; }
+
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { padding: 6px 4px; text-align: right; border-bottom: 1px solid var(--line); }
+th:first-child, td:first-child { text-align: left; padding-left: 0; }
+th { font-size: 12px; font-weight: 500; color: var(--muted); }
+td.v { white-space: nowrap; }
+tr.hl td { font-weight: 600; }
+.warnchip { display: inline-block; margin-left: 6px; font-family: var(--font-sans); font-size: 11px; font-weight: 600; color: var(--warn); }
+.kpi-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+.chart-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px; margin-bottom: 8px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: var(--c); }
+.legend i.area { height: 10px; background: color-mix(in srgb, var(--series-plan) 14%, transparent); }
+.legend i.bar { height: 10px; width: 10px; }
+svg text { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+svg .grid line { stroke: var(--line); stroke-width: 1; }
+svg .axis-label { fill: var(--ink-2); }
+svg .lbl-strong { fill: var(--ink); font-weight: 500; }
+.chart { position: relative; }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart-note { font-size: 12.5px; color: var(--ink-2); margin-top: 8px; }
+
+.tabs { position: sticky; top: 0; z-index: 2; display: flex; gap: 6px; background: var(--bg); padding-bottom: 2px; }
+.tabs button { flex: 1 1 0; min-width: 0; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 8px 10px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--ink-2); }
+.tabs button:hover { border-color: var(--ink-2); }
+.tabs button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+.pane { display: grid; gap: 14px; min-width: 0; }
+.pane[hidden] { display: none; }
+.case-rows { cursor: pointer; }
+
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 10px 0 12px; }
+.stat { background: var(--surface-2); border-radius: 8px; padding: 10px 12px; min-width: 0; }
+.stat .k { font-size: 12px; color: var(--muted); line-height: 1.3; }
+.stat .v { font-family: var(--font-mono); font-size: 22px; font-weight: 500; margin-top: 2px; }
+.stat .s { font-size: 12px; color: var(--ink-2); }
+.busy-note { font-size: 12px; color: var(--muted); visibility: hidden; }
+.risk.busy .busy-note { visibility: visible; }
+.risk.busy .stats, .risk.busy .chart { opacity: .55; transition: opacity .2s; }
+
+.tooltip { position: fixed; z-index: 20; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.45; padding: 7px 9px; border-radius: 6px; max-width: 240px; font-family: var(--font-sans); box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.tooltip b { font-family: var(--font-mono); font-weight: 500; }
+
+/* Pasar al Excel */
+.excel { display: grid; gap: 14px; }
+.excel > * { min-width: 0; }
+.excel .mono { overflow-wrap: anywhere; }
+.excel h2 { font-size: 18px; font-weight: 600; }
+.excel h3 { font-size: 14px; font-weight: 600; margin-top: 4px; }
+.excel p, .excel li { font-size: 14px; color: var(--ink-2); max-width: 75ch; }
+.steps { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.cell { font-size: 13px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; color: var(--ink); white-space: nowrap; }
+.excel-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.sep { border: 0; padding: 0; margin: 0; display: inline-flex; gap: 12px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.sep legend { float: left; margin-right: 4px; color: var(--muted); }
+.sep label { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+.status { font-size: 13px; color: var(--good); }
+.status.err { color: var(--neg); white-space: pre-line; }
+details summary { cursor: pointer; font-size: 14px; color: var(--ink-2); }
+details[open] summary { margin-bottom: 8px; }
+.table-scroll { overflow-x: auto; max-height: 340px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; padding: 0 10px; }
+textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); padding: 8px 10px; font-family: var(--font-mono); font-size: 13px; resize: vertical; }
+pre { margin: 0; overflow-x: auto; background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-family: var(--font-mono); font-size: 13px; }
+.cmd-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.cmd-row pre { flex: 1 1 320px; min-width: 0; }
+
+footer.notes { border-top: 1px solid var(--line); background: var(--surface); }
+footer.notes .wrap { padding-block: 22px 30px; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+footer.notes h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+footer.notes p { font-size: 13px; color: var(--ink-2); }
+
+@media (max-width: 1080px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .results { position: static; max-height: none; overflow: visible; order: -1; }
+  .tabs { position: static; }
+  .mini { display: flex; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ink); color: var(--surface); font-size: 13.5px; gap: 6px 14px; flex-wrap: wrap; padding-block: 8px; }
+  .mini b { font-family: var(--font-mono); font-weight: 500; }
+}
+@media (max-width: 560px) {
+  .stats { grid-template-columns: minmax(0, 1fr); }
+  .hero-num { font-size: 34px; }
+  .lever-foot .excel-ref { margin-left: 0; }
+  .segmented button { padding: 6px 10px; }
+  .segmented .f9 { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow">Project Galicia · LBO de Inditex · business plan 2026-2030</div>
+    <h1>Plan de creación de valor</h1>
+    <p class="deal" id="deal-line"></p>
+    <div class="case-row">
+      <span class="lbl" id="case-lbl">Caso operativo</span>
+      <div class="segmented" id="case-picker" role="radiogroup" aria-labelledby="case-lbl"></div>
+      <span class="lbl">Percentil del EBITDA 2030 en 20.000 simulaciones. En el Excel: <span class="cell">LBO_Rollover50!F9</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="mini wrap" id="mini" aria-live="polite"></div>
+
+<main class="wrap grid">
+  <section class="levers" aria-label="Palancas">
+    <div class="panel presets">
+      <div>
+        <h2>Empieza desde un escenario y ajusta cada palanca</h2>
+        <p class="sub">Cada parámetro tiene un barómetro: la banda en la que cae tu valor sale de los datos de las cuentas de Inditex.</p>
+      </div>
+      <div class="preset-btns" id="presets"></div>
+      <div class="band-legend" id="band-legend"></div>
+    </div>
+    <div class="levers" id="lever-list"></div>
+
+    <section class="panel excel" id="excel" aria-labelledby="excel-h">
+      <div>
+        <h2 id="excel-h">Pasar al Excel</h2>
+        <p class="sub">Tus valores van a las celdas amarillas de la hoja Palancas de <span class="mono">Inditex_LBO_Rollover50_BusinessPlan.xlsx</span>: columna D, filas 19 a 62.</p>
+      </div>
+      <ol class="steps">
+        <li>Pulsa <b>Copiar columna</b>.</li>
+        <li>En Excel, abre la hoja <b>Palancas</b>, haz clic en la celda <span class="cell">D19</span> y pega (⌘V en Mac, Ctrl+V en Windows).</li>
+        <li>En la hoja <b>LBO_Rollover50</b>, escribe en <span class="cell">F9</span> el número del caso: <span id="case-hint"></span>. La celda <span class="cell">Palancas!D4</span> tiene que estar a 1.</li>
+        <li>El panel de la hoja Palancas (filas 8 a 15) debe dar lo mismo que la tabla «Resultado del caso» de esta página.</li>
+      </ol>
+      <div class="excel-actions">
+        <button class="btn primary" id="copy" type="button">Copiar columna</button>
+        <fieldset class="sep" id="sep">
+          <legend>Decimales de tu Excel:</legend>
+          <label><input type="radio" name="sep" value="," id="sep-comma"> coma (0,17)</label>
+          <label><input type="radio" name="sep" value="." id="sep-dot"> punto (0.17)</label>
+        </fieldset>
+        <span class="status" id="copy-status" role="status"></span>
+      </div>
+      <details>
+        <summary>Ver qué se copia, celda a celda</summary>
+        <div class="table-scroll"><table id="excel-table"><thead><tr><th>Celda</th><th>Qué es</th><th>Valor</th></tr></thead><tbody></tbody></table></div>
+        <label for="copy-text" class="sub" style="display:block;margin:10px 0 4px">Si el botón no copia, selecciona este texto y cópialo a mano:</label>
+        <textarea id="copy-text" rows="5" readonly></textarea>
+      </details>
+      <h3>Sin abrir Excel</h3>
+      <p>Pulsa <b>Copiar columna</b> y, con el Excel cerrado, ejecuta en la terminal desde la carpeta del repositorio. El script comprueba cada valor, escribe solo esas celdas y guarda una copia del Excel anterior.</p>
+      <div class="cmd-row">
+        <pre><code id="cmd">.venv/bin/python "Business Plan/pasar_al_excel.py"</code></pre>
+        <button class="btn" id="copy-cmd" type="button">Copiar comando</button>
+      </div>
+      <h3>Del Excel a esta página</h3>
+      <p>Si has cambiado valores en el Excel, selecciona <span class="cell">D19:D62</span> en la hoja Palancas, cópialos y pégalos aquí:</p>
+      <textarea id="paste-in" rows="3" placeholder="Pega aquí la columna D19:D62"></textarea>
+      <span class="status" id="paste-status" role="status"></span>
+    </section>
+  </section>
+
+  <aside class="results" aria-label="Resultados">
+    <section class="panel" id="kpi">
+      <div class="hero-label" id="hero-label">TIR del fondo</div>
+      <div class="hero-row"><span class="hero-num" id="irr-plan">—</span><span class="delta" id="irr-delta"></span></div>
+      <div class="hero-sub" id="irr-sub"></div>
+      <svg class="bullet" id="bullet" viewBox="0 0 420 46" role="img" aria-label="TIR frente al objetivo del 15 %"></svg>
+    </section>
+
+    <div class="tabs" role="tablist" aria-label="Qué ver">
+      <button type="button" role="tab" id="tab-resumen" aria-controls="pane-resumen">Resumen</button>
+      <button type="button" role="tab" id="tab-graficas" aria-controls="pane-graficas">Gráficas del LBO</button>
+      <button type="button" role="tab" id="tab-riesgo" aria-controls="pane-riesgo">Riesgo</button>
+    </div>
+
+    <div class="pane" id="pane-resumen" role="tabpanel" aria-labelledby="tab-resumen">
+    <section class="panel">
+      <table id="kpi-table">
+        <thead><tr><th>Resultado del caso</th><th>Sin palancas</th><th>Con palancas</th><th>Diferencia</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="kpi-note">Igual que el panel de la hoja Palancas del Excel (filas 8 a 15).</p>
+    </section>
+
+    <section class="panel chart" id="contrib-panel">
+      <div class="chart-head">
+        <div><h2>De dónde sale la mejora</h2><p class="sub">Puntos de TIR que aporta cada palanca en el caso elegido (reparto de Shapley)</p></div>
+      </div>
+      <svg id="contrib" role="img" aria-label="Aportación de cada palanca a la TIR"></svg>
+    </section>
+
+    <section class="panel chart" id="ebitda-panel">
+      <div class="chart-head">
+        <div><h2>EBITDA pre-IFRS 16</h2><p class="sub" id="ebitda-sub">M€, caso elegido</p></div>
+        <div class="legend">
+          <span><i style="--c: var(--series-plan)"></i>Con palancas</span>
+          <span><i style="--c: var(--series-base)"></i>Sin palancas</span>
+          <span><i class="area"></i>80 % central de los escenarios con el plan</span>
+        </div>
+      </div>
+      <svg id="ebitda" viewBox="0 0 600 250" role="img" aria-label="EBITDA 2025-2030 con y sin palancas"></svg>
+      <details style="margin-top:8px"><summary>Ver los datos</summary><div class="table-scroll"><table id="ebitda-table"></table></div></details>
+    </section>
+    </div>
+
+    <div class="pane" id="pane-graficas" role="tabpanel" aria-labelledby="tab-graficas" hidden>
+    <section class="panel chart">
+      <div class="chart-head">
+        <div><h2>TIR en los cuatro casos</h2><p class="sub">Tus palancas encima de cada caso operativo. Pulsa un caso para elegirlo</p></div>
+        <div class="legend">
+          <span><i style="--c: var(--series-plan)"></i>Con palancas</span>
+          <span><i style="--c: var(--series-base)"></i>Sin palancas</span>
+        </div>
+      </div>
+      <svg id="cases-chart" role="img" aria-label="TIR de los cuatro casos con y sin palancas"></svg>
+    </section>
+
+    <section class="panel chart">
+      <div class="chart-head">
+        <div><h2>Ventas</h2><p class="sub" data-case-sub>M€</p></div>
+        <div class="legend">
+          <span><i style="--c: var(--series-plan)"></i>Con palancas</span>
+          <span><i style="--c: var(--series-base)"></i>Sin palancas</span>
+        </div>
+      </div>
+      <svg id="sales-chart" role="img" aria-label="Ventas 2025-2030 con y sin palancas"></svg>
+    </section>
+
+    <section class="panel chart">
+      <div class="chart-head">
+        <div><h2>Margen EBITDA pre-IFRS 16</h2><p class="sub" data-case-sub>% de las ventas</p></div>
+        <div class="legend">
+          <span><i style="--c: var(--series-plan)"></i>Con palancas</span>
+          <span><i style="--c: var(--series-base)"></i>Sin palancas</span>
+        </div>
+      </div>
+      <svg id="margin-chart" role="img" aria-label="Margen EBITDA 2025-2030 con y sin palancas"></svg>
+    </section>
+
+    <section class="panel chart">
+      <div class="chart-head">
+        <div><h2>Deuda por tramos</h2><p class="sub" data-case-sub>M€ a final de año, con palancas. Encima: deuda neta / EBITDA</p></div>
+        <div class="legend" id="debt-legend"></div>
+      </div>
+      <svg id="debt-chart" role="img" aria-label="Deuda por tramos al cierre y a final de cada año"></svg>
+    </section>
+
+    <section class="panel chart">
+      <div class="chart-head">
+        <div><h2>DSCR: caja frente al servicio de la deuda</h2><p class="sub" data-case-sub>CFADS / (intereses en caja + amortización de la TLA)</p></div>
+        <div class="legend">
+          <span><i style="--c: var(--series-plan)"></i>Con palancas</span>
+          <span><i style="--c: var(--series-base)"></i>Sin palancas</span>
+        </div>
+      </div>
+      <svg id="dscr-chart" role="img" aria-label="DSCR por año frente al covenant de 1,2x"></svg>
+    </section>
+
+    <section class="panel chart">
+      <div class="chart-head">
+        <div><h2>Puente de valor del equity</h2><p class="sub" data-case-sub>M€, 100 % del equity (fondo y Amancio Ortega), con palancas</p></div>
+        <div class="legend">
+          <span><i class="bar" style="--c: var(--series-plan)"></i>Total</span>
+          <span><i class="bar" style="--c: var(--accent)"></i>Suma</span>
+          <span><i class="bar" style="--c: var(--neg)"></i>Resta</span>
+          <span><i style="--c: var(--series-base)"></i>Sin palancas</span>
+        </div>
+      </div>
+      <svg id="bridge-chart" role="img" aria-label="Puente del valor del equity entre el cierre y la salida"></svg>
+      <p class="chart-note" id="bridge-note"></p>
+      <details style="margin-top:8px"><summary>Ver el puente con y sin palancas</summary><div class="table-scroll"><table id="bridge-table"></table></div></details>
+    </section>
+
+    <section class="panel">
+      <details><summary>Ver los datos de las gráficas</summary><div class="table-scroll"><table id="charts-table"></table></div></details>
+    </section>
+    </div>
+
+    <div class="pane" id="pane-riesgo" role="tabpanel" aria-labelledby="tab-riesgo" hidden>
+    <section class="panel chart risk" id="risk">
+      <div class="chart-head">
+        <div><h2>Riesgo: 20.000 escenarios</h2><p class="sub">El mismo plan en todos los escenarios simulados, con crisis y riesgo de ejecución</p></div>
+        <span class="busy-note">Recalculando…</span>
+      </div>
+      <div class="stats" id="risk-stats"></div>
+      <div class="legend" style="margin-bottom:6px">
+        <span><i class="bar" style="--c: color-mix(in srgb, var(--series-plan) 80%, transparent)"></i>Con el plan</span>
+        <span><i style="--c: var(--series-base)"></i>Sin plan</span>
+      </div>
+      <svg id="hist" viewBox="0 0 600 230" role="img" aria-label="Distribución de la TIR con y sin plan"></svg>
+      <h2 style="margin-top:14px">Si haces todas las palancas a la vez</h2>
+      <p class="sub">Cada parámetro en el centro de su banda; «Tu plan» son los valores de esta página</p>
+      <div class="table-scroll" style="border:0;padding:0;max-height:none"><table id="band-table"></table></div>
+    </section>
+    </div>
+  </aside>
+</main>
+
+<footer class="notes">
+  <div class="wrap">
+    <div><h3>Mismo cálculo que el Excel</h3><p>El motor de esta página es una traducción línea a línea del modelo en Python, que a su vez reproduce la hoja LBO_Rollover50 del Excel del grupo. Los tests comprueban que los tres dan lo mismo.</p></div>
+    <div><h3>Los cuatro casos</h3><p>Base, Bull, Bear y Bank son los escenarios de la simulación que quedan en los percentiles 50, 80, 20 y 10 del EBITDA de 2030. El riesgo usa los 20.000 escenarios.</p></div>
+    <div><h3>Riesgo de ejecución</h3><p>En la simulación, cada palanca operativa se cumple solo en parte o algo mejor de lo planeado (por ejemplo entre el 50 % y el 110 % en aperturas), y las ventas nuevas sufren las mismas crisis que el negocio.</p></div>
+  </div>
+</footer>
+
+<div class="tooltip" id="tip" hidden></div>
+
+<script>const DATOS = /*__DATOS__*/null;</script>
+<script id="motor">/*__MOTOR__*/</script>
+<script>
+"use strict";
+(() => {
+  Motor.init(DATOS);
+  const K = Motor.K;
+  const T = 5;
+  const CASES = K.case_order;
+  const CASE_SHORT = { "Base": "Base", "Bull": "Bull", "Bear": "Bear", "Bank case": "Bank" };
+  const SHORT = { usa: "EE. UU.", young: "Marcas jóvenes", lefties: "Lefties", refurb: "Reformas", efficiency: "Eficiencia",
+                  wc: "Circulante", propco: "PropCo", recap: "Recap" };
+  const BAND_SLUG = { Conservador: "conservador", Normal: "normal", Optimista: "optimista", Agresivo: "agresivo" };
+  const BAND_NOTE = { Conservador: "por debajo de lo que Inditex ya hace", Normal: "en línea con su histórico",
+                      Optimista: "en la parte alta de lo conseguido", Agresivo: "sin precedente en sus cuentas" };
+  const ALL = (v) => Object.fromEntries(K.levers.map((l) => [l.key, v]));
+  const sum = (a) => a.reduce((x, y) => x + y, 0);
+
+  // ---------- Elementos ----------
+  const $ = (sel, el = document) => el.querySelector(sel);
+  function h(tag, attrs = {}, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v === null || v === undefined || v === false) continue;
+      if (k === "class") el.className = v;
+      else if (k === "text") el.textContent = v;
+      else if (k === "style") el.style.cssText = v;
+      else el.setAttribute(k, v === true ? "" : v);
+    }
+    for (const c of kids.flat()) if (c !== null && c !== undefined) el.append(c);
+    return el;
+  }
+  const SVG = "http://www.w3.org/2000/svg";
+  function s(tag, attrs = {}, text) {
+    const el = document.createElementNS(SVG, tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    if (text !== undefined) el.textContent = text;
+    return el;
+  }
+
+  // ---------- Formato español ----------
+  const MINUS = "−", NB = " ";
+  function num(v, dec = 0) {
+    if (!Number.isFinite(v)) return "—";
+    const r = Math.abs(v).toFixed(dec);
+    const [i, f] = r.split(".");
+    const neg = v < 0 && Number(r) !== 0;
+    return (neg ? MINUS : "") + i.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + (f ? "," + f : "");
+  }
+  const signed = (v, dec) => (v > 0 && Number(v.toFixed(dec)) !== 0 ? "+" : "") + num(v, dec);
+  const pct = (v, dec = 1) => num(v * 100, dec) + NB + "%";
+  const pp = (v, dec = 1) => signed(v * 100, dec) + NB + "pp";
+  const eur = (v) => num(v, 0) + NB + "M€";
+  const times = (v, dec = 2) => num(v, dec) + "x";
+  const isPct = (p) => p.fmt.endsWith("%");
+  function fmtParam(p, v) {
+    if (isPct(p)) return pct(v, (p.fmt.split(".")[1] || "%").length - 1);
+    if (p.fmt === "#,##0") return num(v, 0);
+    return num(v, p.fmt.includes(".") ? p.fmt.split(".")[1].length : (Number.isInteger(v) ? 0 : 1));
+  }
+
+  // ---------- Estado (se recuerda en este navegador) ----------
+  const STORE = "palancas-inditex-v1";
+  const TABS = ["resumen", "graficas", "riesgo"];
+  const state = { caseName: "Base", values: Motor.defaults(), on: ALL(true), sep: ",", tab: "resumen" };  // Excel en español
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE) || "null");
+    if (saved) {
+      if (CASES.includes(saved.caseName)) state.caseName = saved.caseName;
+      if (saved.sep === "," || saved.sep === ".") state.sep = saved.sep;
+      if (TABS.includes(saved.tab)) state.tab = saved.tab;
+      for (const lv of K.levers) {
+        if (typeof saved.on?.[lv.key] === "boolean") state.on[lv.key] = saved.on[lv.key];
+        for (const p of lv.params) {
+          const v = saved.values?.[lv.key]?.[p.key];
+          if (typeof v === "number" && Number.isFinite(v)) state.values[lv.key][p.key] = v;
+        }
+      }
+    }
+  } catch (e) { /* sin almacenamiento: valores por defecto */ }
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* nada */ } };
+
+  // ---------- Cabecera ----------
+  const d = K.deal;
+  $("#deal-line").innerHTML =
+    `Compra a <b>${num(d.share_price * (1 + d.premium), 2)} € por acción</b> (prima del ${pct(d.premium, 0)} sobre ${num(d.share_price, 2)} €), ` +
+    `<b>${times(K.entry_multiple, 1)} el EBITDA</b> pre-IFRS 16 de 2025 · deuda de <b>${times(d.tla_x + d.tlb_x + d.pik_x + d.vl_x, 1)}</b> ` +
+    `(TLA ${times(d.tla_x)}, TLB ${times(d.tlb_x)}, PIK ${times(d.pik_x, 1)}, vendor loan ${times(d.vl_x, 1)}) · ` +
+    `Amancio Ortega reinvierte el ${pct(d.rollover_pct, 0)} de su participación · salida en enero de 2031 al mismo múltiplo.`;
+
+  const picker = $("#case-picker");
+  const caseBtns = CASES.map((name, i) => {
+    const b = h("button", { type: "button", role: "radio" }, CASE_SHORT[name], h("small", {}, `P${K.case_percentiles[name]}`, h("span", { class: "f9", text: ` · F9 = ${i + 1}` })));
+    b.addEventListener("click", () => { state.caseName = name; refresh(false); });
+    picker.append(b);
+    return [name, b];
+  });
+  $("#case-hint").textContent = CASES.map((n, i) => `${i + 1} ${CASE_SHORT[n]}`).join(", ");
+
+  // ---------- Pestañas del panel de resultados ----------
+  function syncTabs() {
+    for (const tab of TABS) {
+      const b = $(`#tab-${tab}`), on = state.tab === tab;
+      b.setAttribute("aria-selected", String(on));
+      b.tabIndex = on ? 0 : -1;
+      $(`#pane-${tab}`).hidden = !on;
+    }
+  }
+  function openTab(tab) {
+    state.tab = tab;
+    syncTabs(); save();
+    // La pestaña nueva empieza arriba, justo debajo de la barra (el panel derecho tiene su propio scroll)
+    // (la barra es sticky: su offsetTop es donde está pegada, así que se mide desde el inicio de la pestaña)
+    const box = $(".results"), barTop = $(`#pane-${tab}`).offsetTop - $(".tabs").offsetHeight - parseFloat(getComputedStyle(box).rowGap);
+    if (box.scrollTop > barTop) box.scrollTop = barTop;
+  }
+  TABS.forEach((tab, i) => {
+    const b = $(`#tab-${tab}`);
+    b.addEventListener("click", () => openTab(tab));
+    b.addEventListener("keydown", (ev) => {
+      const step = ev.key === "ArrowRight" ? 1 : ev.key === "ArrowLeft" ? -1 : 0;
+      if (!step) return;
+      openTab(TABS[(i + step + TABS.length) % TABS.length]);
+      $(`#tab-${state.tab}`).focus();
+    });
+  });
+  syncTabs();
+
+  // ---------- Escenarios de partida ----------
+  const presets = [
+    ["Valores por defecto", () => ({ values: Motor.defaults(), on: ALL(true) }), null],
+    ...Motor.BANDS.map((b) => [`Todo ${b}`, () => ({ values: Motor.bandValues(b), on: ALL(true) }), b]),
+    ["Apagar todas", () => ({ values: state.values, on: ALL(false) }), null],
+  ];
+  for (const [label, make, band] of presets) {
+    const b = h("button", { class: "btn", type: "button" }, band ? h("span", { class: "dot", style: `--c: var(--band-${BAND_SLUG[band]})` }) : null, label);
+    b.addEventListener("click", () => { const p = make(); state.values = structuredClone(p.values); state.on = { ...p.on }; refresh(); });
+    $("#presets").append(b);
+  }
+  for (const b of Motor.BANDS) {
+    $("#band-legend").append(h("span", {}, h("i", { style: `--c: var(--band-${BAND_SLUG[b]})` }), h("b", { text: b }), ` ${BAND_NOTE[b]}`));
+  }
+
+  // ---------- Tarjetas de palancas ----------
+  const ui = {};
+  function buildParam(lv, p) {
+    const id = `${lv.key}-${p.key}`;
+    const el = h("div", { class: "param" });
+    const top = h("div", { class: "param-top" }, h(p.options ? "span" : "label", { class: "param-label", for: p.options ? null : id, text: p.label }));
+    const r = { p, el };
+    if (p.options) {
+      const group = h("div", { class: "years", role: "radiogroup", "aria-label": p.label, id });
+      r.yearBtns = p.options.map((y) => {
+        const b = h("button", { type: "button", role: "radio", text: String(y) });
+        b.addEventListener("click", () => { state.values[lv.key][p.key] = y; refresh(); });
+        group.append(b);
+        return [y, b];
+      });
+      top.append(group);
+      el.append(top);
+    } else {
+      const k = isPct(p) ? 100 : 1;
+      r.num = h("input", { type: "number", id, min: p.edges[0] * k, max: p.edges[4] * k, step: "any", inputmode: "decimal" });
+      r.num.addEventListener("change", () => {
+        const v = parseFloat(String(r.num.value).replace(",", "."));
+        if (Number.isFinite(v)) state.values[lv.key][p.key] = Math.min(p.edges[4], Math.max(p.edges[0], v / k));
+        refresh();
+      });
+      r.chip = h("span", { class: "chip" });
+      top.append(h("div", { class: "param-ctl" }, h("span", { class: "num-wrap" }, r.num, h("span", { class: "unit", text: isPct(p) ? "%" : p.unit })), r.chip));
+      const span = p.edges[4] - p.edges[0];
+      const at = (x) => ((x - p.edges[0]) / span * 100) + "%";
+      const order = p.reverse ? Motor.BANDS.slice().reverse() : Motor.BANDS;
+      const track = h("div", { class: "track" });
+      r.segs = order.map((b, i) => {
+        const seg = h("span", { class: "seg", "data-band": b, style: `left:${at(p.edges[i])};width:${(p.edges[i + 1] - p.edges[i]) / span * 100}%;--c: var(--band-${BAND_SLUG[b]})` });
+        track.append(seg);
+        return seg;
+      });
+      r.range = h("input", { type: "range", min: p.edges[0], max: p.edges[4], step: p.step, "aria-label": p.label });
+      r.range.addEventListener("input", () => { state.values[lv.key][p.key] = parseFloat(r.range.value); refresh(); });
+      const ticks = h("div", { class: "ticks", "aria-hidden": "true" }, p.edges.map((e) => h("span", { style: `left:${at(e)}`, text: fmtParam(p, e) })));
+      el.append(top, h("div", { class: "baro" }, track, r.range), ticks);
+    }
+    if (p.anchor) el.append(h("p", { class: "anchor", text: p.anchor }));
+    return r;
+  }
+
+  for (const lv of K.levers) {
+    const toggle = h("input", { type: "checkbox", id: `on-${lv.key}` });
+    toggle.addEventListener("change", () => { state.on[lv.key] = toggle.checked; refresh(); });
+    const switchText = h("span", {});
+    const card = h("article", { class: "lever", id: `lv-${lv.key}` },
+      h("header", { class: "lever-head" },
+        h("div", { class: "lever-title" }, h("span", { class: "kind", text: `Palanca ${lv.kind}` }), h("h3", { text: lv.name }), h("p", { class: "what", text: lv.what })),
+        h("label", { class: "switch-wrap", for: `on-${lv.key}` }, toggle, h("span", { class: "switch-ui", "aria-hidden": "true" }), switchText)));
+    const params = h("div", { class: "params" });
+    const rows = lv.params.map((p) => { const r = buildParam(lv, p); params.append(r.el); return r; });
+    const foot = h("footer", { class: "lever-foot" });
+    card.append(params, foot);
+    $("#lever-list").append(card);
+    ui[lv.key] = { card, toggle, switchText, rows, foot };
+  }
+
+  function syncControls() {
+    for (const [name, b] of caseBtns) b.setAttribute("aria-checked", String(name === state.caseName));
+    for (const lv of K.levers) {
+      const u = ui[lv.key], on = state.on[lv.key];
+      u.toggle.checked = on;
+      u.switchText.textContent = on ? "Activa" : "Apagada";
+      u.card.classList.toggle("off", !on);
+      for (const r of u.rows) {
+        const v = state.values[lv.key][r.p.key];
+        if (r.yearBtns) { for (const [y, b] of r.yearBtns) b.setAttribute("aria-checked", String(y === v)); continue; }
+        if (document.activeElement !== r.num) r.num.value = String(+(v * (isPct(r.p) ? 100 : 1)).toFixed(4));
+        r.range.value = v;
+        const band = Motor.band(r.p, v);
+        r.chip.textContent = band;
+        r.chip.style.setProperty("--c", `var(--band-${BAND_SLUG[band]})`);
+        r.range.setAttribute("aria-valuetext", `${fmtParam(r.p, v)}, ${band}`);
+        for (const seg of r.segs) seg.classList.toggle("on", seg.dataset.band === band);
+      }
+    }
+    $("#sep-comma").checked = state.sep === ",";
+    $("#sep-dot").checked = state.sep === ".";
+  }
+
+  // ---------- Resultados del caso ----------
+  const baseCache = {};
+  const baseCase = (name) => (baseCache[name] ??= Motor.runCase(name, Motor.defaults(), ALL(false)));
+  let last = null;
+
+  const KPIS = [
+    { label: "MoM del fondo", get: (c) => c.res.mom, fmt: (v) => times(v), dfmt: (x) => signed(x, 2) + "x" },
+    { label: "DSCR mínimo 2026-30", get: (c) => c.res.min_dscr, fmt: (v) => times(v), dfmt: (x) => signed(x, 2) + "x", warn: (v) => v < 1.2 },
+    { label: "EBITDA pre-IFRS 16 2030", get: (c) => c.res.ebitda_pre[T - 1], fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
+    { label: "Deuda senior neta / EBITDA 2030", get: (c) => c.res.senior_nd_ebitda[T - 1], fmt: (v) => times(v), dfmt: (x) => signed(x, 2) + "x" },
+    { label: "Capex acumulado 2026-30", get: (c) => sum(c.lever.op.capex), fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
+    { label: "Cheque del fondo al cierre", get: (c) => c.res.su.sponsor, fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
+    { label: "Dividendo del recap", get: (c) => sum(c.res.dividend), fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
+  ];
+  const kpiCells = KPIS.map((k) => {
+    const cells = [h("td", { class: "v" }), h("td", { class: "v" }), h("td", { class: "v" })];
+    $("#kpi-table tbody").append(h("tr", {}, h("td", { text: k.label }), cells));
+    return cells;
+  });
+
+  function renderKpis(base, plan) {
+    const irr0 = base.res.irr, irr1 = plan.res.irr, dIrr = irr1 - irr0;
+    $("#hero-label").textContent = `TIR del fondo · caso ${CASE_SHORT[state.caseName]}`;
+    $("#irr-plan").textContent = pct(irr1);
+    const delta = $("#irr-delta");
+    delta.textContent = (dIrr > 0.00005 ? "▲ " : dIrr < -0.00005 ? "▼ " : "") + pp(dIrr, 2);
+    delta.className = "delta" + (dIrr > 0.00005 ? " up" : dIrr < -0.00005 ? " down" : "");
+    $("#irr-sub").textContent = `Sin palancas ${pct(irr0)} · el fondo busca al menos un 15 %`;
+    KPIS.forEach((k, i) => {
+      const a = k.get(base), b = k.get(plan), c = kpiCells[i];
+      c[0].textContent = k.fmt(a);
+      c[1].textContent = k.fmt(b);
+      if (k.warn && k.warn(b)) c[1].append(h("span", { class: "warnchip", text: "⚠ < 1,2x" }));
+      c[2].textContent = k.dfmt(b - a);
+    });
+    renderBullet(irr0, irr1);
+    $("#mini").innerHTML = `<span>TIR ${CASE_SHORT[state.caseName]}: <b>${pct(irr0)}</b> → <b>${pct(irr1)}</b> (${pp(dIrr, 2)})</span>` +
+      `<span>DSCR mín. <b>${times(plan.res.min_dscr)}</b></span><span>EBITDA 2030 <b>${eur(plan.res.ebitda_pre[T - 1])}</b></span>`;
+  }
+
+  function renderBullet(irr0, irr1) {
+    const svg = $("#bullet"); svg.replaceChildren();
+    const lo = -0.05, hi = 0.25, x0 = 10, x1 = 410, x = (v) => x0 + (Math.min(hi, Math.max(lo, v)) - lo) / (hi - lo) * (x1 - x0);
+    svg.append(s("rect", { x: x0, y: 10, width: x1 - x0, height: 8, rx: 4, fill: "var(--surface-2)", stroke: "var(--line)" }));
+    svg.append(s("rect", { x: x(0.15), y: 10, width: x1 - x(0.15), height: 8, fill: "color-mix(in srgb, var(--good) 22%, transparent)" }));
+    for (const t of [-0.05, 0, 0.05, 0.10, 0.15, 0.20, 0.25]) {
+      svg.append(s("text", { x: x(t), y: 38, "text-anchor": "middle" }, num(t * 100, 0) + "%"));
+    }
+    svg.append(s("line", { x1: x(0.15), x2: x(0.15), y1: 4, y2: 24, stroke: "var(--good)", "stroke-width": 2 }));
+    svg.append(s("circle", { cx: x(irr0), cy: 14, r: 6, fill: "var(--series-base)", stroke: "var(--surface)", "stroke-width": 2 }));
+    svg.append(s("circle", { cx: x(irr1), cy: 14, r: 7, fill: "var(--series-plan)", stroke: "var(--surface)", "stroke-width": 2 }));
+  }
+
+  function renderContrib(phi) {
+    const svg = $("#contrib"); svg.replaceChildren();
+    const keys = Object.keys(phi).sort((a, b) => phi[b] - phi[a]);
+    const W = 420, rowH = 26, top = 6, labelW = 118, valueW = 66;
+    const H = Math.max(1, keys.length) * rowH + top + 30;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    if (!keys.length) {
+      svg.append(s("text", { x: 0, y: 24, class: "axis-label" }, "No hay palancas activas."));
+      return;
+    }
+    const vals = keys.map((k) => phi[k]);
+    const lo = Math.min(0, ...vals), hi = Math.max(0, ...vals), span = (hi - lo) || 1e-4;
+    const x0 = labelW + 8, x1 = W - valueW, x = (v) => x0 + (v - lo) / span * (x1 - x0);
+    keys.forEach((k, i) => {
+      const y = top + i * rowH, v = phi[k];
+      svg.append(s("text", { x: 0, y: y + 15, class: "axis-label" }, SHORT[k]));
+      const a = x(Math.min(0, v)), b = x(Math.max(0, v));
+      const bar = s("rect", { x: a, y: y + 5, width: Math.max(1.5, b - a), height: 14, rx: 3, fill: v >= 0 ? "var(--series-plan)" : "var(--neg)" });
+      svg.append(bar);
+      const lx = v >= 0 ? b + 6 : a - 6;
+      svg.append(s("text", { x: lx, y: y + 16, "text-anchor": v >= 0 ? "start" : "end", class: "lbl-strong" }, pp(v, 2)));
+      attachTip(bar, () => `<b>${SHORT[k]}</b><br>${pp(v, 2)} de TIR en el caso ${CASE_SHORT[state.caseName]}`);
+    });
+    const zx = x(0);
+    svg.append(s("line", { x1: zx, x2: zx, y1: top, y2: top + keys.length * rowH, stroke: "var(--ink-2)", "stroke-width": 1 }));
+    const total = sum(vals);
+    svg.append(s("text", { x: 0, y: top + keys.length * rowH + 20, class: "lbl-strong" }, `Total ${pp(total, 2)}: de ${pct(last.base.res.irr)} a ${pct(last.plan.res.irr)}`));
+  }
+
+  function renderFeet(plan, phi) {
+    const lr = plan.lever, res = plan.res;
+    for (const lv of K.levers) {
+      const f = ui[lv.key].foot, k = lv.key, v = state.values[k];
+      const firstRow = lv.row, lastRow = lv.params[lv.params.length - 1].row;
+      const parts = [];
+      const item = (label, value) => parts.push(h("span", {}, `${label} `, h("b", { text: value })));
+      if (!state.on[k]) {
+        parts.push(h("span", { text: "Apagada: no entra en el plan." }));
+      } else {
+        if (lr.dRev[k]) item("Ventas 2030", signed(lr.dRev[k][T - 1], 0) + NB + "M€");
+        if (lr.dEbitda[k]) item("EBITDA 2030", signed(lr.dEbitda[k][T - 1], 0) + NB + "M€");
+        if (lr.dCapex[k]) item("Inversión 2026-30", eur(sum(lr.dCapex[k])));
+        if (k === "efficiency") item("Coste de implantación", eur(v.one_off * v.bps / 1e4 * K.cases[state.caseName].revenue[0]));
+        if (k === "wc") item("Caja liberada hasta 2030", eur(-lr.dWcRatio[T - 1] * lr.op.revenue[T - 1]));
+        if (k === "propco") { item("Caja al cierre", eur(lr.proceeds)); item("Alquiler nuevo 2030", eur(lr.dLease[T - 1])); }
+        if (k === "recap") {
+          const div = sum(res.dividend);
+          if (div > 0) { item(`Dividendo en ${v.year}`, eur(div)); item("al fondo", eur(div * res.su.sponsorShare)); }
+          else parts.push(h("span", { text: `En ${v.year} la deuda senior neta ya supera ${times(v.target)}: no hay dividendo.` }));
+        }
+        item("TIR", pp(phi[k] ?? 0, 2));
+      }
+      parts.push(h("span", { class: "excel-ref", text: `Excel: Palancas!D${firstRow}:D${lastRow}` }));
+      f.replaceChildren(...parts);
+    }
+  }
+
+  // ---------- Gráfico de EBITDA ----------
+  function niceTicks(lo, hi, n = 5) {
+    const raw = (hi - lo) / n, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((st) => (hi - lo) / st <= n) || 10 * mag;
+    const a = Math.floor(lo / step) * step, b = Math.ceil(hi / step) * step, out = [];
+    for (let v = a; v <= b + step / 2; v += step) out.push(v);
+    return out;
+  }
+
+  // Líneas «sin palancas» y «con palancas» con etiquetas al final y cruceta; banda y referencia opcionales.
+  function lineChart(svg, o) {
+    svg.replaceChildren();
+    const { labels, base, plan, band, ref } = o, n = labels.length - 1;
+    const all = [...base, ...plan, ...(band ? [...band.lo, ...band.hi] : []), ...(ref ? [ref.v] : [])];
+    const ticks = niceTicks(Math.min(...all), Math.max(...all), o.nTicks || 5);
+    const W = 600, H = o.H || 250, L = 52, R = 128, Tp = 12, B = 26;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const x = (i) => L + i / n * (W - L - R);
+    const y = (v) => Tp + (1 - (v - ticks[0]) / (ticks[ticks.length - 1] - ticks[0])) * (H - Tp - B);
+    const g = s("g", { class: "grid" });
+    for (const t of ticks) {
+      g.append(s("line", { x1: L, x2: W - R, y1: y(t), y2: y(t) }));
+      svg.append(s("text", { x: L - 8, y: y(t) + 4, "text-anchor": "end" }, o.tick(t)));
+    }
+    svg.prepend(g);
+    labels.forEach((lb, i) => svg.append(s("text", { x: x(i), y: H - 6, "text-anchor": "middle" }, lb)));
+    if (band) {
+      const pts = band.hi.map((v, i) => `${x(i)},${y(v)}`).concat(band.lo.map((v, i) => `${x(i)},${y(v)}`).reverse());
+      svg.append(s("polygon", { points: pts.join(" "), fill: "color-mix(in srgb, var(--series-plan) 12%, transparent)", stroke: "none" }));
+    }
+    if (ref) {
+      svg.append(s("line", { x1: L, x2: W - R, y1: y(ref.v), y2: y(ref.v), stroke: "var(--warn)", "stroke-width": 1.5, "stroke-dasharray": "4 3" }));
+      svg.append(s("text", { x: L + 6, y: y(ref.v) + 15, class: "axis-label" }, ref.label));
+    }
+    const line = (vals, color, w) => svg.append(s("polyline", { points: vals.map((v, i) => `${x(i)},${y(v)}`).join(" "), fill: "none", stroke: color, "stroke-width": w, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+    line(base, "var(--series-base)", 2);
+    line(plan, "var(--series-plan)", 2.25);
+    for (const [vals, color] of [[base, "var(--series-base)"], [plan, "var(--series-plan)"]]) {
+      vals.forEach((v, i) => svg.append(s("circle", { cx: x(i), cy: y(v), r: 3.5, fill: color, stroke: "var(--surface)", "stroke-width": 2 })));
+    }
+    // Etiquetas directas al final, separadas si se pisan
+    let yp = y(plan[n]), yb = y(base[n]);
+    if (Math.abs(yp - yb) < 26) { const m = (yp + yb) / 2, up = yp <= yb; yp = m + (up ? -13 : 13); yb = m + (up ? 13 : -13); }
+    const lx = x(n) + 10;
+    svg.append(s("text", { x: lx, y: yp - 2, class: "lbl-strong" }, "Con palancas"));
+    svg.append(s("text", { x: lx, y: yp + 11 }, o.fmt(plan[n])));
+    svg.append(s("text", { x: lx, y: yb - 2, class: "axis-label" }, "Sin palancas"));
+    svg.append(s("text", { x: lx, y: yb + 11 }, o.fmt(base[n])));
+
+    // Cruceta con los valores de cada año
+    const cross = s("line", { y1: Tp, y2: H - B, stroke: "var(--ink-2)", "stroke-width": 1, "stroke-dasharray": "3 3", visibility: "hidden" });
+    svg.append(cross);
+    const hit = s("rect", { x: L - 10, y: 0, width: W - L - R + 20, height: H - B, fill: "transparent" });
+    svg.append(hit);
+    hit.addEventListener("pointermove", (ev) => {
+      const pt = svgPoint(svg, ev), i = Math.max(0, Math.min(n, Math.round((pt.x - L) / (W - L - R) * n)));
+      cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
+      showTip(ev, `<b>${o.tipLabel ? o.tipLabel(i) : labels[i]}</b><br>Con palancas <b>${o.fmt(plan[i])}</b><br>Sin palancas <b>${o.fmt(base[i])}</b>` +
+        (o.tipExtra ? o.tipExtra(i) : ""));
+    });
+    hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+  }
+
+  function renderEbitda() {
+    if (!last) return;
+    const years = [2025, ...K.years];
+    const base = [K.fy25.ebitda_pre, ...last.base.res.ebitda_pre];
+    const plan = [K.fy25.ebitda_pre, ...last.plan.res.ebitda_pre];
+    const band = risk.plan ? { lo: [K.fy25.ebitda_pre, ...risk.plan.ebitda_p10], hi: [K.fy25.ebitda_pre, ...risk.plan.ebitda_p90] } : null;
+    lineChart($("#ebitda"), {
+      labels: years.map((yr, i) => (i === 0 ? "2025 real" : String(yr))), base, plan, band,
+      tick: (v) => num(v, 0), fmt: eur, tipLabel: (i) => (i === 0 ? "2025 (real)" : String(years[i])),
+      tipExtra: (i) => (band && i > 0 ? `<br>80 % central: <b>${num(band.lo[i], 0)}–${num(band.hi[i], 0)}</b>` : ""),
+    });
+
+    $("#ebitda-sub").textContent = `M€, caso ${CASE_SHORT[state.caseName]}`;
+    const tbl = $("#ebitda-table");
+    tbl.replaceChildren(
+      h("thead", {}, h("tr", {}, h("th", { text: "M€" }), years.map((yr, i) => h("th", { text: i === 0 ? "2025" : String(yr) })))),
+      h("tbody", {},
+        h("tr", {}, h("td", { text: "Sin palancas" }), base.map((v) => h("td", { class: "v", text: num(v, 0) }))),
+        h("tr", {}, h("td", { text: "Con palancas" }), plan.map((v) => h("td", { class: "v", text: num(v, 0) }))),
+        band ? h("tr", {}, h("td", { text: "P10 con plan" }), band.lo.map((v) => h("td", { class: "v", text: num(v, 0) }))) : null,
+        band ? h("tr", {}, h("td", { text: "P90 con plan" }), band.hi.map((v) => h("td", { class: "v", text: num(v, 0) }))) : null));
+  }
+
+  // ---------- Gráficas del LBO ----------
+  const DEBT = [["tla", "TLA"], ["tlb", "TLB"], ["pik", "PIK"], ["vl", "Vendor loan"], ["rcf", "RCF"]];
+  const BRIDGE = {
+    senior: ["Deuda senior devuelta", "TLA y TLB devueltas con la caja del negocio (cuotas y cash sweep), neto de la deuda nueva del recap."],
+    pik: ["Intereses PIK y vendor loan", "Estos intereses no se pagan: se suman a la deuda y se devuelven en la salida."],
+    cash: ["Caja por encima del mínimo", "Caja que queda en la empresa en la salida además de la caja mínima operativa."],
+    fees_entry: ["Comisiones de entrada", "Comisiones de la financiación y de los asesores al comprar: se pierden."],
+    fees_exit: ["Comisiones de salida", "Un porcentaje del valor de empresa al vender."],
+    propco: ["Caja de la PropCo al cierre", "La venta de inmuebles a la PropCo reduce el equity que hay que poner al cierre."],
+  };
+  const yearLabels = ["2025 real", ...K.years.map(String)];
+  const tickDec = (v, k) => (Math.abs(v * k - Math.round(v * k)) > 1e-9 ? 1 : 0);
+
+  function renderCharts(rows) {
+    for (const el of document.querySelectorAll("[data-case-sub]")) {
+      el.dataset.text ??= el.textContent;
+      el.textContent = `${el.dataset.text} · caso ${CASE_SHORT[state.caseName]}`;
+    }
+    const { base, plan } = last;
+    renderCases(rows);
+    lineChart($("#sales-chart"), {
+      labels: yearLabels, H: 230, tick: (v) => num(v, 0), fmt: eur,
+      base: [K.fy25.revenue, ...base.lever.op.revenue], plan: [K.fy25.revenue, ...plan.lever.op.revenue],
+    });
+    const margin = (c) => [K.fy25.ebitda_pre / K.fy25.revenue, ...c.res.ebitda_pre.map((e, t) => e / c.lever.op.revenue[t])];
+    lineChart($("#margin-chart"), {
+      labels: yearLabels, H: 230, tick: (v) => pct(v, tickDec(v, 100)), fmt: (v) => pct(v, 1), base: margin(base), plan: margin(plan),
+    });
+    lineChart($("#dscr-chart"), {
+      labels: K.years.map(String), H: 230, tick: (v) => times(v, 1 + tickDec(v, 10)), fmt: (v) => times(v),
+      base: base.res.dscr, plan: plan.res.dscr, ref: { v: 1.2, label: "Covenant 1,2x" },
+      tipExtra: (t) => `<br>CFADS <b>${eur(plan.res.cfads[t])}</b> · servicio de la deuda <b>${eur(plan.res.cash_interest[t] + (t ? plan.res.tla[t - 1] : plan.res.su.tla) - plan.res.tla[t])}</b>`,
+    });
+    renderDebt();
+    renderBridge();
+    renderChartsTable(margin);
+  }
+
+  function renderCases(rows) {
+    const svg = $("#cases-chart"); svg.replaceChildren();
+    const W = 600, rowH = 42, Tp = 24, L = 64, R = 150, B = 24, H = Tp + rows.length * rowH + B;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const irrs = rows.flatMap((r) => [r.base.res.irr, r.plan.res.irr]);
+    const ticks = niceTicks(Math.min(-0.05, ...irrs), Math.max(0.20, ...irrs), 5);
+    const lo = ticks[0], hi = ticks[ticks.length - 1];
+    const x = (v) => L + (v - lo) / (hi - lo) * (W - L - R);
+    const yc = (i) => Tp + i * rowH + rowH / 2;
+    rows.forEach((r, i) => {
+      if (r.name === state.caseName) svg.append(s("rect", { x: 0, y: yc(i) - rowH / 2 + 3, width: W, height: rowH - 6, rx: 6, fill: "var(--surface-2)" }));
+    });
+    const g = s("g", { class: "grid" });
+    for (const t of ticks) {
+      g.append(s("line", { x1: x(t), x2: x(t), y1: Tp, y2: H - B }));
+      svg.append(s("text", { x: x(t), y: H - 6, "text-anchor": "middle" }, num(t * 100, 0) + "%"));
+    }
+    svg.append(g);
+    const xt = x(0.15);
+    svg.append(s("line", { x1: xt, x2: xt, y1: Tp - 6, y2: H - B, stroke: "var(--good)", "stroke-width": 1.5, "stroke-dasharray": "4 3" }));
+    svg.append(s("text", { x: xt + 5, y: Tp - 8, class: "axis-label" }, "Objetivo 15 %"));
+    rows.forEach((r, i) => {
+      const y = yc(i), a = r.base.res.irr, b = r.plan.res.irr, sel = r.name === state.caseName;
+      const grp = s("g", { class: "case-rows" });
+      grp.append(s("text", { x: 8, y: y - 2, class: sel ? "lbl-strong" : "axis-label" }, CASE_SHORT[r.name]));
+      grp.append(s("text", { x: 8, y: y + 11, style: "font-size:10px" }, `P${K.case_percentiles[r.name]}`));
+      grp.append(s("line", { x1: x(a), x2: x(b), y1: y, y2: y, stroke: "var(--series-base)", "stroke-width": 2 }));
+      grp.append(s("circle", { cx: x(a), cy: y, r: 5, fill: "var(--series-base)", stroke: "var(--surface)", "stroke-width": 2 }));
+      grp.append(s("circle", { cx: x(b), cy: y, r: 6, fill: "var(--series-plan)", stroke: "var(--surface)", "stroke-width": 2 }));
+      grp.append(s("text", { x: W - R + 14, y: y + 4, class: sel ? "lbl-strong" : "axis-label" }, `${pct(a)} → ${pct(b)}`));
+      const hit = s("rect", { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: "transparent" });
+      grp.append(hit);
+      attachTip(hit, () => `<b>${CASE_SHORT[r.name]} (P${K.case_percentiles[r.name]})</b><br>TIR <b>${pct(a)}</b> → <b>${pct(b)}</b>` +
+        `<br>EBITDA 2030 <b>${eur(r.base.res.ebitda_pre[T - 1])}</b> → <b>${eur(r.plan.res.ebitda_pre[T - 1])}</b>` +
+        `<br>DSCR mín. <b>${times(r.base.res.min_dscr)}</b> → <b>${times(r.plan.res.min_dscr)}</b>` + (sel ? "" : "<br>Pulsa para ver este caso"));
+      hit.addEventListener("click", () => { if (!sel) { state.caseName = r.name; hideTip(); refresh(false); } });
+      svg.append(grp);
+    });
+  }
+
+  // Deuda por tramos al cierre y a final de cada año, con la caja y la deuda neta / EBITDA.
+  function debtColumns(c) {
+    const su = c.res.su;
+    const cols = [{ label: "Cierre", tla: su.tla, tlb: su.tlb, pik: su.pik, vl: su.vl, rcf: 0, cash: K.deal.min_cash * K.deal.stake, ebitda: K.deal.ebitda_ref }];
+    K.years.forEach((yr, t) => cols.push({ label: String(yr), tla: c.res.tla[t], tlb: c.res.tlb[t], pik: c.res.pik[t], vl: c.res.vl[t],
+                                           rcf: c.res.rcf[t], cash: c.res.cash[t], ebitda: c.res.ebitda_pre[t] }));
+    for (const col of cols) {
+      col.total = col.tla + col.tlb + col.pik + col.vl + col.rcf;
+      col.ratio = (col.total - col.cash) / col.ebitda;
+    }
+    return cols;
+  }
+  function topRounded(x, y, w, hgt, r) {
+    r = Math.min(r, hgt, w / 2);
+    return `M${x},${y + hgt} V${y + r} Q${x},${y} ${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + hgt} Z`;
+  }
+
+  function renderDebt() {
+    const svg = $("#debt-chart"); svg.replaceChildren();
+    const cols = debtColumns(last.plan), ref = debtColumns(last.base);
+    const shown = DEBT.filter(([k]) => cols.some((c) => c[k] > 0.5));
+    $("#debt-legend").replaceChildren(...shown.map(([k, label]) => h("span", {}, h("i", { class: "bar", style: `--c: var(--debt-${k})` }), label)),
+      h("span", {}, h("i", { style: "--c: var(--series-base)" }), "Total sin palancas"));
+    const W = 600, H = 260, L = 52, R = 12, Tp = 24, B = 26;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const ticks = niceTicks(0, Math.max(...cols.map((c) => c.total), ...ref.map((c) => c.total)), 4);
+    const y = (v) => Tp + (1 - v / ticks[ticks.length - 1]) * (H - Tp - B);
+    const slot = (W - L - R) / cols.length, bw = 30, xc = (i) => L + slot * (i + 0.5);
+    const g = s("g", { class: "grid" });
+    for (const t of ticks) {
+      g.append(s("line", { x1: L, x2: W - R, y1: y(t), y2: y(t) }));
+      svg.append(s("text", { x: L - 8, y: y(t) + 4, "text-anchor": "end" }, num(t, 0)));
+    }
+    svg.append(g);
+    cols.forEach((c, i) => {
+      const segs = shown.filter(([k]) => c[k] > 0.5);
+      let acc = 0;
+      segs.forEach(([k], j) => {
+        const y0 = y(acc), y1 = y(acc + c[k]);
+        acc += c[k];
+        const hgt = y0 - y1 - (j > 0 ? 2 : 0);  // 2 px de separación entre tramos
+        if (hgt > 0) svg.append(s("path", { d: topRounded(xc(i) - bw / 2, y1, bw, hgt, j === segs.length - 1 ? 4 : 0), fill: `var(--debt-${k})` }));
+      });
+      const r = ref[i], yr = y(r.total);
+      svg.append(s("line", { x1: xc(i) - bw / 2 - 7, x2: xc(i) + bw / 2 + 7, y1: yr, y2: yr, stroke: "var(--series-base)", "stroke-width": 2.5, "stroke-linecap": "round" }));
+      svg.append(s("text", { x: xc(i), y: Math.min(y(c.total), yr) - 7, "text-anchor": "middle", class: "lbl-strong" }, times(c.ratio, 1)));
+      svg.append(s("text", { x: xc(i), y: H - 6, "text-anchor": "middle" }, c.label));
+      const hit = s("rect", { x: xc(i) - slot / 2, y: 0, width: slot, height: H - B, fill: "transparent" });
+      svg.append(hit);
+      attachTip(hit, () => `<b>${i === 0 ? "Al cierre (enero de 2026)" : `Final de ${c.label}`}</b>` +
+        segs.map(([k, label]) => `<br>${label} <b>${num(c[k], 0)}</b>`).join("") +
+        `<br>Total <b>${eur(c.total)}</b> · caja <b>${num(c.cash, 0)}</b>` +
+        `<br>Deuda neta / EBITDA <b>${times(c.ratio, 1)}</b>` +
+        `<br>Sin palancas: <b>${eur(r.total)}</b>, <b>${times(r.ratio, 1)}</b>`);
+    });
+    svg.append(s("line", { x1: L, x2: W - R, y1: y(0), y2: y(0), stroke: "var(--ink-2)", "stroke-width": 1 }));
+  }
+
+  function bridgeRows(c) {
+    const b = Motor.valueBridge(c.res, c.lever.deal);
+    const rows = [{ key: "start", label: "Equity invertido al cierre", total: true, v: b.start,
+                    note: "Lo que ponen al cierre el fondo y Amancio Ortega (rollover)." }];
+    rows.push({ key: "ebitda", label: `Crecimiento del EBITDA × ${times(c.res.exit_multiple, 1)}`, v: b.items.ebitda,
+                note: "Valor de empresa en la salida (EBITDA 2030 por el múltiplo) menos el valor de empresa al entrar." });
+    for (const [k, [label, note]] of Object.entries(BRIDGE)) rows.push({ key: k, label, v: b.items[k], note });
+    rows.push({ key: "end", label: "Equity en la salida (2031)", total: true, v: b.end,
+                note: "Valor de empresa en 2031 menos la deuda, más la caja, menos las comisiones de salida." });
+    rows.push({ key: "dividend", label: "Dividendo del recap", v: b.dividend, note: "Se cobra antes de la salida, el año del recap." });
+    rows.push({ key: "all", label: "Total para el equity", total: true, v: b.end + b.dividend, note: "Equity en la salida más el dividendo del recap." });
+    return rows;
+  }
+
+  function renderBridge() {
+    const svg = $("#bridge-chart"); svg.replaceChildren();
+    const plan = bridgeRows(last.plan), base = bridgeRows(last.base);
+    const keep = plan.map((r, i) => {
+      if (["start", "ebitda", "end"].includes(r.key)) return true;
+      const hasDiv = Math.abs(plan[plan.length - 2].v) > 0.5 || Math.abs(base[base.length - 2].v) > 0.5;
+      if (r.key === "dividend" || r.key === "all") return hasDiv;
+      return Math.abs(r.v) > 0.5 || Math.abs(base[i].v) > 0.5;
+    });
+    const rows = plan.map((r, i) => ({ ...r, base: base[i].v })).filter((_, i) => keep[i]);
+    let acc = 0;
+    for (const r of rows) {
+      if (r.total) { r.a = 0; r.b = r.v; acc = r.v; } else { r.a = acc; r.b = acc + r.v; acc += r.v; }
+    }
+    const W = 600, rowH = 26, Tp = 4, labelW = 222, valueW = 70, H = Tp + rows.length * rowH + 6;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const hi = Math.max(...rows.map((r) => Math.max(r.a, r.b)), ...rows.filter((r) => r.total).map((r) => r.base));
+    const x0 = labelW, x1 = W - valueW, x = (v) => x0 + v / hi * (x1 - x0);
+    rows.forEach((r, i) => {
+      const y = Tp + i * rowH;
+      svg.append(s("text", { x: 0, y: y + 16, class: r.total ? "lbl-strong" : "axis-label" }, r.label));
+      const a = x(Math.min(r.a, r.b)), b = x(Math.max(r.a, r.b));
+      const fill = r.total ? "var(--series-plan)" : r.v >= 0 ? "var(--accent)" : "var(--neg)";
+      svg.append(s("rect", { x: a, y: y + 5, width: Math.max(1.5, b - a), height: 15, rx: 3, fill }));
+      if (r.total) {
+        const xb = x(r.base);
+        svg.append(s("line", { x1: xb, x2: xb, y1: y + 1, y2: y + 24, stroke: "var(--series-base)", "stroke-width": 2.5, "stroke-linecap": "round" }));
+      }
+      if (i < rows.length - 1) {
+        const next = rows[i + 1], at = next.total ? null : x(r.total ? r.v : r.b);
+        if (at !== null) svg.append(s("line", { x1: at, x2: at, y1: y + 20, y2: y + rowH + 5, stroke: "var(--ink-2)", "stroke-width": 1, "stroke-dasharray": "2 2" }));
+      }
+      svg.append(s("text", { x: Math.max(b, r.total ? x(r.base) : b) + 6, y: y + 17, class: r.total ? "lbl-strong" : "" }, r.total ? num(r.v, 0) : signed(r.v, 0)));
+      const hit = s("rect", { x: 0, y, width: W, height: rowH, fill: "transparent" });
+      svg.append(hit);
+      const f = (v) => (r.total ? eur(v) : signed(v, 0) + NB + "M€");
+      attachTip(hit, () => `<b>${r.label}</b><br>Con palancas <b>${f(r.v)}</b><br>Sin palancas <b>${f(r.base)}</b><br>${r.note}`);
+    });
+
+    const res = last.plan.res, su = res.su, got = sum(res.flows);
+    $("#bridge-note").textContent = `El fondo pone ${eur(su.sponsor)} (el ${pct(su.sponsorShare, 0)} del equity) y recibe ${eur(got)}: ` +
+      `MoM ${times(res.mom)} y TIR ${pct(res.irr)}. Amancio Ortega se queda el resto.`;
+    $("#bridge-table").replaceChildren(
+      h("thead", {}, h("tr", {}, h("th", { text: "M€" }), h("th", { text: "Sin palancas" }), h("th", { text: "Con palancas" }), h("th", { text: "Diferencia" }))),
+      h("tbody", {}, rows.map((r) => h("tr", { class: r.total ? "hl" : null }, h("td", { text: r.label }),
+        h("td", { class: "v", text: r.total ? num(r.base, 0) : signed(r.base, 0) }), h("td", { class: "v", text: r.total ? num(r.v, 0) : signed(r.v, 0) }),
+        h("td", { class: "v", text: signed(r.v - r.base, 0) })))));
+  }
+
+  function renderChartsTable(margin) {
+    const { base, plan } = last, b = debtColumns(base), p = debtColumns(plan);
+    const row = (label, vals, fmt) => h("tr", {}, h("td", { text: label }), vals.map((v) => h("td", { class: "v", text: v === null ? "—" : fmt(v) })));
+    const pair = (label, f, fmt) => [row(`${label} · sin`, f(base, b), fmt), row(`${label} · con`, f(plan, p), fmt)];
+    $("#charts-table").replaceChildren(
+      h("thead", {}, h("tr", {}, h("th", { text: `Caso ${CASE_SHORT[state.caseName]}` }), h("th", { text: "2025 / cierre" }), K.years.map((yr) => h("th", { text: String(yr) })))),
+      h("tbody", {},
+        pair("Ventas", (c) => [K.fy25.revenue, ...c.lever.op.revenue], (v) => num(v, 0)),
+        pair("Margen EBITDA", (c) => margin(c), (v) => pct(v, 1)),
+        pair("CFADS", (c) => [null, ...c.res.cfads], (v) => num(v, 0)),
+        pair("DSCR", (c) => [null, ...c.res.dscr], (v) => times(v)),
+        pair("Deuda total", (c, cols) => cols.map((x) => x.total), (v) => num(v, 0)),
+        pair("Deuda neta / EBITDA", (c, cols) => cols.map((x) => x.ratio), (v) => times(v, 1))));
+  }
+
+  // ---------- Riesgo (simulación en segundo plano) ----------
+  const risk = { base: null, plan: null, bands: null };
+  const motorSource = document.getElementById("motor").textContent;
+  const handler = `
+    function compute(m) {
+      const out = { id: m.id, type: m.type };
+      if (m.type === "plan") out.plan = Motor.riskSummary(Motor.simulate(m.values, m.on, true));
+      if (m.type === "base") out.base = Motor.riskSummary(Motor.simulate(m.values, m.on, false));
+      if (m.type === "bands") out.bands = Motor.BANDS.map((b) => Motor.riskSummary(Motor.simulate(Motor.bandValues(b), m.on, true)));
+      return out;
+    }
+    self.onmessage = (e) => { if (e.data.type === "init") Motor.init(e.data.data); else self.postMessage(compute(e.data)); };`;
+  let worker = null;
+  const pending = {};
+  function computeHere(m) {
+    const out = { id: m.id, type: m.type };
+    if (m.type === "plan") out.plan = Motor.riskSummary(Motor.simulate(m.values, m.on, true));
+    if (m.type === "base") out.base = Motor.riskSummary(Motor.simulate(m.values, m.on, false));
+    if (m.type === "bands") out.bands = Motor.BANDS.map((b) => Motor.riskSummary(Motor.simulate(Motor.bandValues(b), m.on, true)));
+    return out;
+  }
+  function post(m) {
+    pending[m.type] = m;
+    if (worker) worker.postMessage(m);
+    else setTimeout(() => onRisk(computeHere(m)), 30);
+  }
+  try {
+    worker = new Worker(URL.createObjectURL(new Blob([motorSource, handler], { type: "text/javascript" })));
+    worker.onmessage = (e) => onRisk(e.data);
+    worker.onerror = () => { worker = null; Object.values(pending).forEach((m) => post(m)); };
+    worker.postMessage({ type: "init", data: DATOS });
+  } catch (e) { worker = null; }
+
+  let riskId = 0, riskTimer = null;
+  function scheduleRisk() {
+    clearTimeout(riskTimer);
+    $("#risk").classList.add("busy");
+    riskTimer = setTimeout(() => post({ type: "plan", id: ++riskId, values: state.values, on: state.on }), 200);
+  }
+  function onRisk(m) {
+    delete pending[m.type];
+    if (m.type === "plan") { if (m.id !== riskId) return; risk.plan = m.plan; $("#risk").classList.remove("busy"); }
+    if (m.type === "base") risk.base = m.base;
+    if (m.type === "bands") risk.bands = m.bands;
+    renderRisk();
+    renderEbitda();
+  }
+
+  function renderRisk() {
+    const b = risk.base, p = risk.plan;
+    const box = $("#risk-stats");
+    const stat = (k, v, sub) => h("div", { class: "stat" }, h("div", { class: "k", text: k }), h("div", { class: "v", text: v }), h("div", { class: "s", text: sub }));
+    if (p && b) {
+      box.replaceChildren(
+        stat("TIR mediana", pct(p.irr_median), `sin plan ${pct(b.irr_median)} · P10-P90 ${pct(p.irr_p10, 0)} a ${pct(p.irr_p90, 0)}`),
+        stat("Prob. de llegar al 15 %", pct(p.p_irr_15), `sin plan ${pct(b.p_irr_15)}`),
+        stat("Prob. de DSCR mín. < 1,2x", pct(p.p_dscr_12, 0), `sin plan ${pct(b.p_dscr_12, 0)}`));
+      renderHist(b.irr_hist, p.irr_hist, b.irr_median, p.irr_median);
+    }
+    const tbl = $("#band-table");
+    const rows = [["Sin plan", b]];
+    if (risk.bands) Motor.BANDS.forEach((name, i) => rows.push([`Todas en ${name}`, risk.bands[i], name]));
+    rows.push(["Tu plan", p, null, true]);
+    tbl.replaceChildren(
+      h("thead", {}, h("tr", {}, h("th", { text: "" }), h("th", { text: "TIR mediana" }), h("th", { text: "P(TIR ≥ 15 %)" }), h("th", { text: "P(DSCR < 1,2x)" }), h("th", { text: "EBITDA 2030" }))),
+      h("tbody", {}, rows.map(([label, r, band, hl]) => h("tr", { class: hl ? "hl" : null },
+        h("td", {}, band ? h("span", { class: "dot", style: `display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--band-${BAND_SLUG[band]})` }) : null, label),
+        h("td", { class: "v", text: r ? pct(r.irr_median) : "…" }), h("td", { class: "v", text: r ? pct(r.p_irr_15) : "…" }),
+        h("td", { class: "v", text: r ? pct(r.p_dscr_12, 0) : "…" }), h("td", { class: "v", text: r ? eur(r.ebitda2030_median) : "…" })))));
+  }
+
+  function renderHist(hb, hp, medB, medP) {
+    const svg = $("#hist"); svg.replaceChildren();
+    const W = 600, H = 230, L = 40, R = 12, Tp = 18, B = 26, n = hp.share.length;
+    const ymax = Math.max(...hb.share, ...hp.share);
+    const ticks = niceTicks(0, ymax, 4);
+    const x = (v) => L + (v - hp.lo) / (n * hp.step) * (W - L - R);
+    const y = (v) => Tp + (1 - v / ticks[ticks.length - 1]) * (H - Tp - B);
+    const g = s("g", { class: "grid" });
+    for (const t of ticks) {
+      const dec = Math.abs(t * 100 - Math.round(t * 100)) > 1e-9 ? 1 : 0;
+      g.append(s("line", { x1: L, x2: W - R, y1: y(t), y2: y(t) }));
+      svg.append(s("text", { x: L - 6, y: y(t) + 4, "text-anchor": "end" }, num(t * 100, dec) + "%"));
+    }
+    svg.append(g);
+    for (let k = 0; k <= 8; k++) {
+      const v = -0.10 + k * 0.05;
+      svg.append(s("text", { x: x(v), y: H - 6, "text-anchor": k === 0 ? "start" : k === 8 ? "end" : "middle" }, num(v * 100, 0) + "%"));
+    }
+    const bw = (W - L - R) / n;
+    hp.share.forEach((v, i) => {
+      if (v <= 0) return;
+      svg.append(s("rect", { x: L + i * bw + 1, y: y(v), width: Math.max(1, bw - 2), height: y(0) - y(v), rx: 1.5, fill: "color-mix(in srgb, var(--series-plan) 78%, transparent)" }));
+    });
+    let d = `M ${L} ${y(0)}`;
+    hb.share.forEach((v, i) => { d += ` L ${L + i * bw} ${y(v)} L ${L + (i + 1) * bw} ${y(v)}`; });
+    d += ` L ${W - R} ${y(0)}`;
+    svg.append(s("path", { d, fill: "none", stroke: "var(--series-base)", "stroke-width": 2, "stroke-linejoin": "round" }));
+    const xt = x(0.15);
+    svg.append(s("line", { x1: xt, x2: xt, y1: Tp - 6, y2: y(0), stroke: "var(--good)", "stroke-width": 1.5, "stroke-dasharray": "4 3" }));
+    svg.append(s("text", { x: xt + 5, y: Tp + 2, class: "axis-label" }, "Objetivo 15 %"));
+    svg.append(s("line", { x1: L, x2: W - R, y1: y(0), y2: y(0), stroke: "var(--ink-2)", "stroke-width": 1 }));
+    const hit = s("rect", { x: L, y: 0, width: W - L - R, height: H - B, fill: "transparent" });
+    svg.append(hit);
+    hit.addEventListener("pointermove", (ev) => {
+      const pt = svgPoint(svg, ev), i = Math.max(0, Math.min(n - 1, Math.floor((pt.x - L) / bw)));
+      const a = hp.lo + i * hp.step;
+      const range = i === 0 ? `menos del ${num((a + hp.step) * 100, 0)} %` : i === n - 1 ? `${num(a * 100, 0)} % o más` : `${num(a * 100, 0)} % a ${num((a + hp.step) * 100, 0)} %`;
+      showTip(ev, `<b>TIR ${range}</b><br>Con el plan <b>${pct(hp.share[i])}</b> de los escenarios<br>Sin plan <b>${pct(hb.share[i])}</b>`);
+    });
+    hit.addEventListener("pointerleave", hideTip);
+  }
+
+  // ---------- Tooltip ----------
+  const tip = $("#tip");
+  function showTip(ev, html) {
+    tip.innerHTML = html; tip.hidden = false;
+    const w = tip.offsetWidth, hgt = tip.offsetHeight;
+    let left = ev.clientX + 14, top = ev.clientY - hgt - 10;
+    if (left + w > window.innerWidth - 8) left = ev.clientX - w - 14;
+    if (top < 8) top = ev.clientY + 16;
+    tip.style.left = left + "px"; tip.style.top = top + "px";
+  }
+  const hideTip = () => { tip.hidden = true; };
+  function attachTip(el, html) { el.addEventListener("pointermove", (ev) => showTip(ev, html())); el.addEventListener("pointerleave", hideTip); }
+  function svgPoint(svg, ev) { const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+
+  // ---------- Pasar al Excel ----------
+  function renderExcel() {
+    const text = Motor.excelColumn(state.values, state.on, state.sep);
+    $("#copy-text").value = text;
+    const lines = text.split("\n"), body = $("#excel-table tbody");
+    const rows = [];
+    let i = 0;
+    K.levers.forEach((lv, j) => {
+      rows.push(h("tr", {}, h("td", { class: "v", text: `D${lv.row}` }), h("td", {}, h("b", { text: SHORT[lv.key] }), " · activa (1) o apagada (0)"), h("td", { class: "v", text: lines[i++] })));
+      for (const p of lv.params) rows.push(h("tr", {}, h("td", { class: "v", text: `D${p.row}` }), h("td", { text: p.label }), h("td", { class: "v", text: lines[i++] })));
+      if (j < K.levers.length - 1) i++;
+    });
+    body.replaceChildren(...rows);
+  }
+  async function copyText(text, statusEl, ok) {
+    try {
+      await navigator.clipboard.writeText(text);
+      statusEl.className = "status"; statusEl.textContent = ok;
+    } catch (e) {
+      const ta = $("#copy-text");
+      ta.closest("details").open = true; ta.focus(); ta.select();
+      statusEl.className = "status err"; statusEl.textContent = "El navegador no deja copiar: el texto está seleccionado abajo, cópialo con ⌘C.";
+    }
+  }
+  $("#copy").addEventListener("click", () => copyText(Motor.excelColumn(state.values, state.on, state.sep), $("#copy-status"),
+    `Copiado (${K.levers.length} palancas). Pégalo en la celda D19 de la hoja Palancas.`));
+  $("#copy-cmd").addEventListener("click", () => copyText($("#cmd").textContent, $("#copy-status"), "Comando copiado. Copia antes la columna."));
+  for (const id of ["sep-comma", "sep-dot"]) $("#" + id).addEventListener("change", (e) => { state.sep = e.target.value; renderExcel(); save(); });
+  $("#paste-in").addEventListener("input", (e) => {
+    const text = e.target.value, st = $("#paste-status");
+    if (!text.trim()) { st.textContent = ""; return; }
+    const r = Motor.parseColumn(text, state.sep);
+    if (r.errors.length) { st.className = "status err"; st.textContent = r.errors.slice(0, 4).join("\n"); return; }
+    state.values = r.values; state.on = r.on;
+    st.className = "status"; st.textContent = "Valores del Excel cargados.";
+    refresh();
+  });
+
+  // ---------- Ciclo principal ----------
+  function refresh(withRisk = true) {
+    const base = baseCase(state.caseName);
+    const plan = Motor.runCase(state.caseName, state.values, state.on);
+    const phi = Motor.shapley(state.caseName, state.values, state.on);
+    last = { base, plan };
+    syncControls();
+    renderKpis(base, plan);
+    renderContrib(phi);
+    renderFeet(plan, phi);
+    renderEbitda();
+    renderCharts(CASES.map((name) => ({ name, base: baseCase(name), plan: name === state.caseName ? plan : Motor.runCase(name, state.values, state.on) })));
+    renderExcel();
+    save();
+    if (withRisk) scheduleRisk();
+  }
+
+  refresh();
+  renderRisk();
+  post({ type: "base", id: 0, values: state.values, on: ALL(false) });
+  post({ type: "bands", id: 0, values: state.values, on: ALL(true) });
+})();
+</script>

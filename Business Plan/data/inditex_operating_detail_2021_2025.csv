@@ -1,0 +1,73 @@
+fiscal_year,dimension,item,value,unit,source
+2021,area_m2,Zara (incl. Zara Home),3140790,m2,Cuentas anuales 2022
+2021,area_m2,Pull&Bear,399699,m2,Cuentas anuales 2022
+2021,area_m2,Massimo Dutti,256505,m2,Cuentas anuales 2022
+2021,area_m2,Bershka,512644,m2,Cuentas anuales 2022
+2021,area_m2,Stradivarius,321147,m2,Cuentas anuales 2022
+2021,area_m2,Oysho,111372,m2,Cuentas anuales 2022
+2021,area_m2,Total,4742157,m2,Cuentas anuales 2022
+2022,area_m2,Zara (incl. Zara Home),3027914,m2,Cuentas anuales 2022
+2022,area_m2,Pull&Bear,368418,m2,Cuentas anuales 2022
+2022,area_m2,Massimo Dutti,218263,m2,Cuentas anuales 2022
+2022,area_m2,Bershka,458374,m2,Cuentas anuales 2022
+2022,area_m2,Stradivarius,304075,m2,Cuentas anuales 2022
+2022,area_m2,Oysho,96314,m2,Cuentas anuales 2022
+2022,area_m2,Total,4473358,m2,Cuentas anuales 2022
+2023,area_m2,Zara (incl. Zara Home),3078590,m2,Cuentas anuales 2023
+2023,area_m2,Pull&Bear,377969,m2,Cuentas anuales 2023
+2023,area_m2,Massimo Dutti,220633,m2,Cuentas anuales 2023
+2023,area_m2,Bershka,470134,m2,Cuentas anuales 2023
+2023,area_m2,Stradivarius,311436,m2,Cuentas anuales 2023
+2023,area_m2,Oysho,98409,m2,Cuentas anuales 2023
+2023,area_m2,Total,4557170,m2,Cuentas anuales 2023
+2024,area_m2,Zara (incl. Zara Home),3140105,m2,Cuentas anuales 2024
+2024,area_m2,Pull&Bear,396522,m2,Cuentas anuales 2024
+2024,area_m2,Massimo Dutti,219611,m2,Cuentas anuales 2024
+2024,area_m2,Bershka,481556,m2,Cuentas anuales 2024
+2024,area_m2,Stradivarius,319720,m2,Cuentas anuales 2024
+2024,area_m2,Oysho,93061,m2,Cuentas anuales 2024
+2024,area_m2,Total,4650575,m2,Cuentas anuales 2024
+2025,area_m2,Zara (incl. Zara Home),3180596,m2,Cuentas anuales 2025
+2025,area_m2,Pull&Bear,407073,m2,Cuentas anuales 2025
+2025,area_m2,Massimo Dutti,215323,m2,Cuentas anuales 2025
+2025,area_m2,Bershka,493680,m2,Cuentas anuales 2025
+2025,area_m2,Stradivarius,328122,m2,Cuentas anuales 2025
+2025,area_m2,Oysho,95909,m2,Cuentas anuales 2025
+2025,area_m2,Total,4720703,m2,Cuentas anuales 2025
+2021,sales_geo,España,4267,eur_m,Cuentas anuales 2022
+2021,sales_geo,Resto Europa,14051,eur_m,Cuentas anuales 2022
+2021,sales_geo,América,4877,eur_m,Cuentas anuales 2022
+2021,sales_geo,Asia y resto del mundo,4521,eur_m,Cuentas anuales 2022
+2022,sales_geo,España,5021,eur_m,Cuentas anuales 2022
+2022,sales_geo,Resto Europa,16306,eur_m,Cuentas anuales 2022
+2022,sales_geo,América,6556,eur_m,Cuentas anuales 2022
+2022,sales_geo,Asia y resto del mundo,4686,eur_m,Cuentas anuales 2022
+2023,sales_geo,España,5666,eur_m,Cuentas anuales 2023
+2023,sales_geo,Resto Europa,18381,eur_m,Cuentas anuales 2023
+2023,sales_geo,América,7104,eur_m,Cuentas anuales 2023
+2023,sales_geo,Asia y resto del mundo,4796,eur_m,Cuentas anuales 2023
+2024,sales_geo,España,6228,eur_m,Cuentas anuales 2024
+2024,sales_geo,Resto Europa,20657,eur_m,Cuentas anuales 2024
+2024,sales_geo,América,7039,eur_m,Cuentas anuales 2024
+2024,sales_geo,Asia y resto del mundo,4708,eur_m,Cuentas anuales 2024
+2025,sales_geo,España,6754,eur_m,Cuentas anuales 2025
+2025,sales_geo,Resto Europa,21509,eur_m,Cuentas anuales 2025
+2025,sales_geo,América,6971,eur_m,Cuentas anuales 2025
+2025,sales_geo,Asia y resto del mundo,4630,eur_m,Cuentas anuales 2025
+2022,online_sales,Online,7806,eur_m,Cuentas anuales 2022
+2023,online_sales,Online,9064,eur_m,Cuentas anuales 2023
+2024,online_sales,Online,10163,eur_m,Cuentas anuales 2024
+2025,online_sales,Online,10656,eur_m,Cuentas anuales 2025
+2022,opex,Gastos de personal,4753,eur_m,Cuentas anuales 2022
+2022,opex,Arrendamientos operativos (variables),859,eur_m,Cuentas anuales 2022
+2022,opex,Otros gastos operativos,4255,eur_m,Cuentas anuales 2022
+2023,opex,Gastos de personal,5357,eur_m,Cuentas anuales 2023
+2023,opex,Arrendamientos operativos (variables),989,eur_m,Cuentas anuales 2023
+2023,opex,Otros gastos operativos,4507,eur_m,Cuentas anuales 2023
+2024,opex,Gastos de personal,5643,eur_m,Cuentas anuales 2024
+2024,opex,Arrendamientos operativos (variables),1072,eur_m,Cuentas anuales 2024
+2024,opex,Otros gastos operativos,4840,eur_m,Cuentas anuales 2024
+2025,opex,Gastos de personal,5914,eur_m,Cuentas anuales 2025
+2025,opex,Arrendamientos operativos (variables),1085,eur_m,Cuentas anuales 2025
+2025,opex,Otros gastos operativos,4879,eur_m,Cuentas anuales 2025
+2021,capex,Total,1126,eur_m,Cuentas anuales 2022 (flujos de inversión)

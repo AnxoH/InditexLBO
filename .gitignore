@@ -23,7 +23,7 @@ Annual Reports/Originals/
 
 # Virtual environments
 .env
-.venv
+.venv/
 env/
 venv/
 
