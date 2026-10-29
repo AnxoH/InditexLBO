@@ -152,6 +152,9 @@ def build_dashboard(path: Path = OUTPUT, standalone: bool = True, data: dict | N
     motor = (DASH / "motor.js").read_text(encoding="utf-8")
     data = json.dumps(data or dashboard_data(), ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     page = page.replace("/*__MOTOR__*/", motor).replace("/*__DATOS__*/null", data)
+    # Logo y monograma de Herrera Lázaro Pérez Partners (sacados de la presentación del grupo)
+    png = lambda name: "data:image/png;base64," + base64.b64encode((DASH / name).read_bytes()).decode()
+    page = page.replace("/*__LOGO__*/", png("hlp_logo.png")).replace("/*__MONO__*/", png("hlp_monograma.png"))
     if standalone:
         page = ('<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n'
                 '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'

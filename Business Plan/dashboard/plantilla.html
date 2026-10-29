@@ -1,4 +1,5 @@
 <title>Palancas del LBO de Inditex</title>
+<link rel="icon" type="image/png" href="/*__MONO__*/">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,7 +53,7 @@
 }
 
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-sans); -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-sans); -webkit-font-smoothing: antialiased; }
 h1, h2, h3 { text-wrap: balance; margin: 0; }
 p { margin: 0; }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -63,14 +64,24 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* Cabecera */
 .top { background: var(--surface); border-bottom: 1px solid var(--line); }
-.top .wrap { padding-block: 22px 18px; display: grid; gap: 14px; }
+.top .wrap { padding-block: 22px 18px; display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+.top .wrap > * { min-width: 0; }
+/* Cabecera con la identidad de Herrera Lázaro Pérez Partners: banda oscura del mismo tono que el fondo del logo, en los dos temas */
+.top.brand { --surface: #1a1d21; --surface-2: #262a30; --line: #3a4048; --ink: #f2f4f6; --ink-2: #c6ccd3; --muted: #9098a3;
+  --hlp-green: #a7cbb6; color: var(--ink); color-scheme: dark; }
+.top.brand .wrap { padding-block: 14px 22px; }
+.brand-row { display: flex; align-items: center; justify-content: space-between; gap: 10px 24px; flex-wrap: wrap; margin-left: -10px; }
+.brand-logo { height: 100px; width: auto; max-width: 100%; display: block; }
+.brand-tag { display: grid; justify-items: end; gap: 2px; font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--hlp-green); }
+.brand-tag span + span { color: var(--muted); letter-spacing: .12em; }
+@media (max-width: 560px) { .brand-tag { justify-items: start; margin-left: 10px; } .brand-logo { height: 84px; } }
 .eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
 h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(26px, 3.2vw, 34px); line-height: 1.15; letter-spacing: -.01em; }
 .deal { color: var(--ink-2); font-size: 14px; max-width: 95ch; }
 .deal b { font-weight: 600; color: var(--ink); }
 .case-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
 .case-row .lbl { font-size: 13px; color: var(--muted); }
-.segmented { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface-2); }
+.segmented { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface-2); max-width: 100%; overflow-x: auto; scrollbar-width: thin; }
 .segmented button { border: 0; background: transparent; padding: 7px 14px; cursor: pointer; font-size: 14px; color: var(--ink-2); display: grid; line-height: 1.2; text-align: left; }
 .segmented button + button { border-left: 1px solid var(--line); }
 .segmented button small { font-size: 11px; color: var(--muted); font-family: var(--font-mono); white-space: nowrap; }
@@ -263,6 +274,8 @@ footer.notes { border-top: 1px solid var(--line); background: var(--surface); }
 footer.notes .wrap { padding-block: 22px 30px; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 footer.notes h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
 footer.notes p { font-size: 13px; color: var(--ink-2); }
+footer.notes .wrap.brand-foot { display: flex; align-items: center; gap: 10px; padding-block: 0 26px; font-size: 12px; color: var(--muted); letter-spacing: .02em; }
+.brand-foot img { width: 28px; height: 28px; border-radius: 3px; flex: none; }
 
 @media (max-width: 1080px) {
   .grid { grid-template-columns: minmax(0, 1fr); }
@@ -280,8 +293,12 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
-<header class="top">
+<header class="top brand">
   <div class="wrap">
+    <div class="brand-row">
+      <img class="brand-logo" src="/*__LOGO__*/" alt="Herrera Lázaro Pérez Partners · Corporate Finance Advisory" width="322" height="100">
+      <div class="brand-tag"><span>Project Galicia</span><span>Estrictamente confidencial</span></div>
+    </div>
     <div class="eyebrow" id="eyebrow">Project Galicia · LBO de Inditex · modelo definitivo del grupo</div>
     <h1>Plan de creación de valor</h1>
     <p class="deal" id="deal-line"></p>
@@ -507,6 +524,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     <div><h3>Los cuatro casos</h3><p>Base, Bull, Bear y Bank son los del Excel (Active Case, columnas E a H). El grupo los calibró con la simulación de Monte Carlo y las palancas operativas; esta página suma encima el plan de creación de valor.</p></div>
     <div><h3>Riesgo</h3><p>Los 20.000 escenarios tienen la volatilidad, las correlaciones y las crisis calibradas con 2005-2025, centrados en el caso Base del Excel. Cada palanca operativa se cumple solo en parte o algo mejor de lo planeado (por ejemplo entre el 50 % y el 110 % en aperturas).</p></div>
   </div>
+  <div class="wrap brand-foot"><img src="/*__MONO__*/" alt="" width="28" height="28"><span>Herrera Lázaro Pérez Partners · Corporate Finance Advisory · Project Galicia · Estrictamente confidencial</span></div>
 </footer>
 
 <div class="tooltip" id="tip" hidden></div>
