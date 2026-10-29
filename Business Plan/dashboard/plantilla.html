@@ -181,6 +181,11 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(26px, 3.
 .delta.up { color: var(--good); }
 .delta.down { color: var(--neg); }
 .hero-sub { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+.hero-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.hero-trio div { background: var(--surface-2); border-radius: 8px; padding: 7px 10px; min-width: 0; }
+.hero-trio .k { font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+.hero-trio .v { font-family: var(--font-mono); font-size: 18px; font-weight: 500; }
+.hero-trio .x { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
 .bullet { width: 100%; height: auto; display: block; margin-top: 8px; }
 
 table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
@@ -327,6 +332,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
       <div class="hero-label" id="hero-label">TIR bruta del fondo</div>
       <div class="hero-row"><span class="hero-num" id="irr-plan">—</span><span class="delta" id="irr-delta"></span></div>
       <div class="hero-sub" id="irr-sub"></div>
+      <div class="hero-trio" id="irr-trio"></div>
       <svg class="bullet" id="bullet" viewBox="0 0 420 46" role="img" aria-label="TIR bruta del fondo frente al objetivo del 15 %"></svg>
     </section>
 
@@ -569,10 +575,10 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
   ];
 
   // ---------- Estado (se recuerda en este navegador) ----------
-  const STORE = "palancas-inditex-v2";
+  const STORE = "palancas-inditex-v3";  // v3: arranca en el Excel, con las palancas apagadas
   const TABS = ["resumen", "graficas", "riesgo"];
   const state = { caseName: CASES[(K.excel.active_case || 1) - 1] || CASES[0], exitYear: d.exit_year,
-                  values: Motor.defaults(), on: ALL(true), tab: "resumen", deal: {} };
+                  values: Motor.defaults(), on: ALL(false), tab: "resumen", deal: {} };
   try {
     const saved = JSON.parse(localStorage.getItem(STORE) || "null");
     if (saved) {
@@ -738,9 +744,9 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 
   // ---------- Escenarios de partida ----------
   const presets = [
-    ["Valores por defecto", () => ({ values: Motor.defaults(), on: ALL(true) }), null],
+    ["Encender todas (valores por defecto)", () => ({ values: Motor.defaults(), on: ALL(true) }), null],
     ...Motor.BANDS.map((b) => [`Todo ${b}`, () => ({ values: Motor.bandValues(b), on: ALL(true) }), b]),
-    ["Apagar todas", () => ({ values: state.values, on: ALL(false) }), null],
+    ["Apagar todas (el Excel tal cual)", () => ({ values: state.values, on: ALL(false) }), null],
   ];
   for (const [label, make, band] of presets) {
     const b = h("button", { class: "btn", type: "button" }, band ? h("span", { class: "dot", style: `--c: var(--band-${BAND_SLUG[band]})` }) : null, label);
@@ -850,8 +856,8 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 
   const KPIS = [
     { label: () => "MOIC bruto del fondo", get: (c) => c.res.mom, fmt: (v) => times(v), dfmt: (x) => signed(x, 2) + "x" },
-    { label: () => "TIR neta de los LPs", get: (c) => c.res.lp_irr, fmt: (v) => pct(v), dfmt: (x) => pp(x, 2) },
-    { label: () => "TIR neta del GP (con carry)", get: (c) => c.res.gp_irr, fmt: (v) => pct(v), dfmt: (x) => pp(x, 2) },
+    { label: () => "TIR neta de los LPs", get: (c) => c.res.lp_irr, fmt: (v) => pct(v, 2), dfmt: (x) => pp(x, 2) },
+    { label: () => "TIR neta del GP (con carry)", get: (c) => c.res.gp_irr, fmt: (v) => pct(v, 2), dfmt: (x) => pp(x, 2) },
     { label: () => `DSCR bancario mínimo ${YEARS[0]}-${String(LAST).slice(2)}`, get: (c) => c.res.min_dscr, fmt: (v) => times(v),
       dfmt: (x) => signed(x, 2) + "x", warn: (v) => v < d.dscr_min, warnText: `⚠ < ${times(d.dscr_min)}` },
     { label: () => "Holgura mínima del covenant de apalancamiento", get: (c) => minCushion(c.res), fmt: (v) => times(v),
@@ -870,12 +876,19 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 
   function renderKpis(base, plan) {
     const irr0 = base.res.irr, irr1 = plan.res.irr, dIrr = irr1 - irr0;
+    const levers = K.levers.some((lv) => state.on[lv.key]), pure = !levers && !dealChanged();
     $("#hero-label").textContent = `TIR bruta del fondo · caso ${state.caseName} · salida en ${state.exitYear}`;
-    $("#irr-plan").textContent = pct(irr1);
+    $("#irr-plan").textContent = pct(irr1, 2);
     const delta = $("#irr-delta");
+    delta.hidden = !levers;
     delta.textContent = (dIrr > 0.00005 ? "▲ " : dIrr < -0.00005 ? "▼ " : "") + pp(dIrr, 2);
     delta.className = "delta" + (dIrr > 0.00005 ? " up" : dIrr < -0.00005 ? " down" : "");
-    $("#irr-sub").textContent = `Sin palancas ${pct(irr0)}, ${dealChanged() ? "el Excel con tu estructura" : "como el Excel"} · el fondo busca al menos un 15 %`;
+    $("#irr-sub").textContent = pure ? "Exactamente el Excel de Anxo (LBO Summary!K17) · el fondo busca al menos un 15 %"
+      : levers ? `${dealChanged() ? "El Excel con tu estructura" : "El Excel"}: ${pct(irr0, 2)} · con tus palancas: ${pct(irr1, 2)}`
+      : "El Excel con tu estructura (mira «Comprobar con el Excel») · el fondo busca al menos un 15 %";
+    const trio = [["Bruta del fondo", irr1, "K17"], ["Neta de los LPs", plan.res.lp_irr, "K21"], ["Neta del GP, con carry", plan.res.gp_irr, "L18"]];
+    $("#irr-trio").replaceChildren(...trio.map(([k, v, cell]) => h("div", {}, h("div", { class: "k", text: k }),
+      h("div", { class: "v", text: pct(v, 2) }), h("div", { class: "x", text: levers ? "con palancas" : `Excel: LBO Summary!${cell}` }))));
     KPIS.forEach((k, i) => {
       const a = k.get(base), b = k.get(plan), r = kpiRows[i];
       r.label.textContent = k.label();
@@ -885,8 +898,8 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
       r.cells[2].textContent = k.dfmt(b - a);
     });
     renderBullet(irr0, irr1);
-    $("#mini").innerHTML = `<span>TIR ${state.caseName} ${state.exitYear}: <b>${pct(irr0)}</b> → <b>${pct(irr1)}</b> (${pp(dIrr, 2)})</span>` +
-      `<span>LPs <b>${pct(plan.res.lp_irr)}</b> · GP <b>${pct(plan.res.gp_irr)}</b></span><span>DSCR mín. <b>${times(plan.res.min_dscr)}</b></span>`;
+    $("#mini").innerHTML = `<span>TIR ${state.caseName} ${state.exitYear}: <b>${pct(irr1, 2)}</b>${levers ? ` (Excel ${pct(irr0, 2)})` : ""}</span>` +
+      `<span>LPs <b>${pct(plan.res.lp_irr, 2)}</b> · GP <b>${pct(plan.res.gp_irr, 2)}</b></span><span>DSCR mín. <b>${times(plan.res.min_dscr)}</b></span>`;
   }
 
   function renderBullet(irr0, irr1) {
