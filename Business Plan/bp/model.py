@@ -55,7 +55,7 @@ def project(dr: Drivers) -> Operating:
                      capex=rev * dr.capex_ratio, wc=rev * (dr.inv + dr.rec + dr.pay))
 
 
-def simulate(cal: Calibration, n: int = 20000, seed: int = 2026) -> Drivers:
+def simulate(cal: Calibration, n: int = 20000, seed: int = 2026, horizon: int = T) -> Drivers:
     rng = np.random.default_rng(seed)
     p = cal.params
     draw = lambda k: rng.normal(p[k].value, p[k].se, n) if p[k].se > 0 else np.full(n, p[k].value)
@@ -73,9 +73,9 @@ def simulate(cal: Calibration, n: int = 20000, seed: int = 2026) -> Drivers:
     p_crisis = rng.beta(p["crisis_a"].value, p["crisis_b"].value, n)
 
     L = np.linalg.cholesky(cal.corr)
-    z = rng.standard_normal((n, T, 4)) @ L.T  # shocks correlacionados: orgánico, margen, gastos, divisa
+    z = rng.standard_normal((n, horizon, 4)) @ L.T  # shocks correlacionados: orgánico, margen, gastos, divisa
 
-    out = {k: np.zeros((n, T)) for k in Drivers.CORE + ("growth_org", "fx", "crisis")}
+    out = {k: np.zeros((n, horizon)) for k in Drivers.CORE + ("growth_org", "fx", "crisis")}
     base_org = np.full(n, p["org_start"].value)
     gm_prev = np.full(n, FY25["gross_margin"])
     ln_r_prev = np.log(np.full(n, (FY25["opex_post"] + FY25["lease"]) / FY25["revenue"]))
@@ -84,7 +84,7 @@ def simulate(cal: Calibration, n: int = 20000, seed: int = 2026) -> Drivers:
     jump_prev = np.zeros(n)
     expected = np.log((1 + mu_org) * (1 + mu_fx))
 
-    for t in range(T):
+    for t in range(horizon):
         crisis = rng.random(n) < p_crisis
         jump = np.where(crisis, np.clip(rng.normal(p["crisis_size"].value, p["crisis_size"].se, n), -0.5, -0.05), 0.0)
         rho = np.clip(rng.normal(p["crisis_rebound"].value, p["crisis_rebound"].se, n), 0.5, 1.0)
