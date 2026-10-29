@@ -4,7 +4,7 @@ Business plan estocástico para el LBO: calibración con el histórico 2005-2025
 
 **Por dónde empezar**
 
-0. [Guia_Business_Plan_desde_cero.pdf](Guia_Business_Plan_desde_cero.pdf): todo explicado desde cero (conceptos, cada hipótesis y su justificación, el Excel hoja por hoja, el dashboard y preguntas para la presentación).
+0. [Guia_Business_Plan_desde_cero.pdf](Guia_Business_Plan_desde_cero.pdf): todo explicado desde cero (conceptos, cada hipótesis y su justificación, el Excel hoja por hoja, el dashboard, preguntas para la presentación y, en la Parte 7, el modelo ecuación a ecuación con qué pasa si mueves cada parámetro).
 1. [Business_Plan_Inditex.ipynb](Business_Plan_Inditex.ipynb): el business plan standalone, explicado paso a paso.
 2. `output/Dashboard_palancas.html` (doble clic): dashboard con las 8 palancas, barómetros, TIR y riesgo en 20.000 escenarios. La pestaña «Gráficas del LBO» redibuja al mover cada palanca la TIR de los cuatro casos, ventas, margen, deuda por tramos, DSCR y el puente de valor del equity. Sus valores se pasan a la hoja Palancas del Excel pegando la columna que copia el botón «Copiar columna» en la celda D19, o con `.venv/bin/python "Business Plan/pasar_al_excel.py"` (con el Excel cerrado).
 3. `../Excels/Inditex_LBO_Rollover50_BusinessPlan.xlsx`, hoja **Palancas**: el mismo panel dentro del Excel. Cambia las celdas amarillas; el barómetro indica si cada hipótesis es conservadora, normal, optimista o agresiva, y el LBO se recalcula al instante.
