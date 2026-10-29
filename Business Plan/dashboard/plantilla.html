@@ -181,6 +181,11 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(26px, 3.
 .delta.up { color: var(--good); }
 .delta.down { color: var(--neg); }
 .hero-sub { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+#gp-table td:nth-child(2), #gp-years td:first-child + td { white-space: nowrap; }
+#gp-table .cellref { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); text-align: left; }
+#gp-table tr.hl td { font-weight: 600; }
+#gp-years th.sel, #gp-years td.sel { background: var(--surface-2); font-weight: 600; }
+.gp-h3 { font-size: 14px; font-weight: 600; margin: 14px 0 4px; }
 .hero-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
 .hero-trio div { background: var(--surface-2); border-radius: 8px; padding: 7px 10px; min-width: 0; }
 .hero-trio .k { font-size: 11.5px; color: var(--muted); line-height: 1.3; }
@@ -349,6 +354,16 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
         <tbody></tbody>
       </table>
       <p class="kpi-note">«Sin palancas» es el Excel definitivo del grupo, celda a celda (ver «Comprobar con el Excel»). La TIR bruta es la del fondo antes de repartir con el GP; la neta de los LPs y la del GP salen de la cascada del Excel.</p>
+    </section>
+
+    <section class="panel" id="gp-panel">
+      <div class="chart-head">
+        <div><h2>Lead GP con carry y LPs</h2><p class="sub" id="gp-sub">Las mismas filas que el LBO Summary del Excel</p></div>
+      </div>
+      <div class="table-scroll" style="border:0;padding:0;max-height:none"><table id="gp-table"></table></div>
+      <h3 class="gp-h3">Si se vende cada año</h3>
+      <div class="table-scroll" style="border:0;padding:0;max-height:none"><table id="gp-years"></table></div>
+      <p class="kpi-note">Cascada del Excel: los LPs recuperan su capital y un preferente anual; después el Lead GP cobra el catch-up hasta llevarse su parte del beneficio y el exceso se reparte. El Lead GP cobra además su coinversión, como un LP más.</p>
     </section>
 
     <section class="panel chart" id="contrib-panel">
@@ -857,7 +872,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
   const KPIS = [
     { label: () => "MOIC bruto del fondo", get: (c) => c.res.mom, fmt: (v) => times(v), dfmt: (x) => signed(x, 2) + "x" },
     { label: () => "TIR neta de los LPs", get: (c) => c.res.lp_irr, fmt: (v) => pct(v, 2), dfmt: (x) => pp(x, 2) },
-    { label: () => "TIR neta del GP (con carry)", get: (c) => c.res.gp_irr, fmt: (v) => pct(v, 2), dfmt: (x) => pp(x, 2) },
+    { label: () => "TIR neta del Lead GP (con carry)", get: (c) => c.res.gp_irr, fmt: (v) => pct(v, 2), dfmt: (x) => pp(x, 2) },
     { label: () => `DSCR bancario mínimo ${YEARS[0]}-${String(LAST).slice(2)}`, get: (c) => c.res.min_dscr, fmt: (v) => times(v),
       dfmt: (x) => signed(x, 2) + "x", warn: (v) => v < d.dscr_min, warnText: `⚠ < ${times(d.dscr_min)}` },
     { label: () => "Holgura mínima del covenant de apalancamiento", get: (c) => minCushion(c.res), fmt: (v) => times(v),
@@ -886,7 +901,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     $("#irr-sub").textContent = pure ? "Exactamente el Excel de Anxo (LBO Summary!K17) · el fondo busca al menos un 15 %"
       : levers ? `${dealChanged() ? "El Excel con tu estructura" : "El Excel"}: ${pct(irr0, 2)} · con tus palancas: ${pct(irr1, 2)}`
       : "El Excel con tu estructura (mira «Comprobar con el Excel») · el fondo busca al menos un 15 %";
-    const trio = [["Bruta del fondo", irr1, "K17"], ["Neta de los LPs", plan.res.lp_irr, "K21"], ["Neta del GP, con carry", plan.res.gp_irr, "L18"]];
+    const trio = [["Bruta del fondo", irr1, "K17"], ["Neta de los LPs", plan.res.lp_irr, "K21"], ["Lead GP, neta con carry", plan.res.gp_irr, "L18"]];
     $("#irr-trio").replaceChildren(...trio.map(([k, v, cell]) => h("div", {}, h("div", { class: "k", text: k }),
       h("div", { class: "v", text: pct(v, 2) }), h("div", { class: "x", text: levers ? "con palancas" : `Excel: LBO Summary!${cell}` }))));
     KPIS.forEach((k, i) => {
@@ -900,6 +915,46 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     renderBullet(irr0, irr1);
     $("#mini").innerHTML = `<span>TIR ${state.caseName} ${state.exitYear}: <b>${pct(irr1, 2)}</b>${levers ? ` (Excel ${pct(irr0, 2)})` : ""}</span>` +
       `<span>LPs <b>${pct(plan.res.lp_irr, 2)}</b> · GP <b>${pct(plan.res.gp_irr, 2)}</b></span><span>DSCR mín. <b>${times(plan.res.min_dscr)}</b></span>`;
+  }
+
+  // Retornos del LBO Summary: fondo, Lead GP con carry y LPs (H17:L21) y su cascada (filas 73-97) en el año de salida.
+  function renderGpPanel(base, plan) {
+    const levers = K.levers.some((lv) => state.on[lv.key]);
+    const col = "FGHIJKL"[kExit()], a = base.res, b = plan.res, ta = a.wf_tiers, tb = b.wf_tiers;
+    const rows = [
+      ["TIR bruta del fondo", "K17", a.irr, b.irr, (v) => pct(v, 2), true],
+      ["MOIC bruto del fondo", "L17", a.mom, b.mom, (v) => times(v, 2)],
+      ["Lead GP: TIR neta con carry", "L18", a.gp_irr, b.gp_irr, (v) => pct(v, 2), true],
+      ["Lead GP: MOIC neto con carry", "L19", a.gp_mom, b.gp_mom, (v) => times(v, 2)],
+      ["Lead GP: beneficio neto", "K20", a.gp_net - a.gp_ticket, b.gp_net - b.gp_ticket, eur],
+      ["Fondo: beneficio bruto", "L20", sum(a.flows) - a.su.sponsor, sum(b.flows) - b.su.sponsor, eur],
+      ["LPs: TIR neta", "K21", a.lp_irr, b.lp_irr, (v) => pct(v, 2), true],
+      ["LPs: MOIC neto", "L21", a.lp_mom, b.lp_mom, (v) => times(v, 2)],
+      [`Lead GP: cheque (${pct(1 - d.lp_share, 0)} del consorcio)`, "J44", a.gp_ticket, b.gp_ticket, eur],
+      ["Lead GP: coinversión (su parte del bote)", `${col}74`, a.gp_coinvest, b.gp_coinvest, eur],
+      ["Lead GP: catch-up", `${col}79`, ta.catch_up, tb.catch_up, eur],
+      [`Lead GP: ${pct(d.carry, 0)} del exceso`, `${col}81`, ta.gp_split, tb.gp_split, eur],
+      ["Lead GP: carry total", `${col}83`, a.gp_carry, b.gp_carry, eur, true],
+      ["Lead GP: total cobrado", `${col}84`, a.gp_net, b.gp_net, eur, true],
+      ["LPs: total cobrado", `${col}82`, a.lp_net, b.lp_net, eur],
+    ];
+    $("#gp-sub").textContent = `LBO Summary del Excel, caso ${state.caseName}, salida en ${state.exitYear}` + (dealChanged() ? " (con tu estructura)" : "");
+    $("#gp-table").replaceChildren(
+      h("thead", {}, h("tr", {}, h("th", { text: "" }), h("th", { text: "Celda", style: "text-align:left" }), h("th", { text: "Excel (sin palancas)" }),
+        levers ? h("th", { text: "Con palancas" }) : null)),
+      h("tbody", {}, rows.map(([label, cell, va, vb, f, hl]) => h("tr", { class: hl ? "hl" : null }, h("td", { text: label }),
+        h("td", { class: "cellref", text: cell }), h("td", { class: "v", text: f(va) }), levers ? h("td", { class: "v", text: f(vb) }) : null))));
+    const at = (c, y) => Motor.run(c.lever.op, c.lever.deal, false, y);
+    const byYear = YEARS.map((y) => at(levers ? last.plan : last.base, y));
+    const line = (label, row, f) => h("tr", {}, h("td", { text: `${label} (fila ${row})` }),
+      byYear.map((r, i) => h("td", { class: "v" + (YEARS[i] === state.exitYear ? " sel" : ""), text: f(r) })));
+    $("#gp-years").replaceChildren(
+      h("thead", {}, h("tr", {}, h("th", { text: levers ? "Con palancas" : "Excel" }), YEARS.map((y) => h("th", { class: y === state.exitYear ? "sel" : null, text: String(y) })))),
+      h("tbody", {},
+        line("TIR bruta del fondo", 58, (r) => pct(r.irr, 1)),
+        line("Lead GP con carry", 87, (r) => pct(r.gp_irr, 1)),
+        line("LPs netos", 85, (r) => pct(r.lp_irr, 1)),
+        line("Lead GP: MOIC", 88, (r) => times(r.gp_mom, 2))));
   }
 
   function renderBullet(irr0, irr1) {
@@ -1520,6 +1575,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     syncDeal();
     renderDealLine();
     renderKpis(base, plan);
+    renderGpPanel(base, plan);
     renderExcelCheck(base);
     renderContrib(phi);
     renderFeet(plan, phi);
