@@ -72,6 +72,31 @@ class TestDashboard(unittest.TestCase):
                   r["su"]["sponsor"], r["ebitda_pre"][0, 6], r["senior_nd_ebitda"][0, 6], r["dividend"][0].sum(), op.capex_exp[0, 3]]
             np.testing.assert_allclose(js, py, rtol=1e-11, atol=1e-11, err_msg=f"{case} {year} {on}")
 
+    def test_deal_structure_matches_python(self):
+        """El panel de estructura (Motor.setDeal) da lo mismo que cambiar esas hipótesis en Python."""
+        from dataclasses import replace
+        rng = np.random.default_rng(13)
+        try:
+            for i in range(12):
+                patch = dict(premium=float(rng.uniform(0, 0.4)), rollover=float(rng.uniform(0, 0.59)),
+                             tla_x=float(rng.uniform(0, 4)), tlb_x=float(rng.uniform(0, 5)), sub_x=float(rng.uniform(0, 3)),
+                             vl_share=float(rng.uniform(0, 0.08)), euribor=float(rng.uniform(0, 0.06)),
+                             tlb_sweep=float(rng.uniform(0, 1)), lp_share=float(rng.uniform(0.5, 0.95)),
+                             hurdle=float(rng.uniform(0, 0.15)), carry=float(rng.uniform(0, 0.3)))
+                if i % 3 == 0:
+                    patch["exit_multiple"] = float(rng.uniform(12, 28))
+                values, on = random_plan(rng)
+                case, year = D.CASES[i % 4], int(rng.integers(2026, 2033))
+                js = self.call(f"(Motor.setDeal({json.dumps(patch)}), (r => [r.res.irr, r.res.lp_irr, r.res.gp_irr, r.res.min_dscr, r.res.su.sponsor])"
+                               f"(Motor.runCase({json.dumps(case)}, {json.dumps(values)}, {json.dumps(on)}, {year})))")
+                d = replace(self.info["deal"], **patch)
+                op, d2, _ = D.apply_levers(D.with_case(self.info, case), d, values, on)
+                r = D.run(op, d2, exit_year=year)
+                np.testing.assert_allclose(js, [r["irr"][0], r["lp_irr"][0], r["gp_irr"][0], r["min_dscr"][0], r["su"]["sponsor"]],
+                                           rtol=1e-11, atol=1e-11, err_msg=str(patch))
+        finally:
+            self.js.eval("Motor.setDeal({})")
+
     def test_no_levers_reproduces_saved_excel(self):
         import openpyxl
         ls = openpyxl.load_workbook(D.XLSX, data_only=True)["LBO Summary"]

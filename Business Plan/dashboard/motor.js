@@ -18,6 +18,7 @@ const Motor = (() => {
   let K = null;  // datos exportados por bp/web.py
   let T = 7;
   let SIM = null;  // caminos simulados ya decodificados
+  let DEAL = null;  // hipótesis de la operación en uso: las del Excel más los cambios del panel de estructura
 
   // ---------- Datos ----------
 
@@ -43,6 +44,7 @@ const Motor = (() => {
   function init(data) {
     K = data;
     T = data.years.length;
+    DEAL = Object.assign({}, data.deal);
     const s = data.sim;
     const vars = {};
     for (const k of Object.keys(s.vars)) vars[k] = decodeFloat32(s.vars[k]);
@@ -55,6 +57,12 @@ const Motor = (() => {
       medRev.push(median(col));
     }
     SIM = { n: s.n, vars, mult, medRev };
+  }
+
+  // Cambia hipótesis de la operación sobre las del Excel (p. ej. { rollover: 0.3, lp_share: 0.8 }); {} vuelve al Excel.
+  function setDeal(patch) {
+    DEAL = Object.assign({}, K.deal, patch || {});
+    return DEAL;
   }
 
   const range = (f) => Array.from({ length: T }, (_, t) => f(t));
@@ -330,7 +338,7 @@ const Motor = (() => {
   }
 
   function runCase(name, values, on, exitYear = null) {
-    const lr = applyLevers(caseOp(name), K.deal, values, on);
+    const lr = applyLevers(caseOp(name), DEAL, values, on);
     return { lever: lr, res: run(lr.op, lr.deal, true, exitYear) };
   }
 
@@ -361,7 +369,7 @@ const Motor = (() => {
       if (!cache.has(mask)) {
         const sub = {};
         keys.forEach((k, i) => { sub[k] = Boolean(mask & (1 << i)); });
-        const lr = applyLevers(op, K.deal, values, sub);
+        const lr = applyLevers(op, DEAL, values, sub);
         cache.set(mask, run(lr.op, lr.deal, false, exitYear).irr);
       }
       return cache.get(mask);
@@ -391,7 +399,7 @@ const Motor = (() => {
     let shortfall = 0, negEquity = 0;
     const mult = {};
     for (let i = 0; i < n; i++) {
-      let op = pathOp(i), deal = K.deal;
+      let op = pathOp(i), deal = DEAL;
       if (withPlan) {
         const scale = op.revenue.map((r, t) => r / SIM.medRev[t]);
         for (const k of Object.keys(SIM.mult)) mult[k] = SIM.mult[k][i];
@@ -416,8 +424,8 @@ const Motor = (() => {
       irr_median: irrMed, irr_p10: irrP10, irr_p90: irrP90, mom_median: median(sim.mom),
       gp_irr_median: median(sim.gpIrr), lp_irr_median: median(sim.lpIrr),
       p_irr_neg: share(sim.irr, (x) => x < 0), p_irr_15: share(sim.irr, (x) => x >= 0.15),
-      p_irr_20: share(sim.irr, (x) => x >= 0.20), p_lp_hurdle: share(sim.lpIrr, (x) => x >= K.deal.hurdle),
-      p_dscr: share(sim.minDscr, (x) => x < K.deal.dscr_min), p_dscr_10: share(sim.minDscr, (x) => x < 1.0),
+      p_irr_20: share(sim.irr, (x) => x >= 0.20), p_lp_hurdle: share(sim.lpIrr, (x) => x >= DEAL.hurdle),
+      p_dscr: share(sim.minDscr, (x) => x < DEAL.dscr_min), p_dscr_10: share(sim.minDscr, (x) => x < 1.0),
       p_shortfall: sim.shortfall, p_neg_equity: sim.negEquity,
       ebitda_p10: eb.map((q) => q[0]), ebitda_p50: eb.map((q) => q[1]), ebitda_p90: eb.map((q) => q[2]),
       ebitda_last_median: eb[T - 1][1], irr_hist: histogram(sim.irr, -0.10, 0.30, 0.01),
@@ -473,9 +481,9 @@ const Motor = (() => {
     return out;
   }
 
-  return { init, run, applyLevers, runCase, valueBridge, caseOp, shapley, simulate, riskSummary, sourcesAndUses,
+  return { init, setDeal, run, applyLevers, runCase, valueBridge, caseOp, shapley, simulate, riskSummary, sourcesAndUses,
            entryMultiple, band, defaults, bandValues, quantiles, percentile, median, histogram, BANDS,
-           get K() { return K; }, get T() { return T; }, get SIM() { return SIM; } };
+           get K() { return K; }, get T() { return T; }, get SIM() { return SIM; }, get deal() { return DEAL; } };
 })();
 
 if (typeof globalThis !== "undefined") globalThis.Motor = Motor;

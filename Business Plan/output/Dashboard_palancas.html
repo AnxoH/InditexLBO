@@ -84,6 +84,22 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(26px, 3.
 .segmented button[aria-checked="true"] { background: var(--ink); color: var(--surface); }
 .segmented button[aria-checked="true"] small { color: inherit; opacity: .75; }
 .years-picker button { padding: 7px 11px; font-family: var(--font-mono); font-size: 13.5px; }
+.deal-panel { display: grid; gap: 14px; }
+.deal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.deal-head .btn:disabled { opacity: .45; cursor: default; }
+.deal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 22px; }
+.deal-param { display: grid; gap: 4px; min-width: 0; }
+.deal-param .param-label { font-size: 13.5px; }
+.deal-param input[type=range] { width: 100%; accent-color: var(--ink); margin: 0; }
+.deal-param.changed .num-wrap { border-color: var(--accent); }
+.deal-sub { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.deal-sub .cell { font-size: 11.5px; }
+.deal-param.changed .deal-note { color: var(--accent); font-weight: 500; }
+.deal-exit { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); cursor: pointer; }
+.deal-summary { font-size: 13px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 10px; }
+.deal-summary b { color: var(--ink); font-family: var(--font-mono); font-weight: 500; }
+.excel-changes { font-size: 13px; color: var(--ink-2); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); border-radius: 8px; padding: 8px 12px; margin-top: 8px; }
+@media (max-width: 720px) { .deal-grid { grid-template-columns: minmax(0, 1fr); } }
 
 /* Barra resumen en móvil */
 .mini { display: none; }
@@ -283,6 +299,15 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 
 <main class="wrap grid">
   <section class="levers" aria-label="Palancas">
+    <section class="panel deal-panel" id="deal-panel" aria-labelledby="deal-h">
+      <div class="deal-head">
+        <div><h2 id="deal-h">Estructura de la operación</h2>
+        <p class="sub">Por defecto, los valores del Excel definitivo (rama main): las TIR de la derecha son las del Excel. Si cambias alguno, todo se recalcula y abajo verás qué celda cambiar en el Excel para comprobarlo.</p></div>
+        <button class="btn" id="deal-reset" type="button">Volver al Excel</button>
+      </div>
+      <div class="deal-grid" id="deal-grid"></div>
+      <p class="deal-summary" id="deal-summary"></p>
+    </section>
     <div class="panel presets">
       <div>
         <h2>Empieza desde un escenario y ajusta cada palanca</h2>
@@ -297,6 +322,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
       <div>
         <h2 id="excel-h">Comprobar con el Excel</h2>
         <p class="sub">Sin palancas, esta página da exactamente lo mismo que <span class="mono" id="excel-file"></span>. Para verlo, pon en el Excel el mismo caso (<span class="cell">Active Case!F8</span>) y el mismo año de salida (<span class="cell">LBO Summary!L10</span>) que arriba.</p>
+        <p class="excel-changes" id="excel-changes" hidden></p>
       </div>
       <div class="table-scroll"><table id="excel-table"><thead><tr><th>Celda del Excel</th><th style="text-align:left">Qué es</th><th>Sin palancas</th></tr></thead><tbody></tbody></table></div>
       <p>Las palancas no están en el Excel del grupo: son el plan de creación de valor que se suma encima de cada caso. Su capex cuenta como capex de expansión, que el Excel deja fuera del DSCR bancario.</p>
@@ -492,6 +518,7 @@ const Motor = (() => {
   let K = null;  // datos exportados por bp/web.py
   let T = 7;
   let SIM = null;  // caminos simulados ya decodificados
+  let DEAL = null;  // hipótesis de la operación en uso: las del Excel más los cambios del panel de estructura
 
   // ---------- Datos ----------
 
@@ -517,6 +544,7 @@ const Motor = (() => {
   function init(data) {
     K = data;
     T = data.years.length;
+    DEAL = Object.assign({}, data.deal);
     const s = data.sim;
     const vars = {};
     for (const k of Object.keys(s.vars)) vars[k] = decodeFloat32(s.vars[k]);
@@ -529,6 +557,12 @@ const Motor = (() => {
       medRev.push(median(col));
     }
     SIM = { n: s.n, vars, mult, medRev };
+  }
+
+  // Cambia hipótesis de la operación sobre las del Excel (p. ej. { rollover: 0.3, lp_share: 0.8 }); {} vuelve al Excel.
+  function setDeal(patch) {
+    DEAL = Object.assign({}, K.deal, patch || {});
+    return DEAL;
   }
 
   const range = (f) => Array.from({ length: T }, (_, t) => f(t));
@@ -804,7 +838,7 @@ const Motor = (() => {
   }
 
   function runCase(name, values, on, exitYear = null) {
-    const lr = applyLevers(caseOp(name), K.deal, values, on);
+    const lr = applyLevers(caseOp(name), DEAL, values, on);
     return { lever: lr, res: run(lr.op, lr.deal, true, exitYear) };
   }
 
@@ -835,7 +869,7 @@ const Motor = (() => {
       if (!cache.has(mask)) {
         const sub = {};
         keys.forEach((k, i) => { sub[k] = Boolean(mask & (1 << i)); });
-        const lr = applyLevers(op, K.deal, values, sub);
+        const lr = applyLevers(op, DEAL, values, sub);
         cache.set(mask, run(lr.op, lr.deal, false, exitYear).irr);
       }
       return cache.get(mask);
@@ -865,7 +899,7 @@ const Motor = (() => {
     let shortfall = 0, negEquity = 0;
     const mult = {};
     for (let i = 0; i < n; i++) {
-      let op = pathOp(i), deal = K.deal;
+      let op = pathOp(i), deal = DEAL;
       if (withPlan) {
         const scale = op.revenue.map((r, t) => r / SIM.medRev[t]);
         for (const k of Object.keys(SIM.mult)) mult[k] = SIM.mult[k][i];
@@ -890,8 +924,8 @@ const Motor = (() => {
       irr_median: irrMed, irr_p10: irrP10, irr_p90: irrP90, mom_median: median(sim.mom),
       gp_irr_median: median(sim.gpIrr), lp_irr_median: median(sim.lpIrr),
       p_irr_neg: share(sim.irr, (x) => x < 0), p_irr_15: share(sim.irr, (x) => x >= 0.15),
-      p_irr_20: share(sim.irr, (x) => x >= 0.20), p_lp_hurdle: share(sim.lpIrr, (x) => x >= K.deal.hurdle),
-      p_dscr: share(sim.minDscr, (x) => x < K.deal.dscr_min), p_dscr_10: share(sim.minDscr, (x) => x < 1.0),
+      p_irr_20: share(sim.irr, (x) => x >= 0.20), p_lp_hurdle: share(sim.lpIrr, (x) => x >= DEAL.hurdle),
+      p_dscr: share(sim.minDscr, (x) => x < DEAL.dscr_min), p_dscr_10: share(sim.minDscr, (x) => x < 1.0),
       p_shortfall: sim.shortfall, p_neg_equity: sim.negEquity,
       ebitda_p10: eb.map((q) => q[0]), ebitda_p50: eb.map((q) => q[1]), ebitda_p90: eb.map((q) => q[2]),
       ebitda_last_median: eb[T - 1][1], irr_hist: histogram(sim.irr, -0.10, 0.30, 0.01),
@@ -947,9 +981,9 @@ const Motor = (() => {
     return out;
   }
 
-  return { init, run, applyLevers, runCase, valueBridge, caseOp, shapley, simulate, riskSummary, sourcesAndUses,
+  return { init, setDeal, run, applyLevers, runCase, valueBridge, caseOp, shapley, simulate, riskSummary, sourcesAndUses,
            entryMultiple, band, defaults, bandValues, quantiles, percentile, median, histogram, BANDS,
-           get K() { return K; }, get T() { return T; }, get SIM() { return SIM; } };
+           get K() { return K; }, get T() { return T; }, get SIM() { return SIM; }, get deal() { return DEAL; } };
 })();
 
 if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
@@ -970,7 +1004,7 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
   const ALL = (v) => Object.fromEntries(K.levers.map((l) => [l.key, v]));
   const sum = (a) => a.reduce((x, y) => x + y, 0);
   const upTo = (a, k) => sum(a.slice(0, k + 1));
-  const d = K.deal;
+  let d = Motor.deal;
 
   // ---------- Elementos ----------
   const $ = (sel, el = document) => el.querySelector(sel);
@@ -1015,17 +1049,38 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
     return num(v, p.fmt.includes(".") ? p.fmt.split(".")[1].length : (Number.isInteger(v) ? 0 : 1));
   }
 
+  // ---------- Hipótesis de la operación que se pueden cambiar (celdas del Excel) ----------
+  const DEAL_PARAMS = [
+    { key: "premium", label: "Prima de la OPA", cell: "LBO Summary!F10", min: 0, max: 0.4, step: 0.01, pct: true },
+    { key: "rollover", label: "Rollover de Amancio (% de Inditex)", cell: "LBO Summary!F14", min: 0, max: 0.59, step: 0.01, pct: true },
+    { key: "tla_x", label: "TLA (veces EBITDA)", cell: "Debt & Covenants!F8", min: 0, max: 4, step: 0.25 },
+    { key: "tlb_x", label: "TLB (veces EBITDA)", cell: "Debt & Covenants!F9", min: 0, max: 5, step: 0.25 },
+    { key: "sub_x", label: "Mezzanine PIK (veces EBITDA)", cell: "Debt & Covenants!F10", min: 0, max: 3, step: 0.25 },
+    { key: "vl_share", label: "Nota de Sandra Ortega (% del valor del equity)", cell: "Debt & Covenants!F11", min: 0, max: 0.08, step: 0.0005, pct: true, dec: 2 },
+    { key: "euribor", label: "Euribor swap", cell: "Debt & Covenants!F7", min: 0, max: 0.06, step: 0.0005, pct: true, dec: 2 },
+    { key: "tlb_sweep", label: "Cash sweep de la TLB", cell: "Debt & Covenants!E13", min: 0, max: 1, step: 0.05, pct: true },
+    { key: "lp_share", label: "LPs: % del cheque del consorcio", cell: "LBO Summary!L43", min: 0.5, max: 0.95, step: 0.01, pct: true },
+    { key: "hurdle", label: "Hurdle de los LPs (preferente)", cell: "LBO Summary!L45", min: 0, max: 0.15, step: 0.005, pct: true, dec: 1 },
+    { key: "carry", label: "Carry del GP", cell: "LBO Summary!L46", min: 0, max: 0.3, step: 0.01, pct: true },
+  ];
+
   // ---------- Estado (se recuerda en este navegador) ----------
   const STORE = "palancas-inditex-v2";
   const TABS = ["resumen", "graficas", "riesgo"];
   const state = { caseName: CASES[(K.excel.active_case || 1) - 1] || CASES[0], exitYear: d.exit_year,
-                  values: Motor.defaults(), on: ALL(true), tab: "resumen" };
+                  values: Motor.defaults(), on: ALL(true), tab: "resumen", deal: {} };
   try {
     const saved = JSON.parse(localStorage.getItem(STORE) || "null");
     if (saved) {
       if (CASES.includes(saved.caseName)) state.caseName = saved.caseName;
       if (YEARS.includes(saved.exitYear)) state.exitYear = saved.exitYear;
       if (TABS.includes(saved.tab)) state.tab = saved.tab;
+      for (const p of DEAL_PARAMS) {
+        const v = saved.deal?.[p.key];
+        if (typeof v === "number" && Number.isFinite(v) && v >= p.min && v <= p.max) state.deal[p.key] = v;
+      }
+      const em = saved.deal?.exit_multiple;
+      if (typeof em === "number" && em >= 10 && em <= 30) state.deal.exit_multiple = em;
       for (const lv of K.levers) {
         if (typeof saved.on?.[lv.key] === "boolean") state.on[lv.key] = saved.on[lv.key];
         for (const p of lv.params) {
@@ -1036,17 +1091,20 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
     }
   } catch (e) { /* sin almacenamiento: valores por defecto */ }
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* nada */ } };
+  Motor.setDeal(state.deal); d = Motor.deal;
   const kExit = () => state.exitYear - YEARS[0];
 
   // ---------- Cabecera ----------
-  const su0 = Motor.sourcesAndUses(d);
   $("#eyebrow").textContent = `Project Galicia · LBO de Inditex · modelo definitivo del grupo (${K.excel.file})`;
-  $("#deal-line").innerHTML =
-    `Compra del 100 % a <b>${num(d.share_price * (1 + d.premium), 2)} € por acción</b> (prima del ${pct(d.premium, 0)} sobre ${num(d.share_price, 2)} €), ` +
-    `<b>${times(K.entry_multiple, 1)} el EBITDA</b> pre-IFRS 16 de 2025 · deuda de <b>${times(su0.debt / d.ebitda_ref, 1)}</b> ` +
-    `(TLA ${times(d.tla_x, 1)}, TLB ${times(d.tlb_x, 1)}, PIK ${times(d.sub_x, 1)}, vendor loan de Sandra Ortega ${times(su0.vl / d.ebitda_ref, 1)}) · ` +
-    `Amancio Ortega aporta el ${pct(d.rollover, 0)} de Inditex a la TopCo · el fondo pone <b>${eur(su0.sponsor)}</b> ` +
-    `(${pct(su0.sponsorShare, 1)} de la TopCo) · cascada GP/LP con preferente del ${pct(d.hurdle, 0)} y carry del ${pct(d.carry, 0)}.`;
+  function renderDealLine() {
+    const su0 = Motor.sourcesAndUses(d);
+    $("#deal-line").innerHTML =
+      `Compra del 100 % a <b>${num(d.share_price * (1 + d.premium), 2)} € por acción</b> (prima del ${pct(d.premium, 0)} sobre ${num(d.share_price, 2)} €), ` +
+      `<b>${times(Motor.entryMultiple(d), 1)} el EBITDA</b> pre-IFRS 16 de 2025 · deuda de <b>${times(su0.debt / d.ebitda_ref, 1)}</b> ` +
+      `(TLA ${times(d.tla_x, 1)}, TLB ${times(d.tlb_x, 1)}, PIK ${times(d.sub_x, 1)}, vendor loan de Sandra Ortega ${times(su0.vl / d.ebitda_ref, 1)}) · ` +
+      `Amancio Ortega aporta el ${pct(d.rollover, 0)} de Inditex a la TopCo · el fondo pone <b>${eur(su0.sponsor)}</b> ` +
+      `(${pct(su0.sponsorShare, 1)} de la TopCo; GP ${pct(1 - d.lp_share, 0)} y LPs ${pct(d.lp_share, 0)}) · cascada con preferente del ${pct(d.hurdle, 0)} y carry del ${pct(d.carry, 0)}.`;
+  }
   $("#excel-file").textContent = K.excel.file;
 
   const picker = $("#case-picker");
@@ -1070,6 +1128,80 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
     refresh();
     postReference();
   }
+
+  // ---------- Estructura de la operación ----------
+  const dealUi = {};
+  const fmtDeal = (p, v) => (p.pct ? pct(v, p.dec ?? 0) : times(v, p.dec ?? 2));
+  const dealChanged = () => Object.keys(state.deal).length > 0;
+  for (const p of DEAL_PARAMS) {
+    const id = `deal-${p.key}`, k = p.pct ? 100 : 1;
+    const numIn = h("input", { type: "number", id, min: p.min * k, max: p.max * k, step: "any", inputmode: "decimal" });
+    const range = h("input", { type: "range", min: p.min, max: p.max, step: p.step, "aria-label": p.label });
+    const note = h("span", { class: "deal-note" });
+    const set = (v) => setDealValue(p.key, Math.min(p.max, Math.max(p.min, v)));
+    numIn.addEventListener("change", () => { const v = parseFloat(String(numIn.value).replace(",", ".")); if (Number.isFinite(v)) set(v / k); else syncDeal(); });
+    range.addEventListener("input", () => set(parseFloat(range.value)));
+    const el = h("div", { class: "deal-param" },
+      h("div", { class: "param-top" }, h("label", { class: "param-label", for: id, text: p.label }),
+        h("span", { class: "num-wrap" }, numIn, h("span", { class: "unit", text: p.pct ? "%" : "x" }))),
+      range, h("div", { class: "deal-sub" }, h("span", { class: "cell", text: p.cell }), note));
+    $("#deal-grid").append(el);
+    dealUi[p.key] = { numIn, range, note, el, p, k };
+  }
+  {  // múltiplo de salida: igual al de entrada (como el Excel, LBO Summary!L11 = L8) o un valor fijo
+    const numIn = h("input", { type: "number", id: "deal-exit", min: 10, max: 30, step: "any", inputmode: "decimal" });
+    const range = h("input", { type: "range", min: 12, max: 28, step: 0.1, "aria-label": "Múltiplo de salida" });
+    const box = h("input", { type: "checkbox", id: "deal-exit-entry" });
+    const note = h("span", { class: "deal-note" });
+    const fixed = (v) => { state.deal.exit_multiple = Math.min(30, Math.max(10, v)); applyDeal(); };
+    numIn.addEventListener("change", () => { const v = parseFloat(String(numIn.value).replace(",", ".")); if (Number.isFinite(v)) fixed(v); else syncDeal(); });
+    range.addEventListener("input", () => fixed(parseFloat(range.value)));
+    box.addEventListener("change", () => {
+      if (box.checked) delete state.deal.exit_multiple;
+      else state.deal.exit_multiple = Math.round(Motor.entryMultiple(d) * 10) / 10;
+      applyDeal();
+    });
+    const el = h("div", { class: "deal-param" },
+      h("div", { class: "param-top" }, h("label", { class: "param-label", for: "deal-exit", text: "Múltiplo de salida (EV / EBITDA)" }),
+        h("span", { class: "num-wrap" }, numIn, h("span", { class: "unit", text: "x" }))),
+      range, h("label", { class: "deal-exit", for: "deal-exit-entry" }, box, "Igual al de entrada, como el Excel"),
+      h("div", { class: "deal-sub" }, h("span", { class: "cell", text: "LBO Summary!L11" }), note));
+    $("#deal-grid").append(el);
+    dealUi.exit = { numIn, range, box, note, el };
+  }
+  function setDealValue(key, v) {
+    if (Math.abs(v - K.deal[key]) < 1e-9) delete state.deal[key]; else state.deal[key] = v;
+    applyDeal();
+  }
+  let riskReady = false;
+  function applyDeal() {
+    Motor.setDeal(state.deal); d = Motor.deal;
+    for (const k of Object.keys(baseCache)) delete baseCache[k];
+    risk.base = null; risk.bands = null;
+    refresh();
+    if (riskReady) postReference();
+  }
+  function syncDeal() {
+    for (const p of DEAL_PARAMS) {
+      const u = dealUi[p.key], v = d[p.key], changed = p.key in state.deal;
+      if (document.activeElement !== u.numIn) u.numIn.value = String(+(v * u.k).toFixed(4));
+      u.range.value = v;
+      u.note.textContent = changed ? `Excel: ${fmtDeal(p, K.deal[p.key])}` : "como el Excel";
+      u.el.classList.toggle("changed", changed);
+    }
+    const ex = dealUi.exit, m = d.exit_multiple == null ? Motor.entryMultiple(d) : d.exit_multiple, fixedExit = d.exit_multiple != null;
+    if (document.activeElement !== ex.numIn) ex.numIn.value = String(+m.toFixed(2));
+    ex.range.value = m;
+    ex.box.checked = !fixedExit;
+    ex.note.textContent = fixedExit ? `Excel: igual al de entrada (${times(Motor.entryMultiple(d), 1)})` : "como el Excel";
+    ex.el.classList.toggle("changed", fixedExit);
+    const su = Motor.sourcesAndUses(d);
+    $("#deal-summary").innerHTML = `Deuda total <b>${times(su.debt / d.ebitda_ref, 2)}</b> (${eur(su.debt)}) · equity de la TopCo <b>${eur(su.equity)}</b>: ` +
+      `Amancio <b>${eur(su.rollover)}</b> (${pct(1 - su.sponsorShare, 1)}) y consorcio <b>${eur(su.sponsor)}</b> (${pct(su.sponsorShare, 1)}), ` +
+      `del que el GP pone <b>${eur(su.sponsor * (1 - d.lp_share))}</b> y los LPs <b>${eur(su.sponsor * d.lp_share)}</b>.`;
+    $("#deal-reset").disabled = !dealChanged();
+  }
+  $("#deal-reset").addEventListener("click", () => { state.deal = {}; applyDeal(); });
 
   // ---------- Pestañas del panel de resultados ----------
   function syncTabs() {
@@ -1239,7 +1371,7 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
     const delta = $("#irr-delta");
     delta.textContent = (dIrr > 0.00005 ? "▲ " : dIrr < -0.00005 ? "▼ " : "") + pp(dIrr, 2);
     delta.className = "delta" + (dIrr > 0.00005 ? " up" : dIrr < -0.00005 ? " down" : "");
-    $("#irr-sub").textContent = `Sin palancas ${pct(irr0)}, como el Excel · el fondo busca al menos un 15 %`;
+    $("#irr-sub").textContent = `Sin palancas ${pct(irr0)}, ${dealChanged() ? "el Excel con tu estructura" : "como el Excel"} · el fondo busca al menos un 15 %`;
     KPIS.forEach((k, i) => {
       const a = k.get(base), b = k.get(plan), r = kpiRows[i];
       r.label.textContent = k.label();
@@ -1280,6 +1412,15 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
       [`Active Case!${acCol}30`, `EBITDA pre-IFRS 16 ${state.exitYear}`, eur(r.ebitda_pre[k])],
       ["Debt & Covenants!F105:L105", "DSCR bancario mínimo", times(r.min_dscr, 3)],
     ];
+    const ch = $("#excel-changes");
+    ch.hidden = !dealChanged();
+    if (dealChanged()) {
+      const parts = DEAL_PARAMS.filter((p) => p.key in state.deal).map((p) => p.key === "vl_share"
+        ? `${p.cell}: cambia 0,055 por ${num(d.vl_share, 4)} en la fórmula`
+        : `${p.cell} = ${p.pct ? num(d[p.key], 4).replace(/,?0+$/, "") : num(d[p.key], 2)}`);
+      if (d.exit_multiple != null) parts.push(`LBO Summary!L11 = ${num(d.exit_multiple, 2)}`);
+      ch.textContent = `Has cambiado la estructura. Para ver estas cifras en el Excel: ${parts.join(" · ")}.`;
+    }
     $("#excel-table tbody").replaceChildren(...rows.map(([c, l, v]) => h("tr", {}, h("td", {}, h("span", { class: "cell", text: c })), h("td", { text: l, style: "text-align:left" }), h("td", { class: "v", text: v }))));
   }
 
@@ -1644,9 +1785,9 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
   }
 
   // Cascada GP/LP (LBO Summary filas 73-88): dos barras, LPs y GP, partidas por tramo.
-  const WF = [
+  const wfDefs = () => [
     ["capital", "Capital (LPs) y coinversión (GP)", "--series-base"],
-    ["preferred", `Preferente del ${pct(d.hurdle, 0)} (LPs)`, "--debt-tlb"],
+    ["preferred", `Preferente del ${pct(d.hurdle, 1 - (Math.round(d.hurdle * 1000) % 10 === 0))} (LPs)`, "--debt-tlb"],
     ["lp_split", `${pct(1 - d.carry, 0)} del exceso (LPs)`, "--debt-vl"],
     ["catch_up", "Catch-up (GP)", "--band-optimista"],
     ["gp_split", `${pct(d.carry, 0)} del exceso, carry (GP)`, "--warn"],
@@ -1659,7 +1800,7 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
     };
   }
   function renderWaterfall() {
-    const res = last.plan.res, base = last.base.res, parts = wfParts(res);
+    const res = last.plan.res, base = last.base.res, parts = wfParts(res), WF = wfDefs();
     const color = Object.fromEntries(WF.map(([k, , c]) => [k, c]));
     const label = Object.fromEntries(WF.map(([k, l]) => [k, l]));
     $("#wf-legend").replaceChildren(...WF.map(([, l, c]) => h("span", {}, h("i", { class: "bar", style: `--c: var(${c})` }), l)));
@@ -1721,7 +1862,8 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
   const motorSource = document.getElementById("motor").textContent;
   const handler = `
     function compute(m) {
-      const out = { id: m.id, type: m.type, exitYear: m.exitYear };
+      Motor.setDeal(m.deal);
+      const out = { id: m.id, type: m.type, exitYear: m.exitYear, dealKey: m.dealKey };
       if (m.type === "plan") out.plan = Motor.riskSummary(Motor.simulate(m.values, m.on, true, m.exitYear));
       if (m.type === "base") out.base = Motor.riskSummary(Motor.simulate(m.values, m.on, false, m.exitYear));
       if (m.type === "bands") out.bands = Motor.BANDS.map((b) => Motor.riskSummary(Motor.simulate(Motor.bandValues(b), m.on, true, m.exitYear)));
@@ -1731,13 +1873,15 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
   let worker = null;
   const pending = {};
   function computeHere(m) {
-    const out = { id: m.id, type: m.type, exitYear: m.exitYear };
+    const out = { id: m.id, type: m.type, exitYear: m.exitYear, dealKey: m.dealKey };
     if (m.type === "plan") out.plan = Motor.riskSummary(Motor.simulate(m.values, m.on, true, m.exitYear));
     if (m.type === "base") out.base = Motor.riskSummary(Motor.simulate(m.values, m.on, false, m.exitYear));
     if (m.type === "bands") out.bands = Motor.BANDS.map((b) => Motor.riskSummary(Motor.simulate(Motor.bandValues(b), m.on, true, m.exitYear)));
     return out;
   }
+  const dealKey = () => JSON.stringify(state.deal);
   function post(m) {
+    Object.assign(m, { deal: { ...state.deal }, dealKey: dealKey() });
     pending[m.type] = m;
     if (worker) worker.postMessage(m);
     else setTimeout(() => onRisk(computeHere(m)), 30);
@@ -1761,7 +1905,7 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
   }
   function onRisk(m) {
     delete pending[m.type];
-    if (m.exitYear !== state.exitYear) return;
+    if (m.exitYear !== state.exitYear || m.dealKey !== dealKey()) return;
     if (m.type === "plan") { if (m.id !== riskId) return; risk.plan = m.plan; $("#risk").classList.remove("busy"); }
     if (m.type === "base") risk.base = m.base;
     if (m.type === "bands") risk.bands = m.bands;
@@ -1856,6 +2000,8 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
     const phi = Motor.shapley(state.caseName, state.values, state.on, state.exitYear);
     last = { base, plan };
     syncControls();
+    syncDeal();
+    renderDealLine();
     renderKpis(base, plan);
     renderExcelCheck(base);
     renderContrib(phi);
@@ -1868,6 +2014,7 @@ if (typeof globalThis !== "undefined") globalThis.Motor = Motor;
 
   refresh();
   renderRisk();
+  riskReady = true;
   postReference();
 })();
 </script>

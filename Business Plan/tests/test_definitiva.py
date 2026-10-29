@@ -93,6 +93,43 @@ class TestDefinitiva(unittest.TestCase):
                 exp = [xl.evaluate(c) for c in out[:4]] + [min(xl.evaluate(c) for c in out[4:])]
                 np.testing.assert_allclose(got, exp, rtol=1e-10, err_msg=f"{name} {premium} {year}")
 
+    def test_recalculated_excel_with_other_structures(self):
+        """Las hipótesis que el dashboard deja cambiar (rollover, deuda, GP/LP...) dan lo mismo que el Excel."""
+        try:
+            if not hasattr(ast, "Str"):
+                ast.Str = lambda s: ast.Constant(value=s)
+            from pycel import ExcelCompiler
+        except ImportError:
+            self.skipTest("pycel no instalado")
+        warnings.filterwarnings("ignore")
+        xl = ExcelCompiler(filename=str(D.XLSX))
+        cells = {"premium": "LBO Summary!F10", "rollover": "LBO Summary!F14", "lp_share": "LBO Summary!L43",
+                 "hurdle": "LBO Summary!L45", "carry": "LBO Summary!L46", "euribor": "Debt & Covenants!F7",
+                 "tla_x": "Debt & Covenants!F8", "tlb_x": "Debt & Covenants!F9", "sub_x": "Debt & Covenants!F10",
+                 "tlb_sweep": "Debt & Covenants!E13"}
+        out = ["LBO Summary!K17", "LBO Summary!L18", "LBO Summary!K21", "LBO Summary!E39"] + \
+              [f"Debt & Covenants!{c}105" for c in COLS]
+        for cell in out + list(cells.values()) + ["Debt & Covenants!F11", "LBO Summary!L11", "Active Case!F8"]:
+            xl.evaluate(cell)
+        structures = [
+            dict(rollover=0.35, lp_share=0.80, hurdle=0.10),
+            dict(premium=0.20, tla_x=1.25, tlb_x=1.25, sub_x=1.5, vl_share=0.0505, carry=0.25),
+            dict(euribor=0.025, tlb_sweep=0.5, rollover=0.10, exit_multiple=17.15),
+            dict(tla_x=3.0, tlb_x=4.0, sub_x=0.0, vl_share=0.0, lp_share=0.6, hurdle=0.0),
+        ]
+        for i, patch in enumerate(structures):
+            xl.set_value("Active Case!F8", 1 + i % 4)
+            for k, cell in cells.items():
+                xl.set_value(cell, patch.get(k, getattr(self.deal, k)))
+            d = replace(self.deal, **patch)
+            vl_x = d.vl_share * d.equity_value / d.ebitda_ref  # Debt & Covenants!F11 = F13·0,055/F7
+            xl.set_value("Debt & Covenants!F11", vl_x)
+            xl.set_value("LBO Summary!L11", d.entry_multiple if d.exit_multiple is None else d.exit_multiple)
+            r = D.run(D.with_case(self.info, D.CASES[i % 4]), d)
+            got = [r["irr"][0], r["gp_irr"][0], r["lp_irr"][0], r["su"]["sponsor"], r["min_dscr"][0]]
+            exp = [xl.evaluate(c) for c in out[:4]] + [min(xl.evaluate(c) for c in out[4:])]
+            np.testing.assert_allclose(got, exp, rtol=1e-10, err_msg=str(patch))
+
     def test_levers_off_change_nothing_and_bridge_adds_up(self):
         rng = np.random.default_rng(3)
         op = D.with_case(self.info, "Base")
