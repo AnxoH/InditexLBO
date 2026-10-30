@@ -27,8 +27,11 @@ Annual Reports/Originals/
 env/
 venv/
 
-# Personal notes & Excel temporary lock files
+# Personal notes, local presentation sources (.pptx / scripts) & Excel lock files
 notes_and_ideas.txt
 ~$*.xlsx
-
+*.pptx
+*.ppt
+Presentación/
+*Guion_presentacion*.pdf
 

@@ -1,4 +1,5 @@
 <title>Palancas del LBO de Inditex</title>
+<link rel="icon" type="image/png" href="/*__MONO__*/">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,7 +53,7 @@
 }
 
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-sans); -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-sans); -webkit-font-smoothing: antialiased; }
 h1, h2, h3 { text-wrap: balance; margin: 0; }
 p { margin: 0; }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -63,19 +64,46 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* Cabecera */
 .top { background: var(--surface); border-bottom: 1px solid var(--line); }
-.top .wrap { padding-block: 22px 18px; display: grid; gap: 14px; }
+.top .wrap { padding-block: 22px 18px; display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+.top .wrap > * { min-width: 0; }
+/* Cabecera con la identidad de Herrera Lázaro Pérez Partners: banda oscura del mismo tono que el fondo del logo, en los dos temas */
+.top.brand { --surface: #1a1d21; --surface-2: #262a30; --line: #3a4048; --ink: #f2f4f6; --ink-2: #c6ccd3; --muted: #9098a3;
+  --hlp-green: #a7cbb6; color: var(--ink); color-scheme: dark; }
+.top.brand .wrap { padding-block: 14px 22px; }
+.brand-row { display: flex; align-items: center; justify-content: space-between; gap: 10px 24px; flex-wrap: wrap; margin-left: -10px; }
+.brand-logo { height: 100px; width: auto; max-width: 100%; display: block; }
+.brand-tag { display: grid; justify-items: end; gap: 2px; font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--hlp-green); }
+.brand-tag span + span { color: var(--muted); letter-spacing: .12em; }
+@media (max-width: 560px) { .brand-tag { justify-items: start; margin-left: 10px; } .brand-logo { height: 84px; } }
 .eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
 h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(26px, 3.2vw, 34px); line-height: 1.15; letter-spacing: -.01em; }
 .deal { color: var(--ink-2); font-size: 14px; max-width: 95ch; }
 .deal b { font-weight: 600; color: var(--ink); }
 .case-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
 .case-row .lbl { font-size: 13px; color: var(--muted); }
-.segmented { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface-2); }
+.segmented { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface-2); max-width: 100%; overflow-x: auto; scrollbar-width: thin; }
 .segmented button { border: 0; background: transparent; padding: 7px 14px; cursor: pointer; font-size: 14px; color: var(--ink-2); display: grid; line-height: 1.2; text-align: left; }
 .segmented button + button { border-left: 1px solid var(--line); }
 .segmented button small { font-size: 11px; color: var(--muted); font-family: var(--font-mono); white-space: nowrap; }
 .segmented button[aria-checked="true"] { background: var(--ink); color: var(--surface); }
 .segmented button[aria-checked="true"] small { color: inherit; opacity: .75; }
+.years-picker button { padding: 7px 11px; font-family: var(--font-mono); font-size: 13.5px; }
+.deal-panel { display: grid; gap: 14px; }
+.deal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.deal-head .btn:disabled { opacity: .45; cursor: default; }
+.deal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 22px; }
+.deal-param { display: grid; gap: 4px; min-width: 0; }
+.deal-param .param-label { font-size: 13.5px; }
+.deal-param input[type=range] { width: 100%; accent-color: var(--ink); margin: 0; }
+.deal-param.changed .num-wrap { border-color: var(--accent); }
+.deal-sub { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.deal-sub .cell { font-size: 11.5px; }
+.deal-param.changed .deal-note { color: var(--accent); font-weight: 500; }
+.deal-exit { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); cursor: pointer; }
+.deal-summary { font-size: 13px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 10px; }
+.deal-summary b { color: var(--ink); font-family: var(--font-mono); font-weight: 500; }
+.excel-changes { font-size: 13px; color: var(--ink-2); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); border-radius: 8px; padding: 8px 12px; margin-top: 8px; }
+@media (max-width: 720px) { .deal-grid { grid-template-columns: minmax(0, 1fr); } }
 
 /* Barra resumen en móvil */
 .mini { display: none; }
@@ -155,7 +183,6 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(26px, 3.
 
 .lever-foot { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; color: var(--ink-2); }
 .lever-foot b { font-family: var(--font-mono); font-weight: 500; color: var(--ink); }
-.lever-foot .excel-ref { margin-left: auto; color: var(--muted); }
 
 /* Resultados */
 .hero-label { font-size: 13px; color: var(--muted); }
@@ -165,6 +192,16 @@ h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(26px, 3.
 .delta.up { color: var(--good); }
 .delta.down { color: var(--neg); }
 .hero-sub { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+#gp-table td:nth-child(2), #gp-years td:first-child + td { white-space: nowrap; }
+#gp-table .cellref { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); text-align: left; }
+#gp-table tr.hl td { font-weight: 600; }
+#gp-years th.sel, #gp-years td.sel { background: var(--surface-2); font-weight: 600; }
+.gp-h3 { font-size: 14px; font-weight: 600; margin: 14px 0 4px; }
+.hero-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.hero-trio div { background: var(--surface-2); border-radius: 8px; padding: 7px 10px; min-width: 0; }
+.hero-trio .k { font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+.hero-trio .v { font-family: var(--font-mono); font-size: 18px; font-weight: 500; }
+.hero-trio .x { font-size: 11px; color: var(--muted); font-family: var(--font-mono); }
 .bullet { width: 100%; height: auto; display: block; margin-top: 8px; }
 
 table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
@@ -237,6 +274,8 @@ footer.notes { border-top: 1px solid var(--line); background: var(--surface); }
 footer.notes .wrap { padding-block: 22px 30px; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 footer.notes h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
 footer.notes p { font-size: 13px; color: var(--ink-2); }
+footer.notes .wrap.brand-foot { display: flex; align-items: center; gap: 10px; padding-block: 0 26px; font-size: 12px; color: var(--muted); letter-spacing: .02em; }
+.brand-foot img { width: 28px; height: 28px; border-radius: 3px; flex: none; }
 
 @media (max-width: 1080px) {
   .grid { grid-template-columns: minmax(0, 1fr); }
@@ -248,22 +287,30 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 @media (max-width: 560px) {
   .stats { grid-template-columns: minmax(0, 1fr); }
   .hero-num { font-size: 34px; }
-  .lever-foot .excel-ref { margin-left: 0; }
   .segmented button { padding: 6px 10px; }
   .segmented .f9 { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
-<header class="top">
+<header class="top brand">
   <div class="wrap">
-    <div class="eyebrow">Project Galicia · LBO de Inditex · business plan 2026-2030</div>
+    <div class="brand-row">
+      <img class="brand-logo" src="/*__LOGO__*/" alt="Herrera Lázaro Pérez Partners · Corporate Finance Advisory" width="322" height="100">
+      <div class="brand-tag"><span>Project Galicia</span><span>Estrictamente confidencial</span></div>
+    </div>
+    <div class="eyebrow" id="eyebrow">Project Galicia · LBO de Inditex · modelo definitivo del grupo</div>
     <h1>Plan de creación de valor</h1>
     <p class="deal" id="deal-line"></p>
     <div class="case-row">
       <span class="lbl" id="case-lbl">Caso operativo</span>
       <div class="segmented" id="case-picker" role="radiogroup" aria-labelledby="case-lbl"></div>
-      <span class="lbl">Percentil del EBITDA 2030 en 20.000 simulaciones. En el Excel: <span class="cell">LBO_Rollover50!F9</span></span>
+      <span class="lbl">Los cuatro casos del Excel. Allí: <span class="cell">Active Case!F8</span></span>
+    </div>
+    <div class="case-row">
+      <span class="lbl" id="exit-lbl">Año de salida</span>
+      <div class="segmented years-picker" id="exit-picker" role="radiogroup" aria-labelledby="exit-lbl"></div>
+      <span class="lbl">Se vende el 31 de enero siguiente al múltiplo de entrada. Allí: <span class="cell">LBO Summary!L10</span></span>
     </div>
   </div>
 </header>
@@ -272,6 +319,15 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 
 <main class="wrap grid">
   <section class="levers" aria-label="Palancas">
+    <section class="panel deal-panel" id="deal-panel" aria-labelledby="deal-h">
+      <div class="deal-head">
+        <div><h2 id="deal-h">Estructura de la operación</h2>
+        <p class="sub">Por defecto, los valores del Excel definitivo (rama main): las TIR de la derecha son las del Excel. Si cambias alguno, todo se recalcula y abajo verás qué celda cambiar en el Excel para comprobarlo.</p></div>
+        <button class="btn" id="deal-reset" type="button">Volver al Excel</button>
+      </div>
+      <div class="deal-grid" id="deal-grid"></div>
+      <p class="deal-summary" id="deal-summary"></p>
+    </section>
     <div class="panel presets">
       <div>
         <h2>Empieza desde un escenario y ajusta cada palanca</h2>
@@ -284,49 +340,22 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 
     <section class="panel excel" id="excel" aria-labelledby="excel-h">
       <div>
-        <h2 id="excel-h">Pasar al Excel</h2>
-        <p class="sub">Tus valores van a las celdas amarillas de la hoja Palancas de <span class="mono">Inditex_LBO_Rollover50_BusinessPlan.xlsx</span>: columna D, filas 19 a 62.</p>
+        <h2 id="excel-h">Comprobar con el Excel</h2>
+        <p class="sub">Sin palancas, esta página da exactamente lo mismo que <span class="mono" id="excel-file"></span>. Para verlo, pon en el Excel el mismo caso (<span class="cell">Active Case!F8</span>) y el mismo año de salida (<span class="cell">LBO Summary!L10</span>) que arriba.</p>
+        <p class="excel-changes" id="excel-changes" hidden></p>
       </div>
-      <ol class="steps">
-        <li>Pulsa <b>Copiar columna</b>.</li>
-        <li>En Excel, abre la hoja <b>Palancas</b>, haz clic en la celda <span class="cell">D19</span> y pega (⌘V en Mac, Ctrl+V en Windows).</li>
-        <li>En la hoja <b>LBO_Rollover50</b>, escribe en <span class="cell">F9</span> el número del caso: <span id="case-hint"></span>. La celda <span class="cell">Palancas!D4</span> tiene que estar a 1.</li>
-        <li>El panel de la hoja Palancas (filas 8 a 15) debe dar lo mismo que la tabla «Resultado del caso» de esta página.</li>
-      </ol>
-      <div class="excel-actions">
-        <button class="btn primary" id="copy" type="button">Copiar columna</button>
-        <fieldset class="sep" id="sep">
-          <legend>Decimales de tu Excel:</legend>
-          <label><input type="radio" name="sep" value="," id="sep-comma"> coma (0,17)</label>
-          <label><input type="radio" name="sep" value="." id="sep-dot"> punto (0.17)</label>
-        </fieldset>
-        <span class="status" id="copy-status" role="status"></span>
-      </div>
-      <details>
-        <summary>Ver qué se copia, celda a celda</summary>
-        <div class="table-scroll"><table id="excel-table"><thead><tr><th>Celda</th><th>Qué es</th><th>Valor</th></tr></thead><tbody></tbody></table></div>
-        <label for="copy-text" class="sub" style="display:block;margin:10px 0 4px">Si el botón no copia, selecciona este texto y cópialo a mano:</label>
-        <textarea id="copy-text" rows="5" readonly></textarea>
-      </details>
-      <h3>Sin abrir Excel</h3>
-      <p>Pulsa <b>Copiar columna</b> y, con el Excel cerrado, ejecuta en la terminal desde la carpeta del repositorio. El script comprueba cada valor, escribe solo esas celdas y guarda una copia del Excel anterior.</p>
-      <div class="cmd-row">
-        <pre><code id="cmd">.venv/bin/python "Business Plan/pasar_al_excel.py"</code></pre>
-        <button class="btn" id="copy-cmd" type="button">Copiar comando</button>
-      </div>
-      <h3>Del Excel a esta página</h3>
-      <p>Si has cambiado valores en el Excel, selecciona <span class="cell">D19:D62</span> en la hoja Palancas, cópialos y pégalos aquí:</p>
-      <textarea id="paste-in" rows="3" placeholder="Pega aquí la columna D19:D62"></textarea>
-      <span class="status" id="paste-status" role="status"></span>
+      <div class="table-scroll"><table id="excel-table"><thead><tr><th>Celda del Excel</th><th style="text-align:left">Qué es</th><th>Sin palancas</th></tr></thead><tbody></tbody></table></div>
+      <p>Las palancas no están en el Excel del grupo: son el plan de creación de valor que se suma encima de cada caso. Su capex cuenta como capex de expansión, que el Excel deja fuera del DSCR bancario.</p>
     </section>
   </section>
 
   <aside class="results" aria-label="Resultados">
     <section class="panel" id="kpi">
-      <div class="hero-label" id="hero-label">TIR del fondo</div>
+      <div class="hero-label" id="hero-label">TIR bruta del fondo</div>
       <div class="hero-row"><span class="hero-num" id="irr-plan">—</span><span class="delta" id="irr-delta"></span></div>
       <div class="hero-sub" id="irr-sub"></div>
-      <svg class="bullet" id="bullet" viewBox="0 0 420 46" role="img" aria-label="TIR frente al objetivo del 15 %"></svg>
+      <div class="hero-trio" id="irr-trio"></div>
+      <svg class="bullet" id="bullet" viewBox="0 0 420 46" role="img" aria-label="TIR bruta del fondo frente al objetivo del 15 %"></svg>
     </section>
 
     <div class="tabs" role="tablist" aria-label="Qué ver">
@@ -341,7 +370,17 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
         <thead><tr><th>Resultado del caso</th><th>Sin palancas</th><th>Con palancas</th><th>Diferencia</th></tr></thead>
         <tbody></tbody>
       </table>
-      <p class="kpi-note">Igual que el panel de la hoja Palancas del Excel (filas 8 a 15).</p>
+      <p class="kpi-note">«Sin palancas» es el Excel definitivo del grupo, celda a celda (ver «Comprobar con el Excel»). La TIR bruta es la del fondo antes de repartir con el GP; la neta de los LPs y la del GP salen de la cascada del Excel.</p>
+    </section>
+
+    <section class="panel" id="gp-panel">
+      <div class="chart-head">
+        <div><h2>Lead GP con carry y LPs</h2><p class="sub" id="gp-sub">Las mismas filas que el LBO Summary del Excel</p></div>
+      </div>
+      <div class="table-scroll" style="border:0;padding:0;max-height:none"><table id="gp-table"></table></div>
+      <h3 class="gp-h3">Si se vende cada año</h3>
+      <div class="table-scroll" style="border:0;padding:0;max-height:none"><table id="gp-years"></table></div>
+      <p class="kpi-note">Cascada del Excel: los LPs recuperan su capital y un preferente anual; después el Lead GP cobra el catch-up hasta llevarse su parte del beneficio y el exceso se reparte. El Lead GP cobra además su coinversión, como un LP más.</p>
     </section>
 
     <section class="panel chart" id="contrib-panel">
@@ -360,7 +399,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
           <span><i class="area"></i>80 % central de los escenarios con el plan</span>
         </div>
       </div>
-      <svg id="ebitda" viewBox="0 0 600 250" role="img" aria-label="EBITDA 2025-2030 con y sin palancas"></svg>
+      <svg id="ebitda" viewBox="0 0 600 250" role="img" aria-label="EBITDA por año con y sin palancas"></svg>
       <details style="margin-top:8px"><summary>Ver los datos</summary><div class="table-scroll"><table id="ebitda-table"></table></div></details>
     </section>
     </div>
@@ -375,6 +414,17 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
         </div>
       </div>
       <svg id="cases-chart" role="img" aria-label="TIR de los cuatro casos con y sin palancas"></svg>
+    </section>
+
+    <section class="panel chart">
+      <div class="chart-head">
+        <div><h2>TIR según el año de salida</h2><p class="sub" data-case-sub>TIR bruta del fondo si se vende ese año. Pulsa un año para elegirlo</p></div>
+        <div class="legend">
+          <span><i style="--c: var(--series-plan)"></i>Con palancas</span>
+          <span><i style="--c: var(--series-base)"></i>Sin palancas</span>
+        </div>
+      </div>
+      <svg id="exit-chart" role="img" aria-label="TIR bruta del fondo según el año de salida"></svg>
     </section>
 
     <section class="panel chart">
@@ -409,13 +459,13 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 
     <section class="panel chart">
       <div class="chart-head">
-        <div><h2>DSCR: caja frente al servicio de la deuda</h2><p class="sub" data-case-sub>CFADS / (intereses en caja + amortización de la TLA)</p></div>
+        <div><h2>DSCR bancario: caja frente al servicio de la deuda</h2><p class="sub" data-case-sub>CFADS sin capex de expansión / (intereses en caja + cuota de la TLA)</p></div>
         <div class="legend">
           <span><i style="--c: var(--series-plan)"></i>Con palancas</span>
           <span><i style="--c: var(--series-base)"></i>Sin palancas</span>
         </div>
       </div>
-      <svg id="dscr-chart" role="img" aria-label="DSCR por año frente al covenant de 1,2x"></svg>
+      <svg id="dscr-chart" role="img" aria-label="DSCR bancario por año frente al covenant"></svg>
     </section>
 
     <section class="panel chart">
@@ -433,6 +483,16 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
       <details style="margin-top:8px"><summary>Ver el puente con y sin palancas</summary><div class="table-scroll"><table id="bridge-table"></table></div></details>
     </section>
 
+    <section class="panel chart">
+      <div class="chart-head">
+        <div><h2>Reparto entre LPs y GP</h2><p class="sub" data-case-sub>Lo que cobra el fondo en la salida, por tramos de la cascada, con palancas</p></div>
+        <div class="legend" id="wf-legend"></div>
+      </div>
+      <svg id="wf-chart" role="img" aria-label="Cascada de reparto entre LPs y GP"></svg>
+      <p class="chart-note" id="wf-note"></p>
+      <details style="margin-top:8px"><summary>Ver la cascada con y sin palancas</summary><div class="table-scroll"><table id="wf-table"></table></div></details>
+    </section>
+
     <section class="panel">
       <details><summary>Ver los datos de las gráficas</summary><div class="table-scroll"><table id="charts-table"></table></div></details>
     </section>
@@ -441,7 +501,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     <div class="pane" id="pane-riesgo" role="tabpanel" aria-labelledby="tab-riesgo" hidden>
     <section class="panel chart risk" id="risk">
       <div class="chart-head">
-        <div><h2>Riesgo: 20.000 escenarios</h2><p class="sub">El mismo plan en todos los escenarios simulados, con crisis y riesgo de ejecución</p></div>
+        <div><h2>Riesgo: 20.000 escenarios</h2><p class="sub" id="risk-sub">El mismo plan en todos los escenarios simulados, con crisis y riesgo de ejecución</p></div>
         <span class="busy-note">Recalculando…</span>
       </div>
       <div class="stats" id="risk-stats"></div>
@@ -460,10 +520,11 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 
 <footer class="notes">
   <div class="wrap">
-    <div><h3>Mismo cálculo que el Excel</h3><p>El motor de esta página es una traducción línea a línea del modelo en Python, que a su vez reproduce la hoja LBO_Rollover50 del Excel del grupo. Los tests comprueban que los tres dan lo mismo.</p></div>
-    <div><h3>Los cuatro casos</h3><p>Base, Bull, Bear y Bank son los escenarios de la simulación que quedan en los percentiles 50, 80, 20 y 10 del EBITDA de 2030. El riesgo usa los 20.000 escenarios.</p></div>
-    <div><h3>Riesgo de ejecución</h3><p>En la simulación, cada palanca operativa se cumple solo en parte o algo mejor de lo planeado (por ejemplo entre el 50 % y el 110 % en aperturas), y las ventas nuevas sufren las mismas crisis que el negocio.</p></div>
+    <div><h3>Mismo cálculo que el Excel</h3><p>El motor de esta página es una traducción línea a línea del modelo en Python, que a su vez reproduce el Excel definitivo del grupo (sus cuatro hojas de cálculo). Las hipótesis y los casos se leen del propio Excel. Los tests comprueban que los tres dan lo mismo.</p></div>
+    <div><h3>Los cuatro casos</h3><p>Base, Bull, Bear y Bank son los del Excel (Active Case, columnas E a H). El grupo los calibró con la simulación de Monte Carlo y las palancas operativas; esta página suma encima el plan de creación de valor.</p></div>
+    <div><h3>Riesgo</h3><p>Los 20.000 escenarios tienen la volatilidad, las correlaciones y las crisis calibradas con 2005-2025, centrados en el caso Base del Excel. Cada palanca operativa se cumple solo en parte o algo mejor de lo planeado (por ejemplo entre el 50 % y el 110 % en aperturas).</p></div>
   </div>
+  <div class="wrap brand-foot"><img src="/*__MONO__*/" alt="" width="28" height="28"><span>Herrera Lázaro Pérez Partners · Corporate Finance Advisory · Project Galicia · Estrictamente confidencial</span></div>
 </footer>
 
 <div class="tooltip" id="tip" hidden></div>
@@ -475,9 +536,9 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 (() => {
   Motor.init(DATOS);
   const K = Motor.K;
-  const T = 5;
+  const T = Motor.T;
+  const YEARS = K.years, LAST = YEARS[T - 1];
   const CASES = K.case_order;
-  const CASE_SHORT = { "Base": "Base", "Bull": "Bull", "Bear": "Bear", "Bank case": "Bank" };
   const SHORT = { usa: "EE. UU.", young: "Marcas jóvenes", lefties: "Lefties", refurb: "Reformas", efficiency: "Eficiencia",
                   wc: "Circulante", propco: "PropCo", recap: "Recap" };
   const BAND_SLUG = { Conservador: "conservador", Normal: "normal", Optimista: "optimista", Agresivo: "agresivo" };
@@ -485,6 +546,8 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
                       Optimista: "en la parte alta de lo conseguido", Agresivo: "sin precedente en sus cuentas" };
   const ALL = (v) => Object.fromEntries(K.levers.map((l) => [l.key, v]));
   const sum = (a) => a.reduce((x, y) => x + y, 0);
+  const upTo = (a, k) => sum(a.slice(0, k + 1));
+  let d = Motor.deal;
 
   // ---------- Elementos ----------
   const $ = (sel, el = document) => el.querySelector(sel);
@@ -509,7 +572,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
   }
 
   // ---------- Formato español ----------
-  const MINUS = "−", NB = " ";
+  const MINUS = "−", NB = " ";
   function num(v, dec = 0) {
     if (!Number.isFinite(v)) return "—";
     const r = Math.abs(v).toFixed(dec);
@@ -529,43 +592,159 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     return num(v, p.fmt.includes(".") ? p.fmt.split(".")[1].length : (Number.isInteger(v) ? 0 : 1));
   }
 
+  // ---------- Hipótesis de la operación que se pueden cambiar (celdas del Excel) ----------
+  const DEAL_PARAMS = [
+    { key: "premium", label: "Prima de la OPA", cell: "LBO Summary!F10", min: 0, max: 0.4, step: 0.01, pct: true },
+    { key: "rollover", label: "Rollover de Amancio (% de Inditex)", cell: "LBO Summary!F14", min: 0, max: 0.59, step: 0.01, pct: true },
+    { key: "tla_x", label: "TLA (veces EBITDA)", cell: "Debt & Covenants!F8", min: 0, max: 4, step: 0.25 },
+    { key: "tlb_x", label: "TLB (veces EBITDA)", cell: "Debt & Covenants!F9", min: 0, max: 5, step: 0.25 },
+    { key: "sub_x", label: "Mezzanine PIK (veces EBITDA)", cell: "Debt & Covenants!F10", min: 0, max: 3, step: 0.25 },
+    { key: "vl_share", label: "Nota de Sandra Ortega (% del valor del equity)", cell: "Debt & Covenants!F11", min: 0, max: 0.08, step: 0.0005, pct: true, dec: 2 },
+    { key: "euribor", label: "Euribor swap", cell: "Debt & Covenants!F7", min: 0, max: 0.06, step: 0.0005, pct: true, dec: 2 },
+    { key: "tlb_sweep", label: "Cash sweep de la TLB", cell: "Debt & Covenants!E13", min: 0, max: 1, step: 0.05, pct: true },
+    { key: "lp_share", label: "LPs: % del cheque del consorcio", cell: "LBO Summary!L43", min: 0.5, max: 0.95, step: 0.01, pct: true },
+    { key: "hurdle", label: "Hurdle de los LPs (preferente)", cell: "LBO Summary!L45", min: 0, max: 0.15, step: 0.005, pct: true, dec: 1 },
+    { key: "carry", label: "Carry del GP", cell: "LBO Summary!L46", min: 0, max: 0.3, step: 0.01, pct: true },
+  ];
+
   // ---------- Estado (se recuerda en este navegador) ----------
-  const STORE = "palancas-inditex-v1";
+  const STORE = "palancas-inditex-v3";  // v3: arranca en el Excel, con las palancas apagadas
   const TABS = ["resumen", "graficas", "riesgo"];
-  const state = { caseName: "Base", values: Motor.defaults(), on: ALL(true), sep: ",", tab: "resumen" };  // Excel en español
+  const state = { caseName: CASES[(K.excel.active_case || 1) - 1] || CASES[0], exitYear: d.exit_year,
+                  values: Motor.defaults(), on: ALL(false), tab: "resumen", deal: {} };
   try {
     const saved = JSON.parse(localStorage.getItem(STORE) || "null");
     if (saved) {
       if (CASES.includes(saved.caseName)) state.caseName = saved.caseName;
-      if (saved.sep === "," || saved.sep === ".") state.sep = saved.sep;
+      if (YEARS.includes(saved.exitYear)) state.exitYear = saved.exitYear;
       if (TABS.includes(saved.tab)) state.tab = saved.tab;
+      for (const p of DEAL_PARAMS) {
+        const v = saved.deal?.[p.key];
+        if (typeof v === "number" && Number.isFinite(v) && v >= p.min && v <= p.max) state.deal[p.key] = v;
+      }
+      const em = saved.deal?.exit_multiple;
+      if (typeof em === "number" && em >= 10 && em <= 30) state.deal.exit_multiple = em;
       for (const lv of K.levers) {
         if (typeof saved.on?.[lv.key] === "boolean") state.on[lv.key] = saved.on[lv.key];
         for (const p of lv.params) {
           const v = saved.values?.[lv.key]?.[p.key];
-          if (typeof v === "number" && Number.isFinite(v)) state.values[lv.key][p.key] = v;
+          if (typeof v === "number" && Number.isFinite(v) && (!p.options || p.options.includes(v))) state.values[lv.key][p.key] = v;
         }
       }
     }
   } catch (e) { /* sin almacenamiento: valores por defecto */ }
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* nada */ } };
+  Motor.setDeal(state.deal); d = Motor.deal;
+  const kExit = () => state.exitYear - YEARS[0];
 
   // ---------- Cabecera ----------
-  const d = K.deal;
-  $("#deal-line").innerHTML =
-    `Compra a <b>${num(d.share_price * (1 + d.premium), 2)} € por acción</b> (prima del ${pct(d.premium, 0)} sobre ${num(d.share_price, 2)} €), ` +
-    `<b>${times(K.entry_multiple, 1)} el EBITDA</b> pre-IFRS 16 de 2025 · deuda de <b>${times(d.tla_x + d.tlb_x + d.pik_x + d.vl_x, 1)}</b> ` +
-    `(TLA ${times(d.tla_x)}, TLB ${times(d.tlb_x)}, PIK ${times(d.pik_x, 1)}, vendor loan ${times(d.vl_x, 1)}) · ` +
-    `Amancio Ortega reinvierte el ${pct(d.rollover_pct, 0)} de su participación · salida en enero de 2031 al mismo múltiplo.`;
+  $("#eyebrow").textContent = `Project Galicia · LBO de Inditex · modelo definitivo del grupo (${K.excel.file})`;
+  function renderDealLine() {
+    const su0 = Motor.sourcesAndUses(d);
+    $("#deal-line").innerHTML =
+      `Compra del 100 % a <b>${num(d.share_price * (1 + d.premium), 2)} € por acción</b> (prima del ${pct(d.premium, 0)} sobre ${num(d.share_price, 2)} €), ` +
+      `<b>${times(Motor.entryMultiple(d), 1)} el EBITDA</b> pre-IFRS 16 de 2025 · deuda de <b>${times(su0.debt / d.ebitda_ref, 1)}</b> ` +
+      `(TLA ${times(d.tla_x, 1)}, TLB ${times(d.tlb_x, 1)}, PIK ${times(d.sub_x, 1)}, vendor loan de Sandra Ortega ${times(su0.vl / d.ebitda_ref, 1)}) · ` +
+      `Amancio Ortega aporta el ${pct(d.rollover, 0)} de Inditex a la TopCo · el fondo pone <b>${eur(su0.sponsor)}</b> ` +
+      `(${pct(su0.sponsorShare, 1)} de la TopCo; GP ${pct(1 - d.lp_share, 0)} y LPs ${pct(d.lp_share, 0)}) · cascada con preferente del ${pct(d.hurdle, 0)} y carry del ${pct(d.carry, 0)}.`;
+  }
+  $("#excel-file").textContent = K.excel.file;
 
   const picker = $("#case-picker");
   const caseBtns = CASES.map((name, i) => {
-    const b = h("button", { type: "button", role: "radio" }, CASE_SHORT[name], h("small", {}, `P${K.case_percentiles[name]}`, h("span", { class: "f9", text: ` · F9 = ${i + 1}` })));
+    const b = h("button", { type: "button", role: "radio" }, name, h("small", {}, `P${K.case_percentiles[name]}`, h("span", { class: "f9", text: ` · F8 = ${i + 1}` })));
     b.addEventListener("click", () => { state.caseName = name; refresh(false); });
     picker.append(b);
     return [name, b];
   });
-  $("#case-hint").textContent = CASES.map((n, i) => `${i + 1} ${CASE_SHORT[n]}`).join(", ");
+  const exitBtns = YEARS.map((y) => {
+    const b = h("button", { type: "button", role: "radio", text: String(y) });
+    b.addEventListener("click", () => setExit(y));
+    $("#exit-picker").append(b);
+    return [y, b];
+  });
+  function setExit(y) {
+    if (y === state.exitYear) return;
+    state.exitYear = y;
+    for (const k of Object.keys(baseCache)) delete baseCache[k];
+    risk.base = null; risk.bands = null;
+    refresh();
+    postReference();
+  }
+
+  // ---------- Estructura de la operación ----------
+  const dealUi = {};
+  const fmtDeal = (p, v) => (p.pct ? pct(v, p.dec ?? 0) : times(v, p.dec ?? 2));
+  const dealChanged = () => Object.keys(state.deal).length > 0;
+  for (const p of DEAL_PARAMS) {
+    const id = `deal-${p.key}`, k = p.pct ? 100 : 1;
+    const numIn = h("input", { type: "number", id, min: p.min * k, max: p.max * k, step: "any", inputmode: "decimal" });
+    const range = h("input", { type: "range", min: p.min, max: p.max, step: p.step, "aria-label": p.label });
+    const note = h("span", { class: "deal-note" });
+    const set = (v) => setDealValue(p.key, Math.min(p.max, Math.max(p.min, v)));
+    numIn.addEventListener("change", () => { const v = parseFloat(String(numIn.value).replace(",", ".")); if (Number.isFinite(v)) set(v / k); else syncDeal(); });
+    range.addEventListener("input", () => set(parseFloat(range.value)));
+    const el = h("div", { class: "deal-param" },
+      h("div", { class: "param-top" }, h("label", { class: "param-label", for: id, text: p.label }),
+        h("span", { class: "num-wrap" }, numIn, h("span", { class: "unit", text: p.pct ? "%" : "x" }))),
+      range, h("div", { class: "deal-sub" }, h("span", { class: "cell", text: p.cell }), note));
+    $("#deal-grid").append(el);
+    dealUi[p.key] = { numIn, range, note, el, p, k };
+  }
+  {  // múltiplo de salida: igual al de entrada (como el Excel, LBO Summary!L11 = L8) o un valor fijo
+    const numIn = h("input", { type: "number", id: "deal-exit", min: 10, max: 30, step: "any", inputmode: "decimal" });
+    const range = h("input", { type: "range", min: 12, max: 28, step: 0.1, "aria-label": "Múltiplo de salida" });
+    const box = h("input", { type: "checkbox", id: "deal-exit-entry" });
+    const note = h("span", { class: "deal-note" });
+    const fixed = (v) => { state.deal.exit_multiple = Math.min(30, Math.max(10, v)); applyDeal(); };
+    numIn.addEventListener("change", () => { const v = parseFloat(String(numIn.value).replace(",", ".")); if (Number.isFinite(v)) fixed(v); else syncDeal(); });
+    range.addEventListener("input", () => fixed(parseFloat(range.value)));
+    box.addEventListener("change", () => {
+      if (box.checked) delete state.deal.exit_multiple;
+      else state.deal.exit_multiple = Math.round(Motor.entryMultiple(d) * 10) / 10;
+      applyDeal();
+    });
+    const el = h("div", { class: "deal-param" },
+      h("div", { class: "param-top" }, h("label", { class: "param-label", for: "deal-exit", text: "Múltiplo de salida (EV / EBITDA)" }),
+        h("span", { class: "num-wrap" }, numIn, h("span", { class: "unit", text: "x" }))),
+      range, h("label", { class: "deal-exit", for: "deal-exit-entry" }, box, "Igual al de entrada, como el Excel"),
+      h("div", { class: "deal-sub" }, h("span", { class: "cell", text: "LBO Summary!L11" }), note));
+    $("#deal-grid").append(el);
+    dealUi.exit = { numIn, range, box, note, el };
+  }
+  function setDealValue(key, v) {
+    if (Math.abs(v - K.deal[key]) < 1e-9) delete state.deal[key]; else state.deal[key] = v;
+    applyDeal();
+  }
+  let riskReady = false;
+  function applyDeal() {
+    Motor.setDeal(state.deal); d = Motor.deal;
+    for (const k of Object.keys(baseCache)) delete baseCache[k];
+    risk.base = null; risk.bands = null;
+    refresh();
+    if (riskReady) postReference();
+  }
+  function syncDeal() {
+    for (const p of DEAL_PARAMS) {
+      const u = dealUi[p.key], v = d[p.key], changed = p.key in state.deal;
+      if (document.activeElement !== u.numIn) u.numIn.value = String(+(v * u.k).toFixed(4));
+      u.range.value = v;
+      u.note.textContent = changed ? `Excel: ${fmtDeal(p, K.deal[p.key])}` : "como el Excel";
+      u.el.classList.toggle("changed", changed);
+    }
+    const ex = dealUi.exit, m = d.exit_multiple == null ? Motor.entryMultiple(d) : d.exit_multiple, fixedExit = d.exit_multiple != null;
+    if (document.activeElement !== ex.numIn) ex.numIn.value = String(+m.toFixed(2));
+    ex.range.value = m;
+    ex.box.checked = !fixedExit;
+    ex.note.textContent = fixedExit ? `Excel: igual al de entrada (${times(Motor.entryMultiple(d), 1)})` : "como el Excel";
+    ex.el.classList.toggle("changed", fixedExit);
+    const su = Motor.sourcesAndUses(d);
+    $("#deal-summary").innerHTML = `Deuda total <b>${times(su.debt / d.ebitda_ref, 2)}</b> (${eur(su.debt)}) · equity de la TopCo <b>${eur(su.equity)}</b>: ` +
+      `Amancio <b>${eur(su.rollover)}</b> (${pct(1 - su.sponsorShare, 1)}) y consorcio <b>${eur(su.sponsor)}</b> (${pct(su.sponsorShare, 1)}), ` +
+      `del que el GP pone <b>${eur(su.sponsor * (1 - d.lp_share))}</b> y los LPs <b>${eur(su.sponsor * d.lp_share)}</b>.`;
+    $("#deal-reset").disabled = !dealChanged();
+  }
+  $("#deal-reset").addEventListener("click", () => { state.deal = {}; applyDeal(); });
 
   // ---------- Pestañas del panel de resultados ----------
   function syncTabs() {
@@ -598,9 +777,9 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 
   // ---------- Escenarios de partida ----------
   const presets = [
-    ["Valores por defecto", () => ({ values: Motor.defaults(), on: ALL(true) }), null],
+    ["Encender todas (valores por defecto)", () => ({ values: Motor.defaults(), on: ALL(true) }), null],
     ...Motor.BANDS.map((b) => [`Todo ${b}`, () => ({ values: Motor.bandValues(b), on: ALL(true) }), b]),
-    ["Apagar todas", () => ({ values: state.values, on: ALL(false) }), null],
+    ["Apagar todas (el Excel tal cual)", () => ({ values: state.values, on: ALL(false) }), null],
   ];
   for (const [label, make, band] of presets) {
     const b = h("button", { class: "btn", type: "button" }, band ? h("span", { class: "dot", style: `--c: var(--band-${BAND_SLUG[band]})` }) : null, label);
@@ -674,6 +853,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
 
   function syncControls() {
     for (const [name, b] of caseBtns) b.setAttribute("aria-checked", String(name === state.caseName));
+    for (const [y, b] of exitBtns) b.setAttribute("aria-checked", String(y === state.exitYear));
     for (const lv of K.levers) {
       const u = ui[lv.key], on = state.on[lv.key];
       u.toggle.checked = on;
@@ -691,48 +871,108 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
         for (const seg of r.segs) seg.classList.toggle("on", seg.dataset.band === band);
       }
     }
-    $("#sep-comma").checked = state.sep === ",";
-    $("#sep-dot").checked = state.sep === ".";
   }
 
   // ---------- Resultados del caso ----------
   const baseCache = {};
-  const baseCase = (name) => (baseCache[name] ??= Motor.runCase(name, Motor.defaults(), ALL(false)));
+  const baseCase = (name) => (baseCache[name] ??= Motor.runCase(name, Motor.defaults(), ALL(false), state.exitYear));
   let last = null;
 
+  // Holgura mínima del covenant de apalancamiento (Debt & Covenants fila 101), del cierre al último año.
+  function minCushion(res) {
+    const entry = (res.su.debt - d.min_cash) / d.ebitda_ref;
+    let m = res.lev_covenant[0] - entry;
+    for (let t = 0; t < T; t++) m = Math.min(m, res.lev_covenant[t + 1] - res.total_nd_ebitda[t]);
+    return m;
+  }
+  const capexTo = (c, k) => upTo(c.lever.op.capex_maint, k) + upTo(c.lever.op.capex_exp, k);
+
   const KPIS = [
-    { label: "MoM del fondo", get: (c) => c.res.mom, fmt: (v) => times(v), dfmt: (x) => signed(x, 2) + "x" },
-    { label: "DSCR mínimo 2026-30", get: (c) => c.res.min_dscr, fmt: (v) => times(v), dfmt: (x) => signed(x, 2) + "x", warn: (v) => v < 1.2 },
-    { label: "EBITDA pre-IFRS 16 2030", get: (c) => c.res.ebitda_pre[T - 1], fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
-    { label: "Deuda senior neta / EBITDA 2030", get: (c) => c.res.senior_nd_ebitda[T - 1], fmt: (v) => times(v), dfmt: (x) => signed(x, 2) + "x" },
-    { label: "Capex acumulado 2026-30", get: (c) => sum(c.lever.op.capex), fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
-    { label: "Cheque del fondo al cierre", get: (c) => c.res.su.sponsor, fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
-    { label: "Dividendo del recap", get: (c) => sum(c.res.dividend), fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
+    { label: () => "MOIC bruto del fondo", get: (c) => c.res.mom, fmt: (v) => times(v), dfmt: (x) => signed(x, 2) + "x" },
+    { label: () => "TIR neta de los LPs", get: (c) => c.res.lp_irr, fmt: (v) => pct(v, 2), dfmt: (x) => pp(x, 2) },
+    { label: () => "TIR neta del Lead GP (con carry)", get: (c) => c.res.gp_irr, fmt: (v) => pct(v, 2), dfmt: (x) => pp(x, 2) },
+    { label: () => `DSCR bancario mínimo ${YEARS[0]}-${String(LAST).slice(2)}`, get: (c) => c.res.min_dscr, fmt: (v) => times(v),
+      dfmt: (x) => signed(x, 2) + "x", warn: (v) => v < d.dscr_min, warnText: `⚠ < ${times(d.dscr_min)}` },
+    { label: () => "Holgura mínima del covenant de apalancamiento", get: (c) => minCushion(c.res), fmt: (v) => times(v),
+      dfmt: (x) => signed(x, 2) + "x", warn: (v) => v < 0, warnText: "⚠ incumple" },
+    { label: () => `EBITDA pre-IFRS 16 ${state.exitYear}`, get: (c) => c.res.ebitda_pre[kExit()], fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
+    { label: () => `Deuda senior neta / EBITDA ${state.exitYear}`, get: (c) => c.res.senior_nd_ebitda[kExit()], fmt: (v) => times(v), dfmt: (x) => signed(x, 2) + "x" },
+    { label: () => `Capex acumulado ${YEARS[0]}-${String(state.exitYear).slice(2)}`, get: (c) => capexTo(c, kExit()), fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
+    { label: () => "Cheque del fondo al cierre", get: (c) => c.res.su.sponsor, fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
+    { label: () => "Dividendo del recap", get: (c) => upTo(c.res.dividend, kExit()), fmt: eur, dfmt: (x) => signed(x, 0) + NB + "M€" },
   ];
-  const kpiCells = KPIS.map((k) => {
-    const cells = [h("td", { class: "v" }), h("td", { class: "v" }), h("td", { class: "v" })];
-    $("#kpi-table tbody").append(h("tr", {}, h("td", { text: k.label }), cells));
-    return cells;
+  const kpiRows = KPIS.map(() => {
+    const label = h("td"), cells = [h("td", { class: "v" }), h("td", { class: "v" }), h("td", { class: "v" })];
+    $("#kpi-table tbody").append(h("tr", {}, label, cells));
+    return { label, cells };
   });
 
   function renderKpis(base, plan) {
     const irr0 = base.res.irr, irr1 = plan.res.irr, dIrr = irr1 - irr0;
-    $("#hero-label").textContent = `TIR del fondo · caso ${CASE_SHORT[state.caseName]}`;
-    $("#irr-plan").textContent = pct(irr1);
+    const levers = K.levers.some((lv) => state.on[lv.key]), pure = !levers && !dealChanged();
+    $("#hero-label").textContent = `TIR bruta del fondo · caso ${state.caseName} · salida en ${state.exitYear}`;
+    $("#irr-plan").textContent = pct(irr1, 2);
     const delta = $("#irr-delta");
+    delta.hidden = !levers;
     delta.textContent = (dIrr > 0.00005 ? "▲ " : dIrr < -0.00005 ? "▼ " : "") + pp(dIrr, 2);
     delta.className = "delta" + (dIrr > 0.00005 ? " up" : dIrr < -0.00005 ? " down" : "");
-    $("#irr-sub").textContent = `Sin palancas ${pct(irr0)} · el fondo busca al menos un 15 %`;
+    $("#irr-sub").textContent = pure ? "Exactamente el Excel de Anxo (LBO Summary!K17) · el fondo busca al menos un 15 %"
+      : levers ? `${dealChanged() ? "El Excel con tu estructura" : "El Excel"}: ${pct(irr0, 2)} · con tus palancas: ${pct(irr1, 2)}`
+      : "El Excel con tu estructura (mira «Comprobar con el Excel») · el fondo busca al menos un 15 %";
+    const trio = [["Bruta del fondo", irr1, "K17"], ["Neta de los LPs", plan.res.lp_irr, "K21"], ["Lead GP, neta con carry", plan.res.gp_irr, "L18"]];
+    $("#irr-trio").replaceChildren(...trio.map(([k, v, cell]) => h("div", {}, h("div", { class: "k", text: k }),
+      h("div", { class: "v", text: pct(v, 2) }), h("div", { class: "x", text: levers ? "con palancas" : `Excel: LBO Summary!${cell}` }))));
     KPIS.forEach((k, i) => {
-      const a = k.get(base), b = k.get(plan), c = kpiCells[i];
-      c[0].textContent = k.fmt(a);
-      c[1].textContent = k.fmt(b);
-      if (k.warn && k.warn(b)) c[1].append(h("span", { class: "warnchip", text: "⚠ < 1,2x" }));
-      c[2].textContent = k.dfmt(b - a);
+      const a = k.get(base), b = k.get(plan), r = kpiRows[i];
+      r.label.textContent = k.label();
+      r.cells[0].textContent = k.fmt(a);
+      r.cells[1].textContent = k.fmt(b);
+      if (k.warn && k.warn(b)) r.cells[1].append(h("span", { class: "warnchip", text: k.warnText }));
+      r.cells[2].textContent = k.dfmt(b - a);
     });
     renderBullet(irr0, irr1);
-    $("#mini").innerHTML = `<span>TIR ${CASE_SHORT[state.caseName]}: <b>${pct(irr0)}</b> → <b>${pct(irr1)}</b> (${pp(dIrr, 2)})</span>` +
-      `<span>DSCR mín. <b>${times(plan.res.min_dscr)}</b></span><span>EBITDA 2030 <b>${eur(plan.res.ebitda_pre[T - 1])}</b></span>`;
+    $("#mini").innerHTML = `<span>TIR ${state.caseName} ${state.exitYear}: <b>${pct(irr1, 2)}</b>${levers ? ` (Excel ${pct(irr0, 2)})` : ""}</span>` +
+      `<span>LPs <b>${pct(plan.res.lp_irr, 2)}</b> · GP <b>${pct(plan.res.gp_irr, 2)}</b></span><span>DSCR mín. <b>${times(plan.res.min_dscr)}</b></span>`;
+  }
+
+  // Retornos del LBO Summary: fondo, Lead GP con carry y LPs (H17:L21) y su cascada (filas 73-97) en el año de salida.
+  function renderGpPanel(base, plan) {
+    const levers = K.levers.some((lv) => state.on[lv.key]);
+    const col = "FGHIJKL"[kExit()], a = base.res, b = plan.res, ta = a.wf_tiers, tb = b.wf_tiers;
+    const rows = [
+      ["TIR bruta del fondo", "K17", a.irr, b.irr, (v) => pct(v, 2), true],
+      ["MOIC bruto del fondo", "L17", a.mom, b.mom, (v) => times(v, 2)],
+      ["Lead GP: TIR neta con carry", "L18", a.gp_irr, b.gp_irr, (v) => pct(v, 2), true],
+      ["Lead GP: MOIC neto con carry", "L19", a.gp_mom, b.gp_mom, (v) => times(v, 2)],
+      ["Lead GP: beneficio neto", "K20", a.gp_net - a.gp_ticket, b.gp_net - b.gp_ticket, eur],
+      ["Fondo: beneficio bruto", "L20", sum(a.flows) - a.su.sponsor, sum(b.flows) - b.su.sponsor, eur],
+      ["LPs: TIR neta", "K21", a.lp_irr, b.lp_irr, (v) => pct(v, 2), true],
+      ["LPs: MOIC neto", "L21", a.lp_mom, b.lp_mom, (v) => times(v, 2)],
+      [`Lead GP: cheque (${pct(1 - d.lp_share, 0)} del consorcio)`, "J44", a.gp_ticket, b.gp_ticket, eur],
+      ["Lead GP: coinversión (su parte del bote)", `${col}74`, a.gp_coinvest, b.gp_coinvest, eur],
+      ["Lead GP: catch-up", `${col}79`, ta.catch_up, tb.catch_up, eur],
+      [`Lead GP: ${pct(d.carry, 0)} del exceso`, `${col}81`, ta.gp_split, tb.gp_split, eur],
+      ["Lead GP: carry total", `${col}83`, a.gp_carry, b.gp_carry, eur, true],
+      ["Lead GP: total cobrado", `${col}84`, a.gp_net, b.gp_net, eur, true],
+      ["LPs: total cobrado", `${col}82`, a.lp_net, b.lp_net, eur],
+    ];
+    $("#gp-sub").textContent = `LBO Summary del Excel, caso ${state.caseName}, salida en ${state.exitYear}` + (dealChanged() ? " (con tu estructura)" : "");
+    $("#gp-table").replaceChildren(
+      h("thead", {}, h("tr", {}, h("th", { text: "" }), h("th", { text: "Celda", style: "text-align:left" }), h("th", { text: "Excel (sin palancas)" }),
+        levers ? h("th", { text: "Con palancas" }) : null)),
+      h("tbody", {}, rows.map(([label, cell, va, vb, f, hl]) => h("tr", { class: hl ? "hl" : null }, h("td", { text: label }),
+        h("td", { class: "cellref", text: cell }), h("td", { class: "v", text: f(va) }), levers ? h("td", { class: "v", text: f(vb) }) : null))));
+    const at = (c, y) => Motor.run(c.lever.op, c.lever.deal, false, y);
+    const byYear = YEARS.map((y) => at(levers ? last.plan : last.base, y));
+    const line = (label, row, f) => h("tr", {}, h("td", { text: `${label} (fila ${row})` }),
+      byYear.map((r, i) => h("td", { class: "v" + (YEARS[i] === state.exitYear ? " sel" : ""), text: f(r) })));
+    $("#gp-years").replaceChildren(
+      h("thead", {}, h("tr", {}, h("th", { text: levers ? "Con palancas" : "Excel" }), YEARS.map((y) => h("th", { class: y === state.exitYear ? "sel" : null, text: String(y) })))),
+      h("tbody", {},
+        line("TIR bruta del fondo", 58, (r) => pct(r.irr, 1)),
+        line("Lead GP con carry", 87, (r) => pct(r.gp_irr, 1)),
+        line("LPs netos", 85, (r) => pct(r.lp_irr, 1)),
+        line("Lead GP: MOIC", 88, (r) => times(r.gp_mom, 2))));
   }
 
   function renderBullet(irr0, irr1) {
@@ -746,6 +986,32 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     svg.append(s("line", { x1: x(0.15), x2: x(0.15), y1: 4, y2: 24, stroke: "var(--good)", "stroke-width": 2 }));
     svg.append(s("circle", { cx: x(irr0), cy: 14, r: 6, fill: "var(--series-base)", stroke: "var(--surface)", "stroke-width": 2 }));
     svg.append(s("circle", { cx: x(irr1), cy: 14, r: 7, fill: "var(--series-plan)", stroke: "var(--surface)", "stroke-width": 2 }));
+  }
+
+  // Celdas del Excel que deben coincidir con la columna «sin palancas».
+  function renderExcelCheck(base) {
+    const r = base.res, k = kExit(), col = "FGHIJKL"[k], acCol = "NOPQRST"[k];
+    const rows = [
+      ["LBO Summary!K17", "TIR bruta del fondo", pct(r.irr, 2)],
+      ["LBO Summary!L17", "MOIC bruto del fondo", times(r.mom, 3)],
+      ["LBO Summary!K21", "TIR neta de los LPs", pct(r.lp_irr, 2)],
+      ["LBO Summary!L18", "TIR neta del GP", pct(r.gp_irr, 2)],
+      ["LBO Summary!E39", "Cheque del fondo", eur(r.su.sponsor)],
+      ["LBO Summary!F44", "Parte del fondo en la TopCo", pct(r.su.sponsorShare, 2)],
+      [`LBO Summary!${col}55`, `Equity de la TopCo en ${state.exitYear}`, eur(r.equity_exit)],
+      [`Active Case!${acCol}30`, `EBITDA pre-IFRS 16 ${state.exitYear}`, eur(r.ebitda_pre[k])],
+      ["Debt & Covenants!F105:L105", "DSCR bancario mínimo", times(r.min_dscr, 3)],
+    ];
+    const ch = $("#excel-changes");
+    ch.hidden = !dealChanged();
+    if (dealChanged()) {
+      const parts = DEAL_PARAMS.filter((p) => p.key in state.deal).map((p) => p.key === "vl_share"
+        ? `${p.cell}: cambia 0,055 por ${num(d.vl_share, 4)} en la fórmula`
+        : `${p.cell} = ${p.pct ? num(d[p.key], 4).replace(/,?0+$/, "") : num(d[p.key], 2)}`);
+      if (d.exit_multiple != null) parts.push(`LBO Summary!L11 = ${num(d.exit_multiple, 2)}`);
+      ch.textContent = `Has cambiado la estructura. Para ver estas cifras en el Excel: ${parts.join(" · ")}.`;
+    }
+    $("#excel-table tbody").replaceChildren(...rows.map(([c, l, v]) => h("tr", {}, h("td", {}, h("span", { class: "cell", text: c })), h("td", { text: l, style: "text-align:left" }), h("td", { class: "v", text: v }))));
   }
 
   function renderContrib(phi) {
@@ -769,68 +1035,71 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
       svg.append(bar);
       const lx = v >= 0 ? b + 6 : a - 6;
       svg.append(s("text", { x: lx, y: y + 16, "text-anchor": v >= 0 ? "start" : "end", class: "lbl-strong" }, pp(v, 2)));
-      attachTip(bar, () => `<b>${SHORT[k]}</b><br>${pp(v, 2)} de TIR en el caso ${CASE_SHORT[state.caseName]}`);
+      attachTip(bar, () => `<b>${SHORT[k]}</b><br>${pp(v, 2)} de TIR bruta en el caso ${state.caseName} (salida en ${state.exitYear})`);
     });
     const zx = x(0);
     svg.append(s("line", { x1: zx, x2: zx, y1: top, y2: top + keys.length * rowH, stroke: "var(--ink-2)", "stroke-width": 1 }));
-    const total = sum(vals);
-    svg.append(s("text", { x: 0, y: top + keys.length * rowH + 20, class: "lbl-strong" }, `Total ${pp(total, 2)}: de ${pct(last.base.res.irr)} a ${pct(last.plan.res.irr)}`));
+    svg.append(s("text", { x: 0, y: top + keys.length * rowH + 20, class: "lbl-strong" }, `Total ${pp(sum(vals), 2)}: de ${pct(last.base.res.irr)} a ${pct(last.plan.res.irr)}`));
   }
 
   function renderFeet(plan, phi) {
-    const lr = plan.lever, res = plan.res;
+    const lr = plan.lever, res = plan.res, k = kExit(), y = state.exitYear;
     for (const lv of K.levers) {
-      const f = ui[lv.key].foot, k = lv.key, v = state.values[k];
-      const firstRow = lv.row, lastRow = lv.params[lv.params.length - 1].row;
+      const f = ui[lv.key].foot, key = lv.key, v = state.values[key];
       const parts = [];
       const item = (label, value) => parts.push(h("span", {}, `${label} `, h("b", { text: value })));
-      if (!state.on[k]) {
+      if (!state.on[key]) {
         parts.push(h("span", { text: "Apagada: no entra en el plan." }));
       } else {
-        if (lr.dRev[k]) item("Ventas 2030", signed(lr.dRev[k][T - 1], 0) + NB + "M€");
-        if (lr.dEbitda[k]) item("EBITDA 2030", signed(lr.dEbitda[k][T - 1], 0) + NB + "M€");
-        if (lr.dCapex[k]) item("Inversión 2026-30", eur(sum(lr.dCapex[k])));
-        if (k === "efficiency") item("Coste de implantación", eur(v.one_off * v.bps / 1e4 * K.cases[state.caseName].revenue[0]));
-        if (k === "wc") item("Caja liberada hasta 2030", eur(-lr.dWcRatio[T - 1] * lr.op.revenue[T - 1]));
-        if (k === "propco") { item("Caja al cierre", eur(lr.proceeds)); item("Alquiler nuevo 2030", eur(lr.dLease[T - 1])); }
-        if (k === "recap") {
-          const div = sum(res.dividend);
-          if (div > 0) { item(`Dividendo en ${v.year}`, eur(div)); item("al fondo", eur(div * res.su.sponsorShare)); }
+        if (lr.dRev[key]) item(`Ventas ${y}`, signed(lr.dRev[key][k], 0) + NB + "M€");
+        if (lr.dEbitda[key]) item(`EBITDA ${y}`, signed(lr.dEbitda[key][k], 0) + NB + "M€");
+        if (lr.dCapex[key]) item(`Inversión ${YEARS[0]}-${String(y).slice(2)}`, eur(upTo(lr.dCapex[key], k)));
+        if (key === "efficiency") item("Coste de implantación", eur(v.one_off * v.bps / 1e4 * K.cases[state.caseName].revenue[0]));
+        if (key === "wc") item(`Caja liberada hasta ${y}`, eur(-lr.dWcRatio[k] * lr.op.revenue[k]));
+        if (key === "propco") { item("Caja al cierre", eur(lr.proceeds)); item(`Alquiler nuevo ${y}`, eur(lr.dLease[k])); }
+        if (key === "recap") {
+          const div = upTo(res.dividend, k);
+          if (v.year > y) parts.push(h("span", { text: `El recap de ${v.year} es posterior a la salida en ${y}: no cuenta.` }));
+          else if (div > 0) { item(`Dividendo en ${v.year}`, eur(div)); item("al fondo", eur(div * res.su.sponsorShare)); }
           else parts.push(h("span", { text: `En ${v.year} la deuda senior neta ya supera ${times(v.target)}: no hay dividendo.` }));
         }
-        item("TIR", pp(phi[k] ?? 0, 2));
+        item("TIR", pp(phi[key] ?? 0, 2));
       }
-      parts.push(h("span", { class: "excel-ref", text: `Excel: Palancas!D${firstRow}:D${lastRow}` }));
       f.replaceChildren(...parts);
     }
   }
 
-  // ---------- Gráfico de EBITDA ----------
+  // ---------- Gráficos de líneas ----------
   function niceTicks(lo, hi, n = 5) {
+    if (!(hi > lo)) hi = lo + 1;
     const raw = (hi - lo) / n, mag = Math.pow(10, Math.floor(Math.log10(raw)));
     const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((st) => (hi - lo) / st <= n) || 10 * mag;
     const a = Math.floor(lo / step) * step, b = Math.ceil(hi / step) * step, out = [];
-    for (let v = a; v <= b + step / 2; v += step) out.push(v);
+    for (let v = a; v <= b + step / 2; v += step) out.push(Math.abs(v) < step * 1e-9 ? 0 : v);
     return out;
   }
 
-  // Líneas «sin palancas» y «con palancas» con etiquetas al final y cruceta; banda y referencia opcionales.
+  // Líneas «sin palancas» y «con palancas» con etiquetas al final y cruceta; banda, referencia, marca y clic opcionales.
   function lineChart(svg, o) {
     svg.replaceChildren();
     const { labels, base, plan, band, ref } = o, n = labels.length - 1;
-    const all = [...base, ...plan, ...(band ? [...band.lo, ...band.hi] : []), ...(ref ? [ref.v] : [])];
+    const all = [...base, ...plan, ...(band ? [...band.lo, ...band.hi] : []), ...(ref ? [ref.v] : [])].filter(Number.isFinite);
     const ticks = niceTicks(Math.min(...all), Math.max(...all), o.nTicks || 5);
     const W = 600, H = o.H || 250, L = 52, R = 128, Tp = 12, B = 26;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
     const x = (i) => L + i / n * (W - L - R);
     const y = (v) => Tp + (1 - (v - ticks[0]) / (ticks[ticks.length - 1] - ticks[0])) * (H - Tp - B);
+    if (o.mark !== undefined && o.mark >= 0) {
+      const wSlot = (W - L - R) / n;
+      svg.append(s("rect", { x: x(o.mark) - wSlot / 2, y: Tp, width: wSlot, height: H - Tp - B, fill: "var(--surface-2)" }));
+    }
     const g = s("g", { class: "grid" });
     for (const t of ticks) {
       g.append(s("line", { x1: L, x2: W - R, y1: y(t), y2: y(t) }));
       svg.append(s("text", { x: L - 8, y: y(t) + 4, "text-anchor": "end" }, o.tick(t)));
     }
-    svg.prepend(g);
-    labels.forEach((lb, i) => svg.append(s("text", { x: x(i), y: H - 6, "text-anchor": "middle" }, lb)));
+    svg.append(g);
+    labels.forEach((lb, i) => svg.append(s("text", { x: x(i), y: H - 6, "text-anchor": "middle", class: i === o.mark ? "lbl-strong" : "" }, lb)));
     if (band) {
       const pts = band.hi.map((v, i) => `${x(i)},${y(v)}`).concat(band.lo.map((v, i) => `${x(i)},${y(v)}`).reverse());
       svg.append(s("polygon", { points: pts.join(" "), fill: "color-mix(in srgb, var(--series-plan) 12%, transparent)", stroke: "none" }));
@@ -858,32 +1127,37 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     const cross = s("line", { y1: Tp, y2: H - B, stroke: "var(--ink-2)", "stroke-width": 1, "stroke-dasharray": "3 3", visibility: "hidden" });
     svg.append(cross);
     const hit = s("rect", { x: L - 10, y: 0, width: W - L - R + 20, height: H - B, fill: "transparent" });
+    if (o.onPick) hit.style.cursor = "pointer";
     svg.append(hit);
+    const idx = (ev) => { const pt = svgPoint(svg, ev); return Math.max(0, Math.min(n, Math.round((pt.x - L) / (W - L - R) * n))); };
     hit.addEventListener("pointermove", (ev) => {
-      const pt = svgPoint(svg, ev), i = Math.max(0, Math.min(n, Math.round((pt.x - L) / (W - L - R) * n)));
+      const i = idx(ev);
       cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
       showTip(ev, `<b>${o.tipLabel ? o.tipLabel(i) : labels[i]}</b><br>Con palancas <b>${o.fmt(plan[i])}</b><br>Sin palancas <b>${o.fmt(base[i])}</b>` +
         (o.tipExtra ? o.tipExtra(i) : ""));
     });
     hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+    if (o.onPick) hit.addEventListener("click", (ev) => { hideTip(); o.onPick(idx(ev)); });
   }
+
+  const yearLabels = ["2025 real", ...YEARS.map(String)];
+  const tickDec = (v, k) => (Math.abs(v * k - Math.round(v * k)) > 1e-9 ? 1 : 0);
 
   function renderEbitda() {
     if (!last) return;
-    const years = [2025, ...K.years];
+    const years = [2025, ...YEARS];
     const base = [K.fy25.ebitda_pre, ...last.base.res.ebitda_pre];
     const plan = [K.fy25.ebitda_pre, ...last.plan.res.ebitda_pre];
     const band = risk.plan ? { lo: [K.fy25.ebitda_pre, ...risk.plan.ebitda_p10], hi: [K.fy25.ebitda_pre, ...risk.plan.ebitda_p90] } : null;
     lineChart($("#ebitda"), {
-      labels: years.map((yr, i) => (i === 0 ? "2025 real" : String(yr))), base, plan, band,
+      labels: years.map((yr, i) => (i === 0 ? "2025 real" : String(yr))), base, plan, band, mark: kExit() + 1,
       tick: (v) => num(v, 0), fmt: eur, tipLabel: (i) => (i === 0 ? "2025 (real)" : String(years[i])),
       tipExtra: (i) => (band && i > 0 ? `<br>80 % central: <b>${num(band.lo[i], 0)}–${num(band.hi[i], 0)}</b>` : ""),
     });
-
-    $("#ebitda-sub").textContent = `M€, caso ${CASE_SHORT[state.caseName]}`;
+    $("#ebitda-sub").textContent = `M€, caso ${state.caseName}; la columna marcada es el año de salida`;
     const tbl = $("#ebitda-table");
     tbl.replaceChildren(
-      h("thead", {}, h("tr", {}, h("th", { text: "M€" }), years.map((yr, i) => h("th", { text: i === 0 ? "2025" : String(yr) })))),
+      h("thead", {}, h("tr", {}, h("th", { text: "M€" }), years.map((yr) => h("th", { text: String(yr) })))),
       h("tbody", {},
         h("tr", {}, h("td", { text: "Sin palancas" }), base.map((v) => h("td", { class: "v", text: num(v, 0) }))),
         h("tr", {}, h("td", { text: "Con palancas" }), plan.map((v) => h("td", { class: "v", text: num(v, 0) }))),
@@ -892,40 +1166,40 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
   }
 
   // ---------- Gráficas del LBO ----------
-  const DEBT = [["tla", "TLA"], ["tlb", "TLB"], ["pik", "PIK"], ["vl", "Vendor loan"], ["rcf", "RCF"]];
+  const DEBT = [["tla", "TLA", "tla"], ["tlb", "TLB", "tlb"], ["sub", "PIK (subordinada)", "pik"], ["vl", "Vendor loan", "vl"], ["rcf", "RCF", "rcf"]];
   const BRIDGE = {
-    senior: ["Deuda senior devuelta", "TLA y TLB devueltas con la caja del negocio (cuotas y cash sweep), neto de la deuda nueva del recap."],
-    pik: ["Intereses PIK y vendor loan", "Estos intereses no se pagan: se suman a la deuda y se devuelven en la salida."],
-    cash: ["Caja por encima del mínimo", "Caja que queda en la empresa en la salida además de la caja mínima operativa."],
+    senior: ["Deuda senior devuelta", "TLA y TLB devueltas con la caja del negocio (cuotas y cash sweep del 85 %), neto de la deuda nueva del recap."],
+    sub: ["Intereses PIK acumulados", "Los intereses de la deuda subordinada no se pagan: se suman a la deuda y se devuelven en la salida."],
+    cash: ["Caja por encima del mínimo", "Caja que queda en la empresa en la salida además de la caja mínima de 1.000 M€."],
     fees_entry: ["Comisiones de entrada", "Comisiones de la financiación y de los asesores al comprar: se pierden."],
     fees_exit: ["Comisiones de salida", "Un porcentaje del valor de empresa al vender."],
     propco: ["Caja de la PropCo al cierre", "La venta de inmuebles a la PropCo reduce el equity que hay que poner al cierre."],
   };
-  const yearLabels = ["2025 real", ...K.years.map(String)];
-  const tickDec = (v, k) => (Math.abs(v * k - Math.round(v * k)) > 1e-9 ? 1 : 0);
 
   function renderCharts(rows) {
     for (const el of document.querySelectorAll("[data-case-sub]")) {
       el.dataset.text ??= el.textContent;
-      el.textContent = `${el.dataset.text} · caso ${CASE_SHORT[state.caseName]}`;
+      el.textContent = `${el.dataset.text} · caso ${state.caseName}`;
     }
-    const { base, plan } = last;
+    const { base, plan } = last, k = kExit();
     renderCases(rows);
+    renderExitChart();
     lineChart($("#sales-chart"), {
-      labels: yearLabels, H: 230, tick: (v) => num(v, 0), fmt: eur,
+      labels: yearLabels, H: 230, tick: (v) => num(v, 0), fmt: eur, mark: k + 1,
       base: [K.fy25.revenue, ...base.lever.op.revenue], plan: [K.fy25.revenue, ...plan.lever.op.revenue],
     });
     const margin = (c) => [K.fy25.ebitda_pre / K.fy25.revenue, ...c.res.ebitda_pre.map((e, t) => e / c.lever.op.revenue[t])];
     lineChart($("#margin-chart"), {
-      labels: yearLabels, H: 230, tick: (v) => pct(v, tickDec(v, 100)), fmt: (v) => pct(v, 1), base: margin(base), plan: margin(plan),
+      labels: yearLabels, H: 230, tick: (v) => pct(v, tickDec(v, 100)), fmt: (v) => pct(v, 1), base: margin(base), plan: margin(plan), mark: k + 1,
     });
     lineChart($("#dscr-chart"), {
-      labels: K.years.map(String), H: 230, tick: (v) => times(v, 1 + tickDec(v, 10)), fmt: (v) => times(v),
-      base: base.res.dscr, plan: plan.res.dscr, ref: { v: 1.2, label: "Covenant 1,2x" },
-      tipExtra: (t) => `<br>CFADS <b>${eur(plan.res.cfads[t])}</b> · servicio de la deuda <b>${eur(plan.res.cash_interest[t] + (t ? plan.res.tla[t - 1] : plan.res.su.tla) - plan.res.tla[t])}</b>`,
+      labels: YEARS.map(String), H: 230, tick: (v) => times(v, 1 + tickDec(v, 10)), fmt: (v) => times(v), mark: k,
+      base: base.res.dscr, plan: plan.res.dscr, ref: { v: d.dscr_min, label: `Covenant ${times(d.dscr_min)}` },
+      tipExtra: (t) => `<br>CFADS bancario <b>${eur(plan.res.cfads_bank[t])}</b> · servicio de la deuda <b>${eur(plan.res.cash_interest[t] + plan.res.tla_repay[t])}</b>`,
     });
     renderDebt();
     renderBridge();
+    renderWaterfall();
     renderChartsTable(margin);
   }
 
@@ -934,7 +1208,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     const W = 600, rowH = 42, Tp = 24, L = 64, R = 150, B = 24, H = Tp + rows.length * rowH + B;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
     const irrs = rows.flatMap((r) => [r.base.res.irr, r.plan.res.irr]);
-    const ticks = niceTicks(Math.min(-0.05, ...irrs), Math.max(0.20, ...irrs), 5);
+    const ticks = niceTicks(Math.min(0, ...irrs), Math.max(0.20, ...irrs), 5);
     const lo = ticks[0], hi = ticks[ticks.length - 1];
     const x = (v) => L + (v - lo) / (hi - lo) * (W - L - R);
     const yc = (i) => Tp + i * rowH + rowH / 2;
@@ -953,7 +1227,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     rows.forEach((r, i) => {
       const y = yc(i), a = r.base.res.irr, b = r.plan.res.irr, sel = r.name === state.caseName;
       const grp = s("g", { class: "case-rows" });
-      grp.append(s("text", { x: 8, y: y - 2, class: sel ? "lbl-strong" : "axis-label" }, CASE_SHORT[r.name]));
+      grp.append(s("text", { x: 8, y: y - 2, class: sel ? "lbl-strong" : "axis-label" }, r.name));
       grp.append(s("text", { x: 8, y: y + 11, style: "font-size:10px" }, `P${K.case_percentiles[r.name]}`));
       grp.append(s("line", { x1: x(a), x2: x(b), y1: y, y2: y, stroke: "var(--series-base)", "stroke-width": 2 }));
       grp.append(s("circle", { cx: x(a), cy: y, r: 5, fill: "var(--series-base)", stroke: "var(--surface)", "stroke-width": 2 }));
@@ -961,22 +1235,31 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
       grp.append(s("text", { x: W - R + 14, y: y + 4, class: sel ? "lbl-strong" : "axis-label" }, `${pct(a)} → ${pct(b)}`));
       const hit = s("rect", { x: 0, y: y - rowH / 2, width: W, height: rowH, fill: "transparent" });
       grp.append(hit);
-      attachTip(hit, () => `<b>${CASE_SHORT[r.name]} (P${K.case_percentiles[r.name]})</b><br>TIR <b>${pct(a)}</b> → <b>${pct(b)}</b>` +
-        `<br>EBITDA 2030 <b>${eur(r.base.res.ebitda_pre[T - 1])}</b> → <b>${eur(r.plan.res.ebitda_pre[T - 1])}</b>` +
+      attachTip(hit, () => `<b>${K.case_labels[r.name]}</b><br>TIR bruta <b>${pct(a)}</b> → <b>${pct(b)}</b>` +
+        `<br>TIR LPs <b>${pct(r.base.res.lp_irr)}</b> → <b>${pct(r.plan.res.lp_irr)}</b> · GP <b>${pct(r.base.res.gp_irr)}</b> → <b>${pct(r.plan.res.gp_irr)}</b>` +
         `<br>DSCR mín. <b>${times(r.base.res.min_dscr)}</b> → <b>${times(r.plan.res.min_dscr)}</b>` + (sel ? "" : "<br>Pulsa para ver este caso"));
       hit.addEventListener("click", () => { if (!sel) { state.caseName = r.name; hideTip(); refresh(false); } });
       svg.append(grp);
     });
   }
 
+  function renderExitChart() {
+    const irrAt = (c) => YEARS.map((y) => Motor.run(c.lever.op, c.lever.deal, false, y).irr);
+    lineChart($("#exit-chart"), {
+      labels: YEARS.map(String), H: 220, tick: (v) => pct(v, tickDec(v, 100)), fmt: (v) => pct(v), mark: kExit(),
+      base: irrAt(last.base), plan: irrAt(last.plan), ref: { v: 0.15, label: "Objetivo 15 %" },
+      tipLabel: (i) => `Salida en ${YEARS[i]}`, onPick: (i) => setExit(YEARS[i]),
+    });
+  }
+
   // Deuda por tramos al cierre y a final de cada año, con la caja y la deuda neta / EBITDA.
   function debtColumns(c) {
     const su = c.res.su;
-    const cols = [{ label: "Cierre", tla: su.tla, tlb: su.tlb, pik: su.pik, vl: su.vl, rcf: 0, cash: K.deal.min_cash * K.deal.stake, ebitda: K.deal.ebitda_ref }];
-    K.years.forEach((yr, t) => cols.push({ label: String(yr), tla: c.res.tla[t], tlb: c.res.tlb[t], pik: c.res.pik[t], vl: c.res.vl[t],
-                                           rcf: c.res.rcf[t], cash: c.res.cash[t], ebitda: c.res.ebitda_pre[t] }));
+    const cols = [{ label: "Cierre", tla: su.tla, tlb: su.tlb, sub: su.sub, vl: su.vl, rcf: 0, cash: d.min_cash, ebitda: d.ebitda_ref, cov: c.res.lev_covenant[0] }];
+    YEARS.forEach((yr, t) => cols.push({ label: String(yr), tla: c.res.tla[t], tlb: c.res.tlb[t], sub: c.res.sub[t], vl: c.res.vl[t],
+                                         rcf: c.res.rcf[t], cash: c.res.cash[t], ebitda: c.res.ebitda_pre[t], cov: c.res.lev_covenant[t + 1] }));
     for (const col of cols) {
-      col.total = col.tla + col.tlb + col.pik + col.vl + col.rcf;
+      col.total = col.tla + col.tlb + col.sub + col.vl + col.rcf;
       col.ratio = (col.total - col.cash) / col.ebitda;
     }
     return cols;
@@ -990,13 +1273,13 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     const svg = $("#debt-chart"); svg.replaceChildren();
     const cols = debtColumns(last.plan), ref = debtColumns(last.base);
     const shown = DEBT.filter(([k]) => cols.some((c) => c[k] > 0.5));
-    $("#debt-legend").replaceChildren(...shown.map(([k, label]) => h("span", {}, h("i", { class: "bar", style: `--c: var(--debt-${k})` }), label)),
+    $("#debt-legend").replaceChildren(...shown.map(([, label, tok]) => h("span", {}, h("i", { class: "bar", style: `--c: var(--debt-${tok})` }), label)),
       h("span", {}, h("i", { style: "--c: var(--series-base)" }), "Total sin palancas"));
     const W = 600, H = 260, L = 52, R = 12, Tp = 24, B = 26;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
     const ticks = niceTicks(0, Math.max(...cols.map((c) => c.total), ...ref.map((c) => c.total)), 4);
     const y = (v) => Tp + (1 - v / ticks[ticks.length - 1]) * (H - Tp - B);
-    const slot = (W - L - R) / cols.length, bw = 30, xc = (i) => L + slot * (i + 0.5);
+    const slot = (W - L - R) / cols.length, bw = 28, xc = (i) => L + slot * (i + 0.5);
     const g = s("g", { class: "grid" });
     for (const t of ticks) {
       g.append(s("line", { x1: L, x2: W - R, y1: y(t), y2: y(t) }));
@@ -1006,36 +1289,37 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     cols.forEach((c, i) => {
       const segs = shown.filter(([k]) => c[k] > 0.5);
       let acc = 0;
-      segs.forEach(([k], j) => {
+      segs.forEach(([k, , tok], j) => {
         const y0 = y(acc), y1 = y(acc + c[k]);
         acc += c[k];
         const hgt = y0 - y1 - (j > 0 ? 2 : 0);  // 2 px de separación entre tramos
-        if (hgt > 0) svg.append(s("path", { d: topRounded(xc(i) - bw / 2, y1, bw, hgt, j === segs.length - 1 ? 4 : 0), fill: `var(--debt-${k})` }));
+        if (hgt > 0) svg.append(s("path", { d: topRounded(xc(i) - bw / 2, y1, bw, hgt, j === segs.length - 1 ? 4 : 0), fill: `var(--debt-${tok})` }));
       });
       const r = ref[i], yr = y(r.total);
       svg.append(s("line", { x1: xc(i) - bw / 2 - 7, x2: xc(i) + bw / 2 + 7, y1: yr, y2: yr, stroke: "var(--series-base)", "stroke-width": 2.5, "stroke-linecap": "round" }));
       svg.append(s("text", { x: xc(i), y: Math.min(y(c.total), yr) - 7, "text-anchor": "middle", class: "lbl-strong" }, times(c.ratio, 1)));
-      svg.append(s("text", { x: xc(i), y: H - 6, "text-anchor": "middle" }, c.label));
+      svg.append(s("text", { x: xc(i), y: H - 6, "text-anchor": "middle", class: i === kExit() + 1 ? "lbl-strong" : "" }, c.label));
       const hit = s("rect", { x: xc(i) - slot / 2, y: 0, width: slot, height: H - B, fill: "transparent" });
       svg.append(hit);
-      attachTip(hit, () => `<b>${i === 0 ? "Al cierre (enero de 2026)" : `Final de ${c.label}`}</b>` +
+      attachTip(hit, () => `<b>${i === 0 ? "Al cierre" : `Final de ${c.label}`}</b>` +
         segs.map(([k, label]) => `<br>${label} <b>${num(c[k], 0)}</b>`).join("") +
         `<br>Total <b>${eur(c.total)}</b> · caja <b>${num(c.cash, 0)}</b>` +
-        `<br>Deuda neta / EBITDA <b>${times(c.ratio, 1)}</b>` +
-        `<br>Sin palancas: <b>${eur(r.total)}</b>, <b>${times(r.ratio, 1)}</b>`);
+        `<br>Deuda neta / EBITDA <b>${times(c.ratio, 2)}</b> · máximo del covenant <b>${times(c.cov, 2)}</b>` +
+        `<br>Sin palancas: <b>${eur(r.total)}</b>, <b>${times(r.ratio, 2)}</b>`);
     });
     svg.append(s("line", { x1: L, x2: W - R, y1: y(0), y2: y(0), stroke: "var(--ink-2)", "stroke-width": 1 }));
   }
 
   function bridgeRows(c) {
-    const b = Motor.valueBridge(c.res, c.lever.deal);
+    const b = Motor.valueBridge(c.res, c.lever.deal), y = state.exitYear;
     const rows = [{ key: "start", label: "Equity invertido al cierre", total: true, v: b.start,
-                    note: "Lo que ponen al cierre el fondo y Amancio Ortega (rollover)." }];
-    rows.push({ key: "ebitda", label: `Crecimiento del EBITDA × ${times(c.res.exit_multiple, 1)}`, v: b.items.ebitda,
-                note: "Valor de empresa en la salida (EBITDA 2030 por el múltiplo) menos el valor de empresa al entrar." });
+                    note: "Lo que ponen al cierre el fondo y Amancio Ortega (rollover del 25 % de Inditex)." }];
+    rows.push({ key: "growth", label: `Crecimiento del EBITDA × ${times(Motor.entryMultiple(c.lever.deal), 1)}`, v: b.items.growth,
+                note: `EBITDA de ${y} menos el de 2025, por el múltiplo de entrada.` });
+    rows.push({ key: "multiple", label: "Cambio de múltiplo", v: b.items.multiple, note: "Vender a un múltiplo distinto del de entrada (el Excel vende al mismo)." });
     for (const [k, [label, note]] of Object.entries(BRIDGE)) rows.push({ key: k, label, v: b.items[k], note });
-    rows.push({ key: "end", label: "Equity en la salida (2031)", total: true, v: b.end,
-                note: "Valor de empresa en 2031 menos la deuda, más la caja, menos las comisiones de salida." });
+    rows.push({ key: "end", label: `Equity en la salida (${y})`, total: true, v: b.end,
+                note: "Valor de empresa en la salida menos la deuda, más la caja, menos las comisiones de salida." });
     rows.push({ key: "dividend", label: "Dividendo del recap", v: b.dividend, note: "Se cobra antes de la salida, el año del recap." });
     rows.push({ key: "all", label: "Total para el equity", total: true, v: b.end + b.dividend, note: "Equity en la salida más el dividendo del recap." });
     return rows;
@@ -1045,7 +1329,7 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     const svg = $("#bridge-chart"); svg.replaceChildren();
     const plan = bridgeRows(last.plan), base = bridgeRows(last.base);
     const keep = plan.map((r, i) => {
-      if (["start", "ebitda", "end"].includes(r.key)) return true;
+      if (["start", "growth", "end"].includes(r.key)) return true;
       const hasDiv = Math.abs(plan[plan.length - 2].v) > 0.5 || Math.abs(base[base.length - 2].v) > 0.5;
       if (r.key === "dividend" || r.key === "all") return hasDiv;
       return Math.abs(r.v) > 0.5 || Math.abs(base[i].v) > 0.5;
@@ -1081,8 +1365,8 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     });
 
     const res = last.plan.res, su = res.su, got = sum(res.flows);
-    $("#bridge-note").textContent = `El fondo pone ${eur(su.sponsor)} (el ${pct(su.sponsorShare, 0)} del equity) y recibe ${eur(got)}: ` +
-      `MoM ${times(res.mom)} y TIR ${pct(res.irr)}. Amancio Ortega se queda el resto.`;
+    $("#bridge-note").textContent = `El fondo pone ${eur(su.sponsor)} (el ${pct(su.sponsorShare, 1)} de la TopCo) y recibe ${eur(got)}: ` +
+      `MOIC ${times(res.mom)} y TIR bruta ${pct(res.irr)}. Amancio Ortega se queda el resto.`;
     $("#bridge-table").replaceChildren(
       h("thead", {}, h("tr", {}, h("th", { text: "M€" }), h("th", { text: "Sin palancas" }), h("th", { text: "Con palancas" }), h("th", { text: "Diferencia" }))),
       h("tbody", {}, rows.map((r) => h("tr", { class: r.total ? "hl" : null }, h("td", { text: r.label }),
@@ -1090,19 +1374,77 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
         h("td", { class: "v", text: signed(r.v - r.base, 0) })))));
   }
 
+  // Cascada GP/LP (LBO Summary filas 73-88): dos barras, LPs y GP, partidas por tramo.
+  const wfDefs = () => [
+    ["capital", "Capital (LPs) y coinversión (GP)", "--series-base"],
+    ["preferred", `Preferente del ${pct(d.hurdle, 1 - (Math.round(d.hurdle * 1000) % 10 === 0))} (LPs)`, "--debt-tlb"],
+    ["lp_split", `${pct(1 - d.carry, 0)} del exceso (LPs)`, "--debt-vl"],
+    ["catch_up", "Catch-up (GP)", "--band-optimista"],
+    ["gp_split", `${pct(d.carry, 0)} del exceso, carry (GP)`, "--warn"],
+  ];
+  function wfParts(res) {
+    const t = res.wf_tiers;
+    return {
+      lp: [["capital", t.capital], ["preferred", t.preferred], ["lp_split", t.lp_split]],
+      gp: [["capital", res.gp_coinvest], ["catch_up", t.catch_up], ["gp_split", t.gp_split]],
+    };
+  }
+  function renderWaterfall() {
+    const res = last.plan.res, base = last.base.res, parts = wfParts(res), WF = wfDefs();
+    const color = Object.fromEntries(WF.map(([k, , c]) => [k, c]));
+    const label = Object.fromEntries(WF.map(([k, l]) => [k, l]));
+    $("#wf-legend").replaceChildren(...WF.map(([, l, c]) => h("span", {}, h("i", { class: "bar", style: `--c: var(${c})` }), l)));
+    const svg = $("#wf-chart"); svg.replaceChildren();
+    const W = 600, L = 92, R = 84, rowH = 46, Tp = 8, H = Tp + 2 * rowH + 4;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const totals = { lp: res.lp_net, gp: res.gp_net };
+    const hi = Math.max(totals.lp, totals.gp, base.lp_net, base.gp_net, 1);
+    const x = (v) => L + v / hi * (W - L - R);
+    [["lp", `LPs (${pct(d.lp_share, 0)})`, res.lp_ticket, res.lp_irr], ["gp", `GP (${pct(1 - d.lp_share, 0)})`, res.gp_ticket, res.gp_irr]].forEach(([key, name, ticket, irr], i) => {
+      const y = Tp + i * rowH;
+      svg.append(s("text", { x: 0, y: y + 17, class: "lbl-strong" }, name));
+      svg.append(s("text", { x: 0, y: y + 31, style: "font-size:10px" }, `pone ${num(ticket, 0)}`));
+      let acc = 0;
+      parts[key].forEach(([k, v], j) => {
+        if (v <= 0.5) return;
+        const a = x(acc), b = x(acc + v);
+        acc += v;
+        const rect = s("rect", { x: a + (j ? 1 : 0), y: y + 6, width: Math.max(1, b - a - (j ? 1 : 0)), height: 22, rx: 3, fill: `var(${color[k]})` });
+        svg.append(rect);
+        attachTip(rect, () => `<b>${label[k]}</b><br><b>${eur(v)}</b>`);
+      });
+      const ticketX = x(ticket);
+      svg.append(s("line", { x1: ticketX, x2: ticketX, y1: y + 2, y2: y + 32, stroke: "var(--ink)", "stroke-width": 1.5, "stroke-dasharray": "3 2" }));
+      svg.append(s("text", { x: x(totals[key]) + 6, y: y + 15, class: "lbl-strong" }, num(totals[key], 0)));
+      svg.append(s("text", { x: x(totals[key]) + 6, y: y + 29 }, `TIR ${pct(irr)}`));
+    });
+    $("#wf-note").textContent = `La línea discontinua es lo que puso cada uno. Los LPs reciben ${eur(res.lp_net)} (MOIC ${times(res.lp_mom)}, TIR ${pct(res.lp_irr)}); ` +
+      `el GP recibe ${eur(res.gp_net)}, de los que ${eur(res.gp_carry)} son carry (MOIC ${times(res.gp_mom)}, TIR ${pct(res.gp_irr)}).`;
+    const pb = wfParts(base);
+    const row = (lbl, a, b) => h("tr", {}, h("td", { text: lbl }), h("td", { class: "v", text: num(a, 0) }), h("td", { class: "v", text: num(b, 0) }), h("td", { class: "v", text: signed(b - a, 0) }));
+    $("#wf-table").replaceChildren(
+      h("thead", {}, h("tr", {}, h("th", { text: "M€" }), h("th", { text: "Sin palancas" }), h("th", { text: "Con palancas" }), h("th", { text: "Diferencia" }))),
+      h("tbody", {},
+        ...pb.lp.map(([k, v], i) => row(`LPs · ${label[k]}`, v, parts.lp[i][1])),
+        row("LPs · total", base.lp_net, res.lp_net),
+        ...pb.gp.map(([k, v], i) => row(`GP · ${label[k]}`, v, parts.gp[i][1])),
+        row("GP · total", base.gp_net, res.gp_net)));
+  }
+
   function renderChartsTable(margin) {
     const { base, plan } = last, b = debtColumns(base), p = debtColumns(plan);
     const row = (label, vals, fmt) => h("tr", {}, h("td", { text: label }), vals.map((v) => h("td", { class: "v", text: v === null ? "—" : fmt(v) })));
     const pair = (label, f, fmt) => [row(`${label} · sin`, f(base, b), fmt), row(`${label} · con`, f(plan, p), fmt)];
     $("#charts-table").replaceChildren(
-      h("thead", {}, h("tr", {}, h("th", { text: `Caso ${CASE_SHORT[state.caseName]}` }), h("th", { text: "2025 / cierre" }), K.years.map((yr) => h("th", { text: String(yr) })))),
+      h("thead", {}, h("tr", {}, h("th", { text: `Caso ${state.caseName}` }), h("th", { text: "2025 / cierre" }), YEARS.map((yr) => h("th", { text: String(yr) })))),
       h("tbody", {},
         pair("Ventas", (c) => [K.fy25.revenue, ...c.lever.op.revenue], (v) => num(v, 0)),
         pair("Margen EBITDA", (c) => margin(c), (v) => pct(v, 1)),
-        pair("CFADS", (c) => [null, ...c.res.cfads], (v) => num(v, 0)),
-        pair("DSCR", (c) => [null, ...c.res.dscr], (v) => times(v)),
+        pair("CFADS bancario", (c) => [null, ...c.res.cfads_bank], (v) => num(v, 0)),
+        pair("DSCR bancario", (c) => [null, ...c.res.dscr], (v) => times(v)),
         pair("Deuda total", (c, cols) => cols.map((x) => x.total), (v) => num(v, 0)),
-        pair("Deuda neta / EBITDA", (c, cols) => cols.map((x) => x.ratio), (v) => times(v, 1))));
+        pair("Deuda neta / EBITDA", (c, cols) => cols.map((x) => x.ratio), (v) => times(v, 2)),
+        row("Máximo del covenant", b.map((x) => x.cov), (v) => times(v, 2))));
   }
 
   // ---------- Riesgo (simulación en segundo plano) ----------
@@ -1110,23 +1452,26 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
   const motorSource = document.getElementById("motor").textContent;
   const handler = `
     function compute(m) {
-      const out = { id: m.id, type: m.type };
-      if (m.type === "plan") out.plan = Motor.riskSummary(Motor.simulate(m.values, m.on, true));
-      if (m.type === "base") out.base = Motor.riskSummary(Motor.simulate(m.values, m.on, false));
-      if (m.type === "bands") out.bands = Motor.BANDS.map((b) => Motor.riskSummary(Motor.simulate(Motor.bandValues(b), m.on, true)));
+      Motor.setDeal(m.deal);
+      const out = { id: m.id, type: m.type, exitYear: m.exitYear, dealKey: m.dealKey };
+      if (m.type === "plan") out.plan = Motor.riskSummary(Motor.simulate(m.values, m.on, true, m.exitYear));
+      if (m.type === "base") out.base = Motor.riskSummary(Motor.simulate(m.values, m.on, false, m.exitYear));
+      if (m.type === "bands") out.bands = Motor.BANDS.map((b) => Motor.riskSummary(Motor.simulate(Motor.bandValues(b), m.on, true, m.exitYear)));
       return out;
     }
     self.onmessage = (e) => { if (e.data.type === "init") Motor.init(e.data.data); else self.postMessage(compute(e.data)); };`;
   let worker = null;
   const pending = {};
   function computeHere(m) {
-    const out = { id: m.id, type: m.type };
-    if (m.type === "plan") out.plan = Motor.riskSummary(Motor.simulate(m.values, m.on, true));
-    if (m.type === "base") out.base = Motor.riskSummary(Motor.simulate(m.values, m.on, false));
-    if (m.type === "bands") out.bands = Motor.BANDS.map((b) => Motor.riskSummary(Motor.simulate(Motor.bandValues(b), m.on, true)));
+    const out = { id: m.id, type: m.type, exitYear: m.exitYear, dealKey: m.dealKey };
+    if (m.type === "plan") out.plan = Motor.riskSummary(Motor.simulate(m.values, m.on, true, m.exitYear));
+    if (m.type === "base") out.base = Motor.riskSummary(Motor.simulate(m.values, m.on, false, m.exitYear));
+    if (m.type === "bands") out.bands = Motor.BANDS.map((b) => Motor.riskSummary(Motor.simulate(Motor.bandValues(b), m.on, true, m.exitYear)));
     return out;
   }
+  const dealKey = () => JSON.stringify(state.deal);
   function post(m) {
+    Object.assign(m, { deal: { ...state.deal }, dealKey: dealKey() });
     pending[m.type] = m;
     if (worker) worker.postMessage(m);
     else setTimeout(() => onRisk(computeHere(m)), 30);
@@ -1142,10 +1487,15 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
   function scheduleRisk() {
     clearTimeout(riskTimer);
     $("#risk").classList.add("busy");
-    riskTimer = setTimeout(() => post({ type: "plan", id: ++riskId, values: state.values, on: state.on }), 200);
+    riskTimer = setTimeout(() => post({ type: "plan", id: ++riskId, values: state.values, on: state.on, exitYear: state.exitYear }), 200);
+  }
+  function postReference() {
+    post({ type: "base", id: 0, values: state.values, on: ALL(false), exitYear: state.exitYear });
+    post({ type: "bands", id: 0, values: state.values, on: ALL(true), exitYear: state.exitYear });
   }
   function onRisk(m) {
     delete pending[m.type];
+    if (m.exitYear !== state.exitYear || m.dealKey !== dealKey()) return;
     if (m.type === "plan") { if (m.id !== riskId) return; risk.plan = m.plan; $("#risk").classList.remove("busy"); }
     if (m.type === "base") risk.base = m.base;
     if (m.type === "bands") risk.bands = m.bands;
@@ -1154,29 +1504,30 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
   }
 
   function renderRisk() {
-    const b = risk.base, p = risk.plan;
+    const b = risk.base, p = risk.plan, cov = times(d.dscr_min);
+    $("#risk-sub").textContent = `${num(K.sim.n, 0)} escenarios a siete años centrados en el caso Base del Excel, con crisis y riesgo de ejecución · salida en ${state.exitYear}`;
     const box = $("#risk-stats");
     const stat = (k, v, sub) => h("div", { class: "stat" }, h("div", { class: "k", text: k }), h("div", { class: "v", text: v }), h("div", { class: "s", text: sub }));
     if (p && b) {
       box.replaceChildren(
-        stat("TIR mediana", pct(p.irr_median), `sin plan ${pct(b.irr_median)} · P10-P90 ${pct(p.irr_p10, 0)} a ${pct(p.irr_p90, 0)}`),
+        stat("TIR bruta mediana", pct(p.irr_median), `sin plan ${pct(b.irr_median)} · P10-P90 ${pct(p.irr_p10, 0)} a ${pct(p.irr_p90, 0)}`),
         stat("Prob. de llegar al 15 %", pct(p.p_irr_15), `sin plan ${pct(b.p_irr_15)}`),
-        stat("Prob. de DSCR mín. < 1,2x", pct(p.p_dscr_12, 0), `sin plan ${pct(b.p_dscr_12, 0)}`));
-      renderHist(b.irr_hist, p.irr_hist, b.irr_median, p.irr_median);
+        stat(`Prob. de DSCR mín. < ${cov}`, pct(p.p_dscr, 0), `sin plan ${pct(b.p_dscr, 0)}`));
+      renderHist(b.irr_hist, p.irr_hist);
     }
     const tbl = $("#band-table");
     const rows = [["Sin plan", b]];
     if (risk.bands) Motor.BANDS.forEach((name, i) => rows.push([`Todas en ${name}`, risk.bands[i], name]));
     rows.push(["Tu plan", p, null, true]);
     tbl.replaceChildren(
-      h("thead", {}, h("tr", {}, h("th", { text: "" }), h("th", { text: "TIR mediana" }), h("th", { text: "P(TIR ≥ 15 %)" }), h("th", { text: "P(DSCR < 1,2x)" }), h("th", { text: "EBITDA 2030" }))),
+      h("thead", {}, h("tr", {}, h("th", { text: "" }), h("th", { text: "TIR mediana" }), h("th", { text: "P(TIR ≥ 15 %)" }), h("th", { text: `P(DSCR < ${cov})` }), h("th", { text: `EBITDA ${LAST}` }))),
       h("tbody", {}, rows.map(([label, r, band, hl]) => h("tr", { class: hl ? "hl" : null },
         h("td", {}, band ? h("span", { class: "dot", style: `display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--band-${BAND_SLUG[band]})` }) : null, label),
         h("td", { class: "v", text: r ? pct(r.irr_median) : "…" }), h("td", { class: "v", text: r ? pct(r.p_irr_15) : "…" }),
-        h("td", { class: "v", text: r ? pct(r.p_dscr_12, 0) : "…" }), h("td", { class: "v", text: r ? eur(r.ebitda2030_median) : "…" })))));
+        h("td", { class: "v", text: r ? pct(r.p_dscr, 0) : "…" }), h("td", { class: "v", text: r ? eur(r.ebitda_last_median) : "…" })))));
   }
 
-  function renderHist(hb, hp, medB, medP) {
+  function renderHist(hb, hp) {
     const svg = $("#hist"); svg.replaceChildren();
     const W = 600, H = 230, L = 40, R = 12, Tp = 18, B = 26, n = hp.share.length;
     const ymax = Math.max(...hb.share, ...hp.share);
@@ -1199,10 +1550,10 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
       if (v <= 0) return;
       svg.append(s("rect", { x: L + i * bw + 1, y: y(v), width: Math.max(1, bw - 2), height: y(0) - y(v), rx: 1.5, fill: "color-mix(in srgb, var(--series-plan) 78%, transparent)" }));
     });
-    let d = `M ${L} ${y(0)}`;
-    hb.share.forEach((v, i) => { d += ` L ${L + i * bw} ${y(v)} L ${L + (i + 1) * bw} ${y(v)}`; });
-    d += ` L ${W - R} ${y(0)}`;
-    svg.append(s("path", { d, fill: "none", stroke: "var(--series-base)", "stroke-width": 2, "stroke-linejoin": "round" }));
+    let dPath = `M ${L} ${y(0)}`;
+    hb.share.forEach((v, i) => { dPath += ` L ${L + i * bw} ${y(v)} L ${L + (i + 1) * bw} ${y(v)}`; });
+    dPath += ` L ${W - R} ${y(0)}`;
+    svg.append(s("path", { d: dPath, fill: "none", stroke: "var(--series-base)", "stroke-width": 2, "stroke-linejoin": "round" }));
     const xt = x(0.15);
     svg.append(s("line", { x1: xt, x2: xt, y1: Tp - 6, y2: y(0), stroke: "var(--good)", "stroke-width": 1.5, "stroke-dasharray": "4 3" }));
     svg.append(s("text", { x: xt + 5, y: Tp + 2, class: "axis-label" }, "Objetivo 15 %"));
@@ -1212,8 +1563,8 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
     hit.addEventListener("pointermove", (ev) => {
       const pt = svgPoint(svg, ev), i = Math.max(0, Math.min(n - 1, Math.floor((pt.x - L) / bw)));
       const a = hp.lo + i * hp.step;
-      const range = i === 0 ? `menos del ${num((a + hp.step) * 100, 0)} %` : i === n - 1 ? `${num(a * 100, 0)} % o más` : `${num(a * 100, 0)} % a ${num((a + hp.step) * 100, 0)} %`;
-      showTip(ev, `<b>TIR ${range}</b><br>Con el plan <b>${pct(hp.share[i])}</b> de los escenarios<br>Sin plan <b>${pct(hb.share[i])}</b>`);
+      const rng = i === 0 ? `menos del ${num((a + hp.step) * 100, 0)} %` : i === n - 1 ? `${num(a * 100, 0)} % o más` : `${num(a * 100, 0)} % a ${num((a + hp.step) * 100, 0)} %`;
+      showTip(ev, `<b>TIR ${rng}</b><br>Con el plan <b>${pct(hp.share[i])}</b> de los escenarios<br>Sin plan <b>${pct(hb.share[i])}</b>`);
     });
     hit.addEventListener("pointerleave", hideTip);
   }
@@ -1232,64 +1583,29 @@ footer.notes p { font-size: 13px; color: var(--ink-2); }
   function attachTip(el, html) { el.addEventListener("pointermove", (ev) => showTip(ev, html())); el.addEventListener("pointerleave", hideTip); }
   function svgPoint(svg, ev) { const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
 
-  // ---------- Pasar al Excel ----------
-  function renderExcel() {
-    const text = Motor.excelColumn(state.values, state.on, state.sep);
-    $("#copy-text").value = text;
-    const lines = text.split("\n"), body = $("#excel-table tbody");
-    const rows = [];
-    let i = 0;
-    K.levers.forEach((lv, j) => {
-      rows.push(h("tr", {}, h("td", { class: "v", text: `D${lv.row}` }), h("td", {}, h("b", { text: SHORT[lv.key] }), " · activa (1) o apagada (0)"), h("td", { class: "v", text: lines[i++] })));
-      for (const p of lv.params) rows.push(h("tr", {}, h("td", { class: "v", text: `D${p.row}` }), h("td", { text: p.label }), h("td", { class: "v", text: lines[i++] })));
-      if (j < K.levers.length - 1) i++;
-    });
-    body.replaceChildren(...rows);
-  }
-  async function copyText(text, statusEl, ok) {
-    try {
-      await navigator.clipboard.writeText(text);
-      statusEl.className = "status"; statusEl.textContent = ok;
-    } catch (e) {
-      const ta = $("#copy-text");
-      ta.closest("details").open = true; ta.focus(); ta.select();
-      statusEl.className = "status err"; statusEl.textContent = "El navegador no deja copiar: el texto está seleccionado abajo, cópialo con ⌘C.";
-    }
-  }
-  $("#copy").addEventListener("click", () => copyText(Motor.excelColumn(state.values, state.on, state.sep), $("#copy-status"),
-    `Copiado (${K.levers.length} palancas). Pégalo en la celda D19 de la hoja Palancas.`));
-  $("#copy-cmd").addEventListener("click", () => copyText($("#cmd").textContent, $("#copy-status"), "Comando copiado. Copia antes la columna."));
-  for (const id of ["sep-comma", "sep-dot"]) $("#" + id).addEventListener("change", (e) => { state.sep = e.target.value; renderExcel(); save(); });
-  $("#paste-in").addEventListener("input", (e) => {
-    const text = e.target.value, st = $("#paste-status");
-    if (!text.trim()) { st.textContent = ""; return; }
-    const r = Motor.parseColumn(text, state.sep);
-    if (r.errors.length) { st.className = "status err"; st.textContent = r.errors.slice(0, 4).join("\n"); return; }
-    state.values = r.values; state.on = r.on;
-    st.className = "status"; st.textContent = "Valores del Excel cargados.";
-    refresh();
-  });
-
   // ---------- Ciclo principal ----------
   function refresh(withRisk = true) {
     const base = baseCase(state.caseName);
-    const plan = Motor.runCase(state.caseName, state.values, state.on);
-    const phi = Motor.shapley(state.caseName, state.values, state.on);
+    const plan = Motor.runCase(state.caseName, state.values, state.on, state.exitYear);
+    const phi = Motor.shapley(state.caseName, state.values, state.on, state.exitYear);
     last = { base, plan };
     syncControls();
+    syncDeal();
+    renderDealLine();
     renderKpis(base, plan);
+    renderGpPanel(base, plan);
+    renderExcelCheck(base);
     renderContrib(phi);
     renderFeet(plan, phi);
     renderEbitda();
-    renderCharts(CASES.map((name) => ({ name, base: baseCase(name), plan: name === state.caseName ? plan : Motor.runCase(name, state.values, state.on) })));
-    renderExcel();
+    renderCharts(CASES.map((name) => ({ name, base: baseCase(name), plan: name === state.caseName ? plan : Motor.runCase(name, state.values, state.on, state.exitYear) })));
     save();
     if (withRisk) scheduleRisk();
   }
 
   refresh();
   renderRisk();
-  post({ type: "base", id: 0, values: state.values, on: ALL(false) });
-  post({ type: "bands", id: 0, values: state.values, on: ALL(true) });
+  riskReady = true;
+  postReference();
 })();
 </script>

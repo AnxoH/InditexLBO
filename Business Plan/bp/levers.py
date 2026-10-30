@@ -29,19 +29,25 @@ WC_PHASE = np.array([0.5, 1.0, 1.0, 1.0, 1.0])
 BANDS = ("Conservador", "Normal", "Optimista", "Agresivo")
 
 
-def _cohort_factors() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def _pad(x: np.ndarray, horizon: int) -> np.ndarray:
+    """Alarga una curva por años con su último valor (una tienda madura sigue madura)."""
+    return np.concatenate([x, np.full(max(0, horizon - len(x)), x[-1])])[:horizon]
+
+
+def cohort_factors(horizon: int = T) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Suma sobre añadas de aperturas: F (ventas), G (ventas × margen) y H (ventas sin pérdida por añada)."""
-    F, G, H = np.zeros(T), np.zeros(T), np.zeros(T)
-    for t in range(T):
+    ramp_rev, ramp_margin = _pad(RAMP_REV, horizon), _pad(RAMP_MARGIN, horizon)
+    F, G, H = np.zeros(horizon), np.zeros(horizon), np.zeros(horizon)
+    for t in range(horizon):
         for k in range(t + 1):
             age = t - k
-            F[t] += (1 - COHORT_DECAY) ** k * RAMP_REV[age]
-            G[t] += (1 - COHORT_DECAY) ** k * RAMP_REV[age] * RAMP_MARGIN[age]
-            H[t] += RAMP_REV[age]
+            F[t] += (1 - COHORT_DECAY) ** k * ramp_rev[age]
+            G[t] += (1 - COHORT_DECAY) ** k * ramp_rev[age] * ramp_margin[age]
+            H[t] += ramp_rev[age]
     return F, G, H
 
 
-F_COHORT, G_COHORT, H_COHORT = _cohort_factors()
+F_COHORT, G_COHORT, H_COHORT = cohort_factors()
 
 
 @dataclass(frozen=True)
@@ -195,62 +201,75 @@ class LeverResult:
     d_capex: dict = field(default_factory=dict)
 
 
-def apply(op: Operating, deal: Deal, values: dict, on: dict | None = None, mult: dict | None = None,
-          scale: np.ndarray | None = None) -> LeverResult:
-    """Suma las palancas activas al business plan standalone.
+def deltas(rev_b: np.ndarray, values: dict, on: dict | None = None, mult: dict | None = None,
+           scale: np.ndarray | None = None) -> dict:
+    """Ventas, EBITDA, capex, alquileres y circulante que añade cada palanca, para cualquier horizonte.
 
+    rev_b: ventas del caso sin palancas (n, años).
     mult: multiplicador de ejecución por palanca (array (n,) en la simulación; 1 en el caso determinista).
-    scale: ventas del camino / ventas medianas (n, 5); las palancas de ventas sufren las mismas crisis.
+    scale: ventas del camino / ventas medianas (n, años); las palancas de ventas sufren las mismas crisis.
     """
     on = on or {lv.key: True for lv in LEVERS}
-    n = op.revenue.shape[0]
+    n, horizon = rev_b.shape
+    F, G, H = (F_COHORT, G_COHORT, H_COHORT) if horizon == T else cohort_factors(horizon)
+    wc_phase = _pad(WC_PHASE, horizon)
     one = np.ones((n, 1))
-    scale = np.ones((n, T)) if scale is None else scale
+    scale = np.ones((n, horizon)) if scale is None else scale
     m = lambda k: one if mult is None or k not in mult else np.asarray(mult[k]).reshape(n, 1)
 
-    rev_b, gp_b = op.revenue, op.gross_profit
     d_rev, d_ebitda, d_capex = {}, {}, {}
-    d_lease = np.zeros((n, T))
-    d_wc_ratio = np.zeros((n, T))
-    zeros = np.zeros((n, T))
+    d_lease = np.zeros((n, horizon))
+    d_wc_ratio = np.zeros((n, horizon))
 
     for key in ("usa", "young", "lefties"):
         if not on.get(key):
             continue
         v = values[key]
         base = v["m2"] * v["density"] / 1000 * m(key) * scale
-        d_rev[key] = base * F_COHORT * (1 - v["cannib"])
-        d_ebitda[key] = base * (v["margin"] * G_COHORT - v["cannib"] * GROUP_MARGIN * F_COHORT)
-        d_capex[key] = np.full((n, T), v["m2"] * v["capex"] / 1000)
+        d_rev[key] = base * F * (1 - v["cannib"])
+        d_ebitda[key] = base * (v["margin"] * G - v["cannib"] * GROUP_MARGIN * F)
+        d_capex[key] = np.full((n, horizon), v["m2"] * v["capex"] / 1000)
 
     if on.get("refurb"):
         v = values["refurb"]
-        d_rev["refurb"] = v["m2"] * BASE_DENSITY / 1000 * v["uplift"] * H_COHORT * m("refurb") * scale
+        d_rev["refurb"] = v["m2"] * BASE_DENSITY / 1000 * v["uplift"] * H * m("refurb") * scale
         d_ebitda["refurb"] = d_rev["refurb"] * v["margin"]
-        d_capex["refurb"] = np.full((n, T), v["m2"] * v["capex"] / 1000)
+        d_capex["refurb"] = np.full((n, horizon), v["m2"] * v["capex"] / 1000)
 
     if on.get("efficiency"):
         v = values["efficiency"]
-        phase = np.minimum(1.0, np.arange(1, T + 1) / v["years"])
+        phase = np.minimum(1.0, np.arange(1, horizon + 1) / v["years"])
         savings = v["bps"] / 1e4 * rev_b * phase * m("efficiency")
-        one_off = np.zeros((n, T))
+        one_off = np.zeros((n, horizon))
         one_off[:, :2] = 0.5 * v["one_off"] * v["bps"] / 1e4 * rev_b[:, :1]
         d_ebitda["efficiency"] = savings - one_off
 
     if on.get("wc"):
         v = values["wc"]
-        d_wc_ratio -= (v["pay"] + v["inv"]) / 100 * WC_PHASE * m("wc")
+        d_wc_ratio -= (v["pay"] + v["inv"]) / 100 * wc_phase * m("wc")
 
     proceeds = 0.0
     if on.get("propco"):
         v = values["propco"]
         proceeds = LAND_BUILDINGS_NBV * v["share"] * v["multiple"]
-        d_lease = proceeds * v["caprate"] * 1.02 ** np.arange(T) * np.ones((n, 1))
+        d_lease = proceeds * v["caprate"] * 1.02 ** np.arange(horizon) * np.ones((n, 1))
         d_ebitda["propco"] = -d_lease
 
-    total_rev = sum(d_rev.values(), zeros)
-    total_ebitda = sum(d_ebitda.values(), zeros)
-    total_capex = sum(d_capex.values(), zeros)
+    zeros = np.zeros((n, horizon))
+    return dict(d_rev=d_rev, d_ebitda=d_ebitda, d_capex=d_capex, d_lease=d_lease, d_wc_ratio=d_wc_ratio,
+                proceeds=proceeds, total_rev=sum(d_rev.values(), zeros), total_ebitda=sum(d_ebitda.values(), zeros),
+                total_capex=sum(d_capex.values(), zeros))
+
+
+def apply(op: Operating, deal: Deal, values: dict, on: dict | None = None, mult: dict | None = None,
+          scale: np.ndarray | None = None) -> LeverResult:
+    """Suma las palancas activas al business plan standalone (motor de lbo.py)."""
+    on = on or {lv.key: True for lv in LEVERS}
+    x = deltas(op.revenue, values, on, mult, scale)
+    rev_b, gp_b = op.revenue, op.gross_profit
+    total_rev, total_ebitda, total_capex = x["total_rev"], x["total_ebitda"], x["total_capex"]
+    d_lease, d_wc_ratio, proceeds = x["d_lease"], x["d_wc_ratio"], x["proceeds"]
+    d_rev, d_ebitda, d_capex = x["d_rev"], x["d_ebitda"], x["d_capex"]
 
     rev_f = rev_b + total_rev
     gp_f = gp_b + total_rev * (gp_b / rev_b)

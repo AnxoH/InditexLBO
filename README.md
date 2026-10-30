@@ -1,6 +1,8 @@
 # Inditex LBO — Institutional Buyout Model & Due Diligence (`Project Galicia`)
 
-> **Primary Deliverable (Definitive Financial Model):** [`Excels/Inditex_LBO_Version_Definitiva.xlsx`](Excels/Inditex_LBO_Version_Definitiva.xlsx)
+> **Primary Deliverable 1 (Definitive Financial Model):** [`Inditex_LBO_Version_Definitiva.xlsx`](Inditex_LBO_Version_Definitiva.xlsx)
+> **Primary Deliverable 2 (Executive IC Presentation Deck):** [`Project_Galicia_LBO_Inditex.pdf`](Project_Galicia_LBO_Inditex.pdf)
+> **Interactive LBO & Value-Creation Levers Dashboard:** [`Business Plan/output/Dashboard_palancas.html`](Business%20Plan/output/Dashboard_palancas.html)
 > **Transaction Subject:** Industria de Diseño Textil, S.A. (`BME: ITX`) — FY2025 Audited Baseline (`€39,864m` Revenue, `€11,243m` Pre-IFRS 16 Cash EBITDA)
 > **Model Horizon:** 7-Year Holding Period (`FY2026E–FY2032E`, with 5-Year Calibration Anchor at `FY2030E`)
 > **Audit Integrity Status:** `11 / 11 OK` Automated Model Integrity & Covenant Checks in Base (`P50`), Bull (`P80`), and Bear (`P20`) Cases
@@ -20,7 +22,7 @@ Because Inditex's unadjusted market capitalization (`€172,725m` at `€55.42/s
 
 ### Headline Transaction Scorecard (`Base Case — P50`)
 
-| Metric | Value | Reference / Source in [`Inditex_LBO_Version_Definitiva.xlsx`](Excels/Inditex_LBO_Version_Definitiva.xlsx) |
+| Metric | Value | Reference / Source in [`Inditex_LBO_Version_Definitiva.xlsx`](Inditex_LBO_Version_Definitiva.xlsx) |
 | :--- | :--- | :--- |
 | **Undisturbed Share Price / Offer Price (`+20.0%` Premium)** | `€55.42` / **`€66.50`** | `LBO Summary!F9:F11` (`3,116.652m` diluted shares) |
 | **Offer Equity Value / Entry Enterprise Value** | **`€207,258.2m`** / **`€199,729.2m`** | `LBO Summary!F12`, `F22` (`14.0x` Rep. EBITDA / `16.5x` Cash EBITDA) |
@@ -36,9 +38,9 @@ Because Inditex's unadjusted market capitalization (`€172,725m` at `€55.42/s
 
 ---
 
-## 2. Definitive Excel Model Architecture ([`Excels/Inditex_LBO_Version_Definitiva.xlsx`](Excels/Inditex_LBO_Version_Definitiva.xlsx))
+## 2. Definitive Excel Model Architecture ([`Inditex_LBO_Version_Definitiva.xlsx`](Inditex_LBO_Version_Definitiva.xlsx))
 
-The authoritative workbook [`Excels/Inditex_LBO_Version_Definitiva.xlsx`](Excels/Inditex_LBO_Version_Definitiva.xlsx) is a fully dynamic, formula-driven 6-tab institutional LBO model with zero circular references and zero formula errors (`#REF!`, `#NAME?`, `#VALUE!`, `#N/A`).
+The authoritative workbook [`Inditex_LBO_Version_Definitiva.xlsx`](Inditex_LBO_Version_Definitiva.xlsx) is a fully dynamic, formula-driven 6-tab institutional LBO model with zero circular references and zero formula errors (`#REF!`, `#NAME?`, `#VALUE!`, `#N/A`).
 
 ```mermaid
 flowchart LR
@@ -94,7 +96,7 @@ flowchart LR
 
 ## 3. Operating Scenarios Comparison (`Active Case!F8 = 1, 2, 3, 4`)
 
-The 4 operating scenarios in [`Excels/Inditex_LBO_Version_Definitiva.xlsx`](Excels/Inditex_LBO_Version_Definitiva.xlsx) (`Active Case!E6:I17`) combine the econometric Monte Carlo percentiles from [`Business Plan/`](Business%20Plan) (isolated from the COVID-19 outlier distortion) with the operational efficiency levers and institutional capital structure:
+The 4 operating scenarios in [`Inditex_LBO_Version_Definitiva.xlsx`](Inditex_LBO_Version_Definitiva.xlsx) (`Active Case!E6:I17`) combine the econometric Monte Carlo percentiles from [`Business Plan/`](Business%20Plan) (isolated from the COVID-19 outlier distortion) with the operational efficiency levers and institutional capital structure:
 
 | Parameter / Output Metric | `1 = Base (P50)` | `2 = Bull (P80)` | `3 = Bear (P20)` | `4 = Bank (P10)` |
 | :--- | :---: | :---: | :---: | :---: |
@@ -126,9 +128,9 @@ The 4 operating scenarios in [`Excels/Inditex_LBO_Version_Definitiva.xlsx`](Exce
 ```text
 Inditex LBO/
 ├── README.md                                          # Master Project & Model Documentation (this file)
-├── PROJECT.md                                         # Project Charter, Governance & Workstream Roadmap
-├── Excels/
-│   └── Inditex_LBO_Version_Definitiva.xlsx            # ★ DEFINITIVE 6-TAB INSTITUTIONAL LBO MODEL ★
+├── Inditex_LBO_Version_Definitiva.xlsx                # ★ DEFINITIVE 6-TAB INSTITUTIONAL LBO MODEL ★
+├── Project_Galicia_LBO_Inditex.pdf                    # ★ EXECUTIVE IC PRESENTATION DECK (PDF) ★
+
 ├── Market Analysis/                                   # Workstream 1: Commercial & Strategic Due Diligence
 │   ├── 00_Inditex_Stage1_IC_Overview_McKinsey.pdf     # Executive IC Pitchbook & Due Diligence Report (PDF)
 │   ├── 00_Inditex_Stage1_IC_Overview.md               # Full Stage 1 IC Memorandum (Markdown)
@@ -138,8 +140,8 @@ Inditex LBO/
 │   └── tests/                                         # 36-Test Empirical Reconciliation & Verification Suite
 ├── Contabilidad Inditex/                              # Workstream 2: Historical Accounting & Working Capital (2013–2025)
 │   ├── Informe_Inditex.pdf                            # Working Capital, Negative NOF, Cash Cycle & IFRS 16 Study
-│   ├── fig1_fm_nof.pdf / fig2_ciclo_caja.pdf / fig3_cascada.pdf
-│   └── main.tex                                       # LaTeX Source
+│   ├── README.md                                      # Executive Summary of the Accounting Workstream
+│   └── src/                                           # LaTeX Source (main.tex) & Analytical Figures (fig1–fig3)
 ├── Business Plan/                                     # Workstream 3: Econometric Calibration, Monte Carlo & Levers Lab
 │   ├── Guia_Business_Plan_desde_cero.pdf              # Comprehensive Guide to the Stochastic Business Plan & Levers
 │   ├── Business_Plan_Inditex.ipynb                    # Econometric Calibration (2005–2025) & 20,000-Path Monte Carlo
@@ -153,7 +155,7 @@ Inditex LBO/
     └── Transformed/                                   # Official Audited Inditex Annual Reports (FY2022–FY2025 in Markdown)
 ```
 
-### How the Three Analytical Workstreams Feed [`Inditex_LBO_Version_Definitiva.xlsx`](Excels/Inditex_LBO_Version_Definitiva.xlsx)
+### How the Three Analytical Workstreams Feed [`Inditex_LBO_Version_Definitiva.xlsx`](Inditex_LBO_Version_Definitiva.xlsx)
 
 1. **Workstream 1 — Commercial & Strategic Due Diligence ([`Market Analysis/`](Market%20Analysis))**
    - Establishes Inditex's FY2022–FY2025 historical baseline from audited CNMV filings ([`00_Inditex_Stage1_IC_Overview_McKinsey.pdf`](Market%20Analysis/00_Inditex_Stage1_IC_Overview_McKinsey.pdf)), benchmarks Inditex against global apparel peers (`Fast Retailing`, `Next`, `H&M`, `GAP`, `Mango`, `Shein`), quantifies brand-level ROCE (`Zara 39.2%`, `Stradivarius 53.7%`, `Oysho 49.0%`), and derives the CAPM / WACC parameters (`7.92%` baseline WACC) and SOTP valuation bounds.
@@ -166,7 +168,7 @@ Inditex LBO/
      - **Gross Margin AR(1) Process ($\phi = 0.43$)**: Anchored on `57.8%` with mean reversion and `±51 bps` innovation volatility.
      - **OPEX Error-Correction Model ($\gamma = -0.35$, $R^2 = 0.72$)**: Captures how operating expenses adjust dynamically to sales growth (`85%` variable in year 1, correcting `35%` of any margin deviation per year).
      - **8 Value Creation Levers & Shapley Attribution**: Evaluates commercial space productivity, online mix, gross margin expansion (`+30 bps`), Selling & Marketing optimization (`-160 bps`), logistics/CapEx discipline, and working capital optimization in [`Plan_de_creacion_de_valor.ipynb`](Business%20Plan/Plan_de_creacion_de_valor.ipynb) and [`output/Dashboard_palancas.html`](Business%20Plan/output/Dashboard_palancas.html).
-   - **Integration into the Definitive Excel Model**: The 4 operating cases (`Base P50`, `Bull P80`, `Bear P20`, `Bank P10`) in [`Excels/Inditex_LBO_Version_Definitiva.xlsx`](Excels/Inditex_LBO_Version_Definitiva.xlsx) (`Active Case!E6:I17`) extract the ex-COVID Monte Carlo operating percentiles and lever adjustments from [`Business Plan/`](Business%20Plan) and embed them into the final institutional capital structure (`25.0%` Ortega rollover, `80%/20%` LP/GP waterfall, dynamic `MAX(1800, 4.5% Rev)` CapEx floor, and Pre-IFRS 16 Cash EBITDA separation). *(Note: The standalone Python/HTML simulator inside `Business Plan/` retains its original preliminary 50%-rollover calibration for historical reproducibility; see [`PROJECT.md`](PROJECT.md) for the future roadmap to unify the standalone Python simulator with the definitive v4/Definitiva capital structure).*
+   - **Full Parity with the Definitive Excel Model**: [`Business Plan/bp/definitiva.py`](Business%20Plan/bp/definitiva.py) and the interactive dashboard [`Business Plan/output/Dashboard_palancas.html`](Business%20Plan/output/Dashboard_palancas.html) replicate [`Inditex_LBO_Version_Definitiva.xlsx`](Inditex_LBO_Version_Definitiva.xlsx) cell-by-cell (`1e-10` precision across all 4 cases, exit years, GP/LP carry waterfall, and covenants), allowing real-time interactive simulation of both the transaction structure and the 8 operational levers on top of the definitive group model.
 
 ---
 
