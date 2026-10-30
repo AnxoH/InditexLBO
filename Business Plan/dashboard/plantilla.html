@@ -75,6 +75,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .brand-tag { display: grid; justify-items: end; gap: 2px; font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--hlp-green); }
 .brand-tag span + span { color: var(--muted); letter-spacing: .12em; }
 @media (max-width: 560px) { .brand-tag { justify-items: start; margin-left: 10px; } .brand-logo { height: 84px; } }
+/* Botón «PARA JUANJO»: pasa toda la página a un idioma inventado y, pulsado otra vez, la devuelve al español */
+.juanjo { font-size: clamp(20px, 2.6vw, 28px); font-weight: 700; letter-spacing: .08em; padding: 14px 30px; border-radius: 999px;
+  border: 2px solid var(--hlp-green); background: var(--hlp-green); color: #1a1d21; cursor: pointer; margin-left: 10px;
+  box-shadow: 0 0 0 4px rgba(167, 203, 182, .18); transition: transform .12s ease, background .12s ease, color .12s ease; }
+.juanjo:hover { transform: translateY(-1px) scale(1.02); }
+.juanjo[aria-pressed="true"] { background: transparent; color: var(--hlp-green); }
 .eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
 h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(26px, 3.2vw, 34px); line-height: 1.15; letter-spacing: -.01em; }
 .deal { color: var(--ink-2); font-size: 14px; max-width: 95ch; }
@@ -297,6 +303,7 @@ footer.notes .wrap.brand-foot { display: flex; align-items: center; gap: 10px; p
   <div class="wrap">
     <div class="brand-row">
       <img class="brand-logo" src="/*__LOGO__*/" alt="Herrera Lázaro Pérez Partners · Corporate Finance Advisory" width="322" height="100">
+      <button type="button" class="juanjo" id="juanjo" aria-pressed="false" data-no-trad>PARA JUANJO</button>
       <div class="brand-tag"><span>Project Galicia</span><span>Estrictamente confidencial</span></div>
     </div>
     <div class="eyebrow" id="eyebrow">Project Galicia · LBO de Inditex · modelo definitivo del grupo</div>
@@ -1607,5 +1614,60 @@ footer.notes .wrap.brand-foot { display: flex; align-items: center; gap: 10px; p
   renderRisk();
   riskReady = true;
   postReference();
+})();
+</script>
+<script>
+// «PARA JUANJO»: traduce cada texto de la página a un idioma inventado (las cifras no se tocan) y, pulsado otra vez,
+// devuelve el original. Lo que la página vuelve a dibujar mientras está traducida también se traduce.
+(() => {
+  const btn = document.getElementById("juanjo");
+  const RULES = [[/qu/g, "kv"], [/ll/g, "lj"], [/ch/g, "tx"], [/ñ/g, "nj"], [/c/g, "k"], [/z/g, "ts"], [/v/g, "w"], [/j/g, "dj"],
+    [/h/g, ""], [/[aá]/g, "ö"], [/[eé]/g, "æ"], [/[ií]/g, "y"], [/[oó]/g, "å"], [/[uúü]/g, "ü"]];
+  const word = (w) => {
+    if (/\d/.test(w)) return w;
+    let t = w.toLowerCase();
+    for (const [re, to] of RULES) t = t.replace(re, to);
+    if (t.length > 3) t += /[öæyåü]$/.test(t) ? "rk" : "ök";
+    if (w === w.toUpperCase() && w.length > 1) return t.toUpperCase();
+    return w[0] === w[0].toUpperCase() ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+  };
+  const translate = (s) => s.replace(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ][\wÁÉÍÓÚÜÑáéíóúüñ]*/g, word);
+  const orig = new Map(); // nodo de texto → [texto original, texto traducido]
+  let on = false;
+
+  const skip = (n) => !n.parentElement || n.parentElement.closest("script, style, [data-no-trad]") || !n.nodeValue.trim();
+  const apply = (n) => {
+    if (skip(n)) return;
+    const prev = orig.get(n);
+    if (prev && n.nodeValue === prev[1]) return;
+    const t = translate(n.nodeValue);
+    if (t === n.nodeValue) return;
+    orig.set(n, [n.nodeValue, t]);
+    n.nodeValue = t;
+  };
+  const walk = (root) => {
+    if (root.nodeType === Node.TEXT_NODE) return apply(root);
+    const it = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let n = it.nextNode(); n; n = it.nextNode()) apply(n);
+  };
+  const obs = new MutationObserver((muts) => {
+    for (const m of muts) {
+      if (m.type === "characterData") apply(m.target);
+      else m.addedNodes.forEach(walk);
+    }
+  });
+
+  btn.addEventListener("click", () => {
+    on = !on;
+    btn.setAttribute("aria-pressed", String(on));
+    if (on) {
+      walk(document.body);
+      obs.observe(document.body, { childList: true, subtree: true, characterData: true });
+    } else {
+      obs.disconnect();
+      for (const [n, [o, t]] of orig) if (n.isConnected && n.nodeValue === t) n.nodeValue = o;
+      orig.clear();
+    }
+  });
 })();
 </script>
